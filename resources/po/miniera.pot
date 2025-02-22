@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-21 22:48-0500\n"
+"POT-Creation-Date: 2025-02-21 22:49-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,7 +70,10 @@ msgstr ""
 msgid "Keyboard Shortcuts"
 msgstr ""
 
+#. Dialog Settings
 #: org.nickvision.miniera.gnome/blueprints/main_window.blp:7
+#: org.nickvision.miniera.qt/src/controls/aboutdialog.cpp:148
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:63
 msgid "About Miniera"
 msgstr ""
 
@@ -120,10 +123,7 @@ msgctxt "Shortcut"
 msgid "Application"
 msgstr ""
 
-#. Dialog Settings
 #: org.nickvision.miniera.gnome/blueprints/shortcuts_dialog.blp:39
-#: org.nickvision.miniera.qt/src/controls/aboutdialog.cpp:148
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:63
 msgid "About Application"
 msgstr ""
 

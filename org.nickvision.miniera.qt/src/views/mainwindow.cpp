@@ -60,7 +60,7 @@ namespace Ui
             actionDiscussions->setText(_("Discussions"));
             actionDiscussions->setIcon(QLEMENTINE_ICON(Misc_Users));
             actionAbout = new QAction(parent);
-            actionAbout->setText(_("About Application"));
+            actionAbout->setText(_("About Miniera"));
             actionAbout->setIcon(QLEMENTINE_ICON(Misc_Info));
             actionAbout->setShortcut(Qt::Key_F1);
             //InfoBar

@@ -145,7 +145,7 @@ namespace Nickvision::Miniera::Qt::Controls
         m_debugInformation{ QString::fromStdString(debugInformation) }
     {
         //Dialog Settings
-        setWindowTitle(_("About Application"));
+        setWindowTitle(_("About Miniera"));
         setMinimumSize(420, 410);
         setModal(true);
         //Load Ui

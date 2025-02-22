@@ -84,6 +84,20 @@
             ]
         },
         {
+            "name": "ngrok",
+            "buildsystem": "simple",
+            "build-commands": [
+                "move ngrok /app/bin"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz",
+                    "sha256": "30055be48805088e017d264812bc437803ebee482a205d34201997a154798d56"
+                }
+            ]
+        },
+        {
             "name": "qlementine",
             "buildsystem": "cmake-ninja",
             "builddir": true,
