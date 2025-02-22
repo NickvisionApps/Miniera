@@ -1,5 +1,6 @@
 #include "views/mainwindow.h"
 #include <QAction>
+#include <QComboBox>
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QHBoxLayout>
@@ -9,15 +10,19 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QProgressBar>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QStackedWidget>
 #include <QToolBar>
 #include <QVBoxLayout>
 #include <libnick/helpers/codehelpers.h>
 #include <libnick/localization/gettext.h>
 #include <libnick/notifications/shellnotification.h>
+#include <oclero/qlementine/widgets/ActionButton.hpp>
 #include "controls/aboutdialog.h"
 #include "controls/infobar.h"
+#include "controls/statuspage.h"
 #include "helpers/qthelpers.h"
 #include "views/settingsdialog.h"
 
@@ -30,6 +35,7 @@ using namespace Nickvision::Events;
 using namespace Nickvision::Helpers;
 using namespace Nickvision::Notifications;
 using namespace Nickvision::Update;
+using namespace oclero::qlementine;
 
 namespace Ui
 {
@@ -38,7 +44,12 @@ namespace Ui
     public:
         void setupUi(Nickvision::Miniera::Qt::Views::MainWindow* parent) 
         {
+            viewStack = new QStackedWidget(parent);
             //Actions
+            actionNewServer = new QAction(parent);
+            actionNewServer->setText(_("New Server"));
+            actionNewServer->setIcon(QLEMENTINE_ICON(Action_AddFile));
+            actionNewServer->setShortcut(Qt::CTRL | Qt::Key_N);
             actionExit = new QAction(parent);
             actionExit->setText(_("Exit"));
             actionExit->setIcon(QLEMENTINE_ICON(Action_Close));
@@ -69,6 +80,8 @@ namespace Ui
             //MenuBar
             QMenu* menuFile{ new QMenu(parent) };
             menuFile->setTitle(_("File"));
+            menuFile->addAction(actionNewServer);
+            menuFile->addSeparator();
             menuFile->addAction(actionExit);
             QMenu* menuEdit{ new QMenu(parent) };
             menuEdit->setTitle(_("Edit"));
@@ -85,15 +98,46 @@ namespace Ui
             parent->menuBar()->addMenu(menuFile);
             parent->menuBar()->addMenu(menuEdit);
             parent->menuBar()->addMenu(menuHelp);
+            //Loading Page
+            QWidget* pageLoading{ new QWidget(parent) };
+            QHBoxLayout* layoutLoading{ new QHBoxLayout(parent) };
+            QProgressBar* progressBar{ new QProgressBar(parent) };
+            progressBar->setRange(0, 0);
+            progressBar->setValue(-1);
+            progressBar->setTextVisible(false);
+            progressBar->setInvertedAppearance(false);
+            progressBar->setAlignment(::Qt::AlignCenter);
+            layoutLoading->addWidget(progressBar);
+            pageLoading->setLayout(layoutLoading);
+            viewStack->addWidget(pageLoading);
+            //Home Page
+            Nickvision::Miniera::Qt::Controls::StatusPage* pageHome{ new Nickvision::Miniera::Qt::Controls::StatusPage(parent) };
+            pageHome->setIcon(QLEMENTINE_ICON(Hardware_Gamepad));
+            pageHome->setTitle(_("Manage a Server"));
+            pageHome->setDescription(_("Select or add a new server to get started"));
+            cmbServers = new QComboBox(parent);
+            cmbServers->setMinimumWidth(300);
+            cmbServers->setEditable(false);
+            cmbServers->setPlaceholderText(_("Select a server"));
+            pageHome->addWidget(cmbServers);
+            ActionButton* btnNewServer = new ActionButton(parent);
+            btnNewServer->setMinimumWidth(300);
+            btnNewServer->setText(_("New Server"));
+            btnNewServer->setIcon(QLEMENTINE_ICON(Action_AddFile));
+            btnNewServer->setAction(actionNewServer);
+            pageHome->addWidget(btnNewServer);
+            viewStack->addWidget(pageHome);
             //Main Layout
             QWidget* centralWidget{ new QWidget(parent) };
             QVBoxLayout* layoutMain{ new QVBoxLayout(parent) };
+            layoutMain->setContentsMargins(6, 6, 6, 6);
+            layoutMain->addWidget(viewStack);
             centralWidget->setLayout(layoutMain);
             parent->setCentralWidget(centralWidget);
+            viewStack->setCurrentIndex(1);
         }
 
-        QAction* actionOpenFolder;
-        QAction* actionCloseFolder;
+        QAction* actionNewServer;
         QAction* actionExit;
         QAction* actionSettings;
         QAction* actionCheckForUpdates;
@@ -102,11 +146,19 @@ namespace Ui
         QAction* actionDiscussions;
         QAction* actionAbout;
         Nickvision::Miniera::Qt::Controls::InfoBar* infoBar;
+        QStackedWidget* viewStack;
+        QComboBox* cmbServers;
     };
 }
 
 namespace Nickvision::Miniera::Qt::Views
 {
+    enum MainWindowPage
+    {
+        Loading = 0,
+        Home
+    };
+
     MainWindow::MainWindow(const std::shared_ptr<MainWindowController>& controller, oclero::qlementine::ThemeManager* themeManager, QWidget* parent) 
         : QMainWindow{ parent },
         m_ui{ new Ui::MainWindow() },

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-21 23:24-0500\n"
+"POT-Creation-Date: 2025-02-22 09:19-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: libminiera/src/controllers/mainwindowcontroller.cpp:33
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:118
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:170
 msgid "Miniera"
 msgstr ""
 
@@ -74,12 +74,28 @@ msgstr ""
 #: org.nickvision.miniera.gnome/blueprints/main_window.blp:7
 #: org.nickvision.miniera.gnome/blueprints/shortcuts_dialog.blp:39
 #: org.nickvision.miniera.qt/src/controls/aboutdialog.cpp:148
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:63
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:74
 msgid "About Miniera"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/blueprints/main_window.blp:23
 msgid "Main Menu"
+msgstr ""
+
+#: org.nickvision.miniera.gnome/blueprints/main_window.blp:37
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:116
+msgid "Manage a Server"
+msgstr ""
+
+#: org.nickvision.miniera.gnome/blueprints/main_window.blp:38
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:117
+msgid "Select or add a new server to get started"
+msgstr ""
+
+#: org.nickvision.miniera.gnome/blueprints/main_window.blp:51
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:50
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:125
+msgid "New Server"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/blueprints/preferences_dialog.blp:12
@@ -144,12 +160,12 @@ msgid "Quit"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/src/views/mainwindow.cpp:105
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:227
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:279
 msgid "Open"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/src/views/mainwindow.cpp:152
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:54
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:65
 msgid "GitHub Repo"
 msgstr ""
 
@@ -191,45 +207,49 @@ msgstr ""
 msgid "Notification"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:43
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:54
 msgid "Exit"
 msgstr ""
 
 #. Dialog Settings
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:47
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:58
 #: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:95
 msgid "Settings"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:51
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:62
 msgid "Check for Updates"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:57
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:68
 msgid "Report a Bug"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:60
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:71
 msgid "Discussions"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:71
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:82
 msgid "File"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:74
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:87
 msgid "Edit"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:77
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:90
 msgid "Help"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:118
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:121
+msgid "Select a server"
+msgstr ""
+
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:170
 msgid "Miniera (Preview)"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:215
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:267
 msgid "Update"
 msgstr ""
 

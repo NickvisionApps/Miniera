@@ -30,6 +30,42 @@ Adw.ApplicationWindow root {
       vexpand: true;
       
       Adw.ViewStack viewStack {
+        Adw.ViewStackPage {
+          name: "Loading";
+          child: Adw.Spinner {
+            halign: center;
+            valign: center;
+            width-request: 32;
+            height-request: 32;
+          };
+        }
+
+        Adw.ViewStackPage {
+          name: "Home";
+          child: Adw.StatusPage pageHome {
+            icon-name: "applications-games-symbolic";
+            title: _("Manage a Server");
+            description: _("Select or add a new server to get started");
+            child: Gtk.Box {
+              halign: center;
+              orientation: vertical;
+              spacing: 12;
+
+              Gtk.DropDown {
+                width-request: 300;
+              }
+
+              Gtk.Button btnNewServer {
+                Adw.ButtonContent {
+                  icon-name: "list-add-symbolic";
+                  label: _("New Server");
+                }
+
+                styles [ "suggested-action" ]
+              }
+            };
+          };
+        }
       }
     };
   }
