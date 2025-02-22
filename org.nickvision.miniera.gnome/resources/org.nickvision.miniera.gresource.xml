@@ -8,7 +8,7 @@
     <file alias="org.nickvision.miniera-symbolic.svg" preprocess="xml-stripblanks">../../resources/org.nickvision.miniera-symbolic.svg</file>
   </gresource>
   <gresource prefix="/org/nickvision/miniera/icons/scalable/status/">
-  <file preprocess="xml-stripblanks">globe-symbolic.svg</file>
     <file preprocess="xml-stripblanks">dark-mode-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">key-symbolic.svg</file>
   </gresource>
 </gresources>
