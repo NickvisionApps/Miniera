@@ -50,6 +50,16 @@ namespace Nickvision::Miniera::Shared::Models
          * @param check Whether or not to automatically check for updates
          */
         void setAutomaticallyCheckForUpdates(bool check);
+        /**
+         * @brief Gets the auth token for ngrok.
+         * @return The auth token for ngrok
+         */
+        std::string getNgrokAuthToken() const;
+        /**
+         * @brief Sets the auth token for ngrok.
+         * @param token The new auth token for ngrok
+         */
+        void setNgrokAuthToken(const std::string& token);
     };
 }
 

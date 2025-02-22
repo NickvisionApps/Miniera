@@ -1,14 +1,17 @@
 #include "views/settingsdialog.h"
 #include <QApplication>
 #include <QComboBox>
+#include <QDesktopServices>
 #include <QFormLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QListWidget>
+#include <QPushButton>
 #include <QStackedWidget>
 #include <QStyleHints>
 #include <libnick/localization/gettext.h>
 #include <oclero/qlementine/widgets/Switch.hpp>
+#include <oclero/qlementine/widgets/LineEdit.hpp>
 #include "helpers/qthelpers.h"
 
 using namespace Nickvision::Miniera::Shared::Controllers;
@@ -38,12 +41,28 @@ namespace Ui
             QWidget* userInterfacePage{ new QWidget(parent) };
             userInterfacePage->setLayout(layoutUserInterface);
             viewStack->addWidget(userInterfacePage);
+            //Hosting Page
+            QLabel* lblNgrokAuthToken{ new QLabel(parent) };
+            lblNgrokAuthToken->setText(_("Ngrok Auth Token"));
+            txtNgrokAuthToken = new LineEdit(parent);
+            txtNgrokAuthToken->setPlaceholderText(_("Enter ngrok auth token here"));
+            btnNgrokAuthToken = new QPushButton(parent);
+            btnNgrokAuthToken->setAutoDefault(false);
+            btnNgrokAuthToken->setText(_("Retrieve Auth Token"));
+            btnNgrokAuthToken->setIcon(QLEMENTINE_ICON(Navigation_Search));
+            QFormLayout* layoutHosting{ new QFormLayout(parent) };
+            layoutHosting->addRow(lblNgrokAuthToken, txtNgrokAuthToken);
+            layoutHosting->addRow(nullptr, btnNgrokAuthToken);
+            QWidget* hostingPage{ new QWidget(parent) };
+            hostingPage->setLayout(layoutHosting);
+            viewStack->addWidget(hostingPage);
             //Navigation List
             listNavigation = new QListWidget(parent);
             listNavigation->setMaximumWidth(160);
             listNavigation->setEditTriggers(QAbstractItemView::EditTrigger::NoEditTriggers);
             listNavigation->setDropIndicatorShown(false);
             listNavigation->addItem(new QListWidgetItem(QLEMENTINE_ICON(Navigation_UiPanelLeft), _("User Interface"), listNavigation));
+            listNavigation->addItem(new QListWidgetItem(QLEMENTINE_ICON(Misc_Globe), _("Hosting"), listNavigation));
             QObject::connect(listNavigation, &QListWidget::currentRowChanged, [this]()
             {
                 viewStack->setCurrentIndex(listNavigation->currentRow());
@@ -59,6 +78,8 @@ namespace Ui
         QStackedWidget* viewStack;
         QComboBox* cmbTheme;
         Switch* chkUpdates;
+        LineEdit* txtNgrokAuthToken;
+        QPushButton* btnNgrokAuthToken;
     };
 }
 
@@ -78,9 +99,11 @@ namespace Nickvision::Miniera::Qt::Views
         m_ui->setupUi(this);
         m_ui->cmbTheme->setCurrentIndex(static_cast<int>(m_controller->getTheme()));
         m_ui->chkUpdates->setChecked(m_controller->getAutomaticallyCheckForUpdates());
+        m_ui->txtNgrokAuthToken->setText(QString::fromStdString(m_controller->getNgrokAuthToken()));
         m_ui->listNavigation->setCurrentRow(0);
         //Signals
         connect(m_ui->cmbTheme, &QComboBox::currentIndexChanged, this, &SettingsDialog::onThemeChanged);
+        connect(m_ui->btnNgrokAuthToken, &QPushButton::clicked, this, &SettingsDialog::retrieveNgrokAuthToken);
     }
 
     SettingsDialog::~SettingsDialog()
@@ -92,6 +115,7 @@ namespace Nickvision::Miniera::Qt::Views
     {
         m_controller->setTheme(static_cast<Shared::Models::Theme>(m_ui->cmbTheme->currentIndex()));
         m_controller->setAutomaticallyCheckForUpdates(m_ui->chkUpdates->isChecked());
+        m_controller->setNgrokAuthToken(m_ui->txtNgrokAuthToken->text().toStdString());
         m_controller->saveConfiguration();
         event->accept();
     }
@@ -113,5 +137,10 @@ namespace Nickvision::Miniera::Qt::Views
             m_themeManager->setCurrentTheme(QApplication::styleHints()->colorScheme() == ::Qt::ColorScheme::Light ? "Light" : "Dark");
             break;
         }
+    }
+
+    void SettingsDialog::retrieveNgrokAuthToken()
+    {
+        QDesktopServices::openUrl(QUrl(QString::fromStdString(m_controller->getNgrokAuthTokenRetrievalUrl())));
     }
 }

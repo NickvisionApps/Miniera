@@ -78,6 +78,15 @@ namespace Nickvision::Miniera::Shared::Controllers
     std::string MainWindowController::getDebugInformation(const std::string& extraInformation) const
     {
         std::stringstream builder;
+        //ngrok
+        if(Environment::findDependency("ngrok").empty())
+        {
+            builder << "ngrok not found" << std::endl;
+        }
+        else
+        {
+            builder << Environment::exec(Environment::findDependency("ngrok").string() + " --version") << std::endl;
+        }
         //Extra
         if(!extraInformation.empty())
         {

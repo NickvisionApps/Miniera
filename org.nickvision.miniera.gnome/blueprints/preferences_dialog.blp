@@ -23,5 +23,27 @@ Adw.PreferencesDialog root {
         }
       }
     }
+
+    Adw.PreferencesGroup {
+      title: _("Hosting");
+
+      Adw.EntryRow ngrokAuthTokenRow {
+        title: _("Ngrok Auth Token");
+
+        [prefix]
+        Gtk.Image {
+          icon-name: "globe-symbolic";
+        }
+
+        [suffix]
+        Gtk.Button retrieveNgrokAuthTokenButton {
+          icon-name: "edit-find-symbolic";
+          tooltip-text: _("Retrieve Auth Token");
+          valign: center;
+
+          styles [ "flat" ]
+        }
+      }
+    }
   }
 }

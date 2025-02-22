@@ -38,4 +38,14 @@ namespace Nickvision::Miniera::GNOME::Views
             break;
         }
     }
+
+    void PreferencesDialog::retrieveNgrokAuthToken()
+    {
+        GtkUriLauncher* launcher{ gtk_uri_launcher_new(m_controller->getNgrokAuthTokenRetrievalUrl().c_str()) };
+        gtk_uri_launcher_launch(launcher, m_parent, nullptr, GAsyncReadyCallback(+[](GObject* source, GAsyncResult* res, gpointer)
+        {
+            gtk_uri_launcher_launch_finish(GTK_URI_LAUNCHER(source), res, nullptr);
+            g_object_unref(source);
+        }), nullptr);
+    }
 }

@@ -38,6 +38,21 @@ namespace Nickvision::Miniera::Shared::Controllers
          */
         void setAutomaticallyCheckForUpdates(bool check);
         /**
+         * @brief Gets the auth token for ngrok.
+         * @return The auth token for ngrok
+         */
+        std::string getNgrokAuthToken() const;
+        /**
+         * @brief Sets the auth token for ngrok.
+         * @param token The new auth token for ngrok
+         */
+        void setNgrokAuthToken(const std::string& token);
+        /**
+         * @brief Gets the URL to retrieve the ngrok auth token.
+         * @return The URL to retrieve the ngrok auth token
+         */
+        const std::string& getNgrokAuthTokenRetrievalUrl() const;
+        /**
          * @brief Saves the current configuration to disk.
          */
         void saveConfiguration();

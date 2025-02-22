@@ -57,4 +57,14 @@ namespace Nickvision::Miniera::Shared::Models
     {
         m_json["AutomaticallyCheckForUpdates"] = check;
     }
+
+    std::string Configuration::getNgrokAuthToken() const
+    {
+        return m_json["NgrokAuthToken"].is_string() ? m_json["NgrokAuthToken"].as_string().c_str() : "";
+    }
+
+    void Configuration::setNgrokAuthToken(const std::string& token)
+    {
+        m_json["NgrokAuthToken"] = token;
+    }
 }

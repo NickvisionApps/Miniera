@@ -34,13 +34,10 @@ namespace Nickvision::Miniera::GNOME::Views
         {
             gtk_widget_add_css_class(GTK_WIDGET(m_window), "devel");
         }
-        adw_window_title_set_title(m_builder.get<AdwWindowTitle>("title"), m_controller->getAppInfo().getShortName().c_str());
-        adw_status_page_set_title(m_builder.get<AdwStatusPage>("pageGreeting"), m_controller->getGreeting().c_str());
         //Register Events
         g_signal_connect(m_window, "close_request", G_CALLBACK(+[](GtkWindow*, gpointer data) -> bool { return reinterpret_cast<MainWindow*>(data)->onCloseRequested(); }), this);
         m_controller->notificationSent() += [&](const NotificationSentEventArgs& args) { GtkHelpers::dispatchToMainThread([this, args]() { onNotificationSent(args); }); };
         m_controller->shellNotificationSent() += [&](const ShellNotificationSentEventArgs& args) { onShellNotificationSent(args); };
-        m_controller->folderChanged() += [&](const EventArgs& args) { onFolderChanged(args); };
         //Quit Action
         GSimpleAction* actQuit{ g_simple_action_new("quit", nullptr) };
         g_signal_connect(actQuit, "activate", G_CALLBACK(+[](GSimpleAction*, GVariant*, gpointer data){ reinterpret_cast<MainWindow*>(data)->quit(); }), this);

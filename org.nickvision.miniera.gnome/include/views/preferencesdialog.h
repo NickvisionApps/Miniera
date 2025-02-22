@@ -30,6 +30,10 @@ namespace Nickvision::Miniera::GNOME::Views
          * @brief Handles when the theme preference is changed.
          */
         void onThemeChanged();
+         /**
+         * @brief Opens a browser to retrieve the ngrok auth token.
+         */
+        void retrieveNgrokAuthToken();
         std::shared_ptr<Shared::Controllers::PreferencesViewController> m_controller;
     };
 }

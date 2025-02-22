@@ -43,6 +43,10 @@ namespace Nickvision::Miniera::Qt::Views
          * @brief Handles when the theme combobox changes.
          */
         void onThemeChanged();
+        /**
+         * @brief Opens a browser to retrieve the ngrok auth token.
+         */
+        void retrieveNgrokAuthToken();
 
     private:
         Ui::SettingsDialog* m_ui;

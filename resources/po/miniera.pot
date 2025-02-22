@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-21 22:49-0500\n"
+"POT-Creation-Date: 2025-02-21 23:24-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,16 +46,16 @@ msgstr ""
 msgid "translator-credits"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:151
+#: libminiera/src/controllers/mainwindowcontroller.cpp:160
 msgid "New update available"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:165
+#: libminiera/src/controllers/mainwindowcontroller.cpp:174
 msgid ""
 "The update is downloading in the background and will start once it finishes"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:170
+#: libminiera/src/controllers/mainwindowcontroller.cpp:179
 msgid "Unable to download and install update"
 msgstr ""
 
@@ -72,6 +72,7 @@ msgstr ""
 
 #. Dialog Settings
 #: org.nickvision.miniera.gnome/blueprints/main_window.blp:7
+#: org.nickvision.miniera.gnome/blueprints/shortcuts_dialog.blp:39
 #: org.nickvision.miniera.qt/src/controls/aboutdialog.cpp:148
 #: org.nickvision.miniera.qt/src/views/mainwindow.cpp:63
 msgid "About Miniera"
@@ -82,12 +83,12 @@ msgid "Main Menu"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/blueprints/preferences_dialog.blp:12
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:46
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:64
 msgid "User Interface"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/blueprints/preferences_dialog.blp:15
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:27
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:30
 msgid "Theme"
 msgstr ""
 
@@ -104,6 +105,21 @@ msgstr ""
 #: org.nickvision.miniera.gnome/blueprints/preferences_dialog.blp:17
 msgctxt "Theme"
 msgid "System"
+msgstr ""
+
+#: org.nickvision.miniera.gnome/blueprints/preferences_dialog.blp:28
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:65
+msgid "Hosting"
+msgstr ""
+
+#: org.nickvision.miniera.gnome/blueprints/preferences_dialog.blp:31
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:46
+msgid "Ngrok Auth Token"
+msgstr ""
+
+#: org.nickvision.miniera.gnome/blueprints/preferences_dialog.blp:41
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:51
+msgid "Retrieve Auth Token"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/blueprints/shortcuts_dialog.blp:12
@@ -123,20 +139,16 @@ msgctxt "Shortcut"
 msgid "Application"
 msgstr ""
 
-#: org.nickvision.miniera.gnome/blueprints/shortcuts_dialog.blp:39
-msgid "About Application"
-msgstr ""
-
 #: org.nickvision.miniera.gnome/blueprints/shortcuts_dialog.blp:44
 msgid "Quit"
 msgstr ""
 
-#: org.nickvision.miniera.gnome/src/views/mainwindow.cpp:108
+#: org.nickvision.miniera.gnome/src/views/mainwindow.cpp:105
 #: org.nickvision.miniera.qt/src/views/mainwindow.cpp:227
 msgid "Open"
 msgstr ""
 
-#: org.nickvision.miniera.gnome/src/views/mainwindow.cpp:155
+#: org.nickvision.miniera.gnome/src/views/mainwindow.cpp:152
 #: org.nickvision.miniera.qt/src/views/mainwindow.cpp:54
 msgid "GitHub Repo"
 msgstr ""
@@ -185,7 +197,7 @@ msgstr ""
 
 #. Dialog Settings
 #: org.nickvision.miniera.qt/src/views/mainwindow.cpp:47
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:74
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:95
 msgid "Settings"
 msgstr ""
 
@@ -221,18 +233,22 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:29
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:32
 msgid "Light"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:30
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:33
 msgid "Dark"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:31
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:34
 msgid "System"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:33
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:36
 msgid "Automatically Check for Updates"
+msgstr ""
+
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:48
+msgid "Enter ngrok auth token here"
 msgstr ""
