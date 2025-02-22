@@ -16,7 +16,7 @@ if(NOT WIN32)
     pkg_check_modules(gtk REQUIRED IMPORTED_TARGET gtk4)
     pkg_check_modules(adwaita REQUIRED IMPORTED_TARGET libadwaita-1)
     pkg_check_modules(libxmlpp REQUIRED IMPORTED_TARGET libxml++-5.0)
-    target_link_libraries(${OUTPUT_NAME} PRIVATE libmineria PkgConfig::gtk PkgConfig::adwaita PkgConfig::libxmlpp)
+    target_link_libraries(${OUTPUT_NAME} PRIVATE libminiera PkgConfig::gtk PkgConfig::adwaita PkgConfig::libxmlpp)
 
     add_custom_target(gnome_commands ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/__gnome.h")
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/__gnome.h" "${CMAKE_CURRENT_BINARY_DIR}/gnome.h" COMMAND "${CMAKE_COMMAND}" -E touch "${CMAKE_CURRENT_BINARY_DIR}/gnome.h")
