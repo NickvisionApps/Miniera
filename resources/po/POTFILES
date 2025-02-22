@@ -1,4 +1,4 @@
-libminieria/src/controllers/mainwindowcontroller.cpp
+libminiera/src/controllers/mainwindowcontroller.cpp
 org.nickvision.miniera.gnome/blueprints/main_window.blp
 org.nickvision.miniera.gnome/blueprints/preferences_dialog.blp
 org.nickvision.miniera.gnome/blueprints/shortcuts_dialog.blp

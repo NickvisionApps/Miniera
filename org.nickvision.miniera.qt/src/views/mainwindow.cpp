@@ -39,14 +39,6 @@ namespace Ui
         void setupUi(Nickvision::Miniera::Qt::Views::MainWindow* parent) 
         {
             //Actions
-            actionOpenFolder = new QAction(parent);
-            actionOpenFolder->setText(_("Open Folder"));
-            actionOpenFolder->setIcon(QLEMENTINE_ICON(File_FolderOpen));
-            actionOpenFolder->setShortcut(Qt::CTRL | Qt::Key_O);
-            actionCloseFolder = new QAction(parent);
-            actionCloseFolder->setText(_("Close Folder"));
-            actionCloseFolder->setIcon(QLEMENTINE_ICON(File_Folder));
-            actionCloseFolder->setShortcut(Qt::CTRL | Qt::Key_W);
             actionExit = new QAction(parent);
             actionExit->setText(_("Exit"));
             actionExit->setIcon(QLEMENTINE_ICON(Action_Close));
@@ -77,9 +69,6 @@ namespace Ui
             //MenuBar
             QMenu* menuFile{ new QMenu(parent) };
             menuFile->setTitle(_("File"));
-            menuFile->addAction(actionOpenFolder);
-            menuFile->addAction(actionCloseFolder);
-            menuFile->addSeparator();
             menuFile->addAction(actionExit);
             QMenu* menuEdit{ new QMenu(parent) };
             menuEdit->setTitle(_("Edit"));
@@ -96,29 +85,9 @@ namespace Ui
             parent->menuBar()->addMenu(menuFile);
             parent->menuBar()->addMenu(menuEdit);
             parent->menuBar()->addMenu(menuHelp);
-            //ToolBar
-            QToolBar* toolBar{ new QToolBar(parent) };
-            toolBar->setAllowedAreas(::Qt::ToolBarArea::TopToolBarArea);
-            toolBar->setMovable(false);
-            toolBar->setFloatable(false);
-            toolBar->addAction(actionOpenFolder);
-            toolBar->addAction(actionCloseFolder);
-            parent->addToolBar(toolBar);
-            //Files View
-            listFiles = new QListWidget(parent);
-            listFiles->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
-            lblFiles = new QLabel(parent);
-            lblFiles->setAlignment(::Qt::AlignmentFlag::AlignCenter);
-            lblFiles->setText(_("No Folder Opened"));
             //Main Layout
             QWidget* centralWidget{ new QWidget(parent) };
-            QHBoxLayout* layoutMain{ new QHBoxLayout(parent) };
-            QScrollArea* scrollFiles{ new QScrollArea(parent) };
-            scrollFiles->setMaximumWidth(300);
-            scrollFiles->setWidgetResizable(true);
-            scrollFiles->setWidget(listFiles);
-            layoutMain->addWidget(scrollFiles);
-            layoutMain->addWidget(lblFiles);
+            QVBoxLayout* layoutMain{ new QVBoxLayout(parent) };
             centralWidget->setLayout(layoutMain);
             parent->setCentralWidget(centralWidget);
         }
@@ -133,8 +102,6 @@ namespace Ui
         QAction* actionDiscussions;
         QAction* actionAbout;
         Nickvision::Miniera::Qt::Controls::InfoBar* infoBar;
-        QListWidget* listFiles;
-        QLabel* lblFiles;
     };
 }
 
@@ -148,14 +115,12 @@ namespace Nickvision::Miniera::Qt::Views
     {
         //Window Settings
         bool stable{ m_controller->getAppInfo().getVersion().getVersionType() == VersionType::Stable };
-        setWindowTitle(stable ? _("Application") : _("Application (Preview)"));
+        setWindowTitle(stable ? _("Miniera") : _("Miniera (Preview)"));
         setWindowIcon(QIcon(":/icon.svg"));
         setAcceptDrops(true);
         //Load Ui
         m_ui->setupUi(this);
         //Signals
-        connect(m_ui->actionOpenFolder, &QAction::triggered, this, &MainWindow::openFolder);
-        connect(m_ui->actionCloseFolder, &QAction::triggered, this, &MainWindow::closeFolder);
         connect(m_ui->actionExit, &QAction::triggered, this, &MainWindow::close);
         connect(m_ui->actionSettings, &QAction::triggered, this, &MainWindow::settings);
         connect(m_ui->actionCheckForUpdates, &QAction::triggered, this, &MainWindow::checkForUpdates);
@@ -165,7 +130,6 @@ namespace Nickvision::Miniera::Qt::Views
         connect(m_ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
         m_controller->notificationSent() += [&](const NotificationSentEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onNotificationSent(args); }); };
         m_controller->shellNotificationSent() += [&](const ShellNotificationSentEventArgs& args) { onShellNotificationSent(args); };
-        m_controller->folderChanged() += [&](const EventArgs& args) { onFolderChanged(args); };
     }
 
     MainWindow::~MainWindow()
@@ -198,33 +162,6 @@ namespace Nickvision::Miniera::Qt::Views
         }
         m_controller->shutdown({ geometry().width(), geometry().height(), isMaximized() });
         event->accept();
-    }
-
-    void MainWindow::dragEnterEvent(QDragEnterEvent* event)
-    {
-        if(event->mimeData()->hasUrls())
-        {
-            event->acceptProposedAction();
-        }
-    }
-
-    void MainWindow::dropEvent(QDropEvent* event)
-    {
-        if(event->mimeData()->hasUrls())
-        {
-            m_controller->openFolder(event->mimeData()->urls()[0].toLocalFile().toStdString());
-        }
-    }
-
-    void MainWindow::openFolder()
-    {
-        QString path{ QFileDialog::getExistingDirectory(this, _("Open Folder"), {}, QFileDialog::ShowDirsOnly) };
-        m_controller->openFolder(path.toStdString());
-    }
-
-    void MainWindow::closeFolder()
-    {
-        m_controller->closeFolder();
     }
 
     void MainWindow::settings()
@@ -272,13 +209,8 @@ namespace Nickvision::Miniera::Qt::Views
     {
         QString actionText;
         std::function<void()> actionCallback;
-        if(args.getAction() == "close")
-        {
-            actionText = _("Close");
-            actionCallback = [this]() { closeFolder(); };
-        }
 #ifdef _WIN32
-        else if(args.getAction() == "update")
+        if(args.getAction() == "update")
         {
             actionText = _("Update");
             actionCallback = [this]() { windowsUpdate(); };
@@ -296,22 +228,5 @@ namespace Nickvision::Miniera::Qt::Views
 #else
         ShellNotification::send(args);
 #endif
-    }
-
-    void MainWindow::onFolderChanged(const EventArgs& args)
-    {
-        if(m_controller->isFolderOpened())
-        {
-            m_ui->lblFiles->setText(QString::fromStdString(std::vformat(_n("There is {} file in the folder.", "There are {} files in the folder.", m_controller->getFiles().size()), std::make_format_args(CodeHelpers::unmove(m_controller->getFiles().size())))));
-            for(const std::filesystem::path& file : m_controller->getFiles())
-            {
-                m_ui->listFiles->addItem(QString::fromStdString(file.filename().string()));
-            }
-        }
-        else
-        {
-            m_ui->listFiles->clear();
-            m_ui->lblFiles->setText(_("No Folder Opened"));
-        }
     }
 }
