@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/nickvision/miniera/icons/scalable/apps/">
+    <file alias="org.nickvision.miniera.svg" preprocess="xml-stripblanks">../../resources/org.nickvision.miniera.svg</file>
+    <file alias="org.nickvision.miniera-devel.svg" preprocess="xml-stripblanks">../../resources/org.nickvision.miniera-devel.svg</file>
+  </gresource>
+  <gresource prefix="/org/nickvision/miniera/icons/symbolic/apps/">
+    <file alias="org.nickvision.miniera-symbolic.svg" preprocess="xml-stripblanks">../../resources/org.nickvision.miniera-symbolic.svg</file>
+  </gresource>
+  <gresource prefix="/org/nickvision/miniera/icons/scalable/status/">
+    <file preprocess="xml-stripblanks">dark-mode-symbolic.svg</file>
+  </gresource>
+</gresources>

@@ -1,0 +1,9 @@
+libminieria/src/controllers/mainwindowcontroller.cpp
+org.nickvision.miniera.gnome/blueprints/main_window.blp
+org.nickvision.miniera.gnome/blueprints/preferences_dialog.blp
+org.nickvision.miniera.gnome/blueprints/shortcuts_dialog.blp
+org.nickvision.miniera.gnome/src/views/mainwindow.cpp
+org.nickvision.miniera.qt/src/controls/aboutdialog.cpp
+org.nickvision.miniera.qt/src/controls/infobar.cpp
+org.nickvision.miniera.qt/src/views/mainwindow.cpp
+org.nickvision.miniera.qt/src/views/settingsdialog.cpp
