@@ -46,6 +46,10 @@ namespace Nickvision::Miniera::Qt::Views
 
     private Q_SLOTS:
         /**
+         * @brief Opens the new server dialog.
+         */
+        void newServer();
+        /**
          * @brief Opens the application's settings dialog.
          */
         void settings();

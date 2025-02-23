@@ -96,7 +96,7 @@ namespace Nickvision::Miniera::Shared::Models
 
     void ServerProperties::setMaxPlayers(unsigned int maxPlayers)
     {
-        if(maxPlayers < 0 || maxPlayers > 256)
+        if(maxPlayers < 1 || maxPlayers > 256)
         {
             maxPlayers = DEFAULT_MAX_PLAYERS;
         }

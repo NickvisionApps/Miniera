@@ -24,6 +24,7 @@
 #include "controls/infobar.h"
 #include "controls/statuspage.h"
 #include "helpers/qthelpers.h"
+#include "views/newserverdialog.h"
 #include "views/settingsdialog.h"
 
 using namespace Nickvision::App;
@@ -173,6 +174,7 @@ namespace Nickvision::Miniera::Qt::Views
         //Load Ui
         m_ui->setupUi(this);
         //Signals
+        connect(m_ui->actionNewServer, &QAction::triggered, this, &MainWindow::newServer);
         connect(m_ui->actionExit, &QAction::triggered, this, &MainWindow::close);
         connect(m_ui->actionSettings, &QAction::triggered, this, &MainWindow::settings);
         connect(m_ui->actionCheckForUpdates, &QAction::triggered, this, &MainWindow::checkForUpdates);
@@ -214,6 +216,12 @@ namespace Nickvision::Miniera::Qt::Views
         }
         m_controller->shutdown({ geometry().width(), geometry().height(), isMaximized() });
         event->accept();
+    }
+
+    void MainWindow::newServer()
+    {
+        NewServerDialog dialog{ this };
+        dialog.exec();
     }
 
     void MainWindow::settings()
