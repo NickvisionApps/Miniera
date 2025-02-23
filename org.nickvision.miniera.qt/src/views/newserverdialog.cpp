@@ -21,7 +21,8 @@ enum NewServerDialogPage
     Network,
     Java,
     Bedrock,
-    Forge
+    Forge,
+    Final
 };
 
 namespace Ui
@@ -160,6 +161,25 @@ namespace Ui
             forgePage->setSubTitle(_("Please configure the properties of the forge server."));
             forgePage->setLayout(formForge);
             parent->setPage(NewServerDialogPage::Forge, forgePage);
+            //Final Page
+            QLabel* lblFinal{ new QLabel(parent) };
+            lblFinal->setText(_("Once the server is created, you will not be able to change some of these settings."));
+            lblFinal->setWordWrap(true);
+            QLabel* lblEula{ new QLabel(parent) };
+            lblEula->setText(_("By clicking 'Finish', you agree to the following EULA: <a href=\"https://account.mojang.com/documents/minecraft_eula\">https://account.mojang.com/documents/minecraft_eula</a>"));
+            lblEula->setTextFormat(Qt::RichText);
+            lblEula->setTextInteractionFlags(Qt::TextBrowserInteraction);
+            lblEula->setOpenExternalLinks(true);
+            lblEula->setWordWrap(true);
+            QVBoxLayout* layoutFinal{ new QVBoxLayout(parent) };
+            layoutFinal->addWidget(lblFinal);
+            layoutFinal->addStretch();
+            layoutFinal->addWidget(lblEula);
+            QWizardPage* finalPage{ new QWizardPage(parent) };
+            finalPage->setTitle(_("Complete Setup"));
+            finalPage->setSubTitle(_("Please ensure all settings are correct before creating the server."));
+            finalPage->setLayout(layoutFinal);
+            parent->setPage(NewServerDialogPage::Final, finalPage);
         }
 
         QRadioButton* btnJava;
@@ -241,7 +261,14 @@ namespace Nickvision::Miniera::Qt::Views
             {
                 return NewServerDialogPage::Forge;
             }
+            else
+            {
+                return NewServerDialogPage::Final;
+            }
             break;
+        case NewServerDialogPage::Bedrock:
+        case NewServerDialogPage::Forge:
+            return NewServerDialogPage::Final;
         }
         return -1;
     }
