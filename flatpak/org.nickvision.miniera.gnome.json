@@ -3,12 +3,17 @@
     "runtime" : "org.gnome.Platform",
     "runtime-version" : "47",
     "sdk" : "org.gnome.Sdk",
+    "sdk-extensions" : [
+        "org.freedesktop.Sdk.Extension.openjdk21"
+    ],
     "command" : "org.nickvision.miniera",
     "finish-args":[
+        "--env=PATH=/app/jre/bin:/app/bin:/usr/bin",
         "--socket=fallback-x11",
         "--socket=wayland",
         "--device=dri",
         "--share=ipc",
+        "--share=network",
         "--talk-name=com.canonical.Unity",
         "--talk-name=org.freedesktop.Notifications"
     ],
@@ -64,6 +69,13 @@
                     "url": "https://github.com/nickvisionapps/libnick",
                     "tag": "2025.1.0"
                 }
+            ]
+        },
+        {
+            "name" : "openjdk",
+            "buildsystem" : "simple",
+            "build-commands" : [
+                "/usr/lib/sdk/openjdk21/install.sh"
             ]
         },
         {
