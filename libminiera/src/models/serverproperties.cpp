@@ -13,6 +13,19 @@
 #define DEFAULT_BEDROCK_SERVER_PORT 25565u
 #define DEFAULT_JAVA_VIEW_DISTANCE 10u
 #define DEFAULT_BEDROCK_VIEW_DISTANCE 32u
+#define DEFAULT_ALLOW_FLIGHT false
+#define DEFAULT_ALLOW_NETHER true
+#define DEFAULT_ENABLE_COMMAND_BLOCK false
+#define DEFAULT_GENERATE_STRUCTURES true
+#define DEFAULT_HARDCORE false
+#define DEFAULT_PVP true
+#define DEFAULT_SPAWN_ANIMALS true
+#define DEFAULT_SPAWN_MONSTERS true
+#define DEFAULT_SPAWN_NPCS true
+#define DEFAULT_ALLOW_CHEATS false
+#define DEFAULT_CLIENT_SIDE_CHUNK_GENERATION_ENABLED true
+#define DEFAULT_DISABLE_CUSTOM_SKINS false
+#define DEFAULT_TICK_DISTANCE 4
 
 namespace Nickvision::Miniera::Shared::Models
 {
@@ -27,7 +40,20 @@ namespace Nickvision::Miniera::Shared::Models
         m_onlineMode{ DEFAULT_ONLINE_MODE },
         m_playerIdleTimeout{ DEFAULT_PLAYER_IDLE_TIMEOUT },
         m_serverPort{ edition == Edition::Bedrock ? DEFAULT_BEDROCK_SERVER_PORT : DEFAULT_JAVA_SERVER_PORT },
-        m_viewDistance{ edition == Edition::Bedrock ? DEFAULT_BEDROCK_VIEW_DISTANCE : DEFAULT_JAVA_VIEW_DISTANCE}
+        m_viewDistance{ edition == Edition::Bedrock ? DEFAULT_BEDROCK_VIEW_DISTANCE : DEFAULT_JAVA_VIEW_DISTANCE},
+        m_allowFlight{ DEFAULT_ALLOW_FLIGHT },
+        m_allowNether{ DEFAULT_ALLOW_NETHER },
+        m_enableCommandBlock{ DEFAULT_ENABLE_COMMAND_BLOCK },
+        m_generateStructures{ DEFAULT_GENERATE_STRUCTURES },
+        m_hardcore{ DEFAULT_HARDCORE },
+        m_pvp{ DEFAULT_PVP },
+        m_spawnAnimals{ DEFAULT_SPAWN_ANIMALS },
+        m_spawnMonsters{ DEFAULT_SPAWN_MONSTERS },
+        m_spawnNPCs{ DEFAULT_SPAWN_NPCS },
+        m_allowCheats{ DEFAULT_ALLOW_CHEATS },
+        m_clientSideChunkGenerationEnabled{ DEFAULT_CLIENT_SIDE_CHUNK_GENERATION_ENABLED },
+        m_disableCustomSkins{ DEFAULT_DISABLE_CUSTOM_SKINS },
+        m_tickDistance{ DEFAULT_TICK_DISTANCE }
     {
 
     }
@@ -157,6 +183,140 @@ namespace Nickvision::Miniera::Shared::Models
         m_viewDistance = viewDistance;
     }
 
+    bool ServerProperties::getAllowFlight() const
+    {
+        return m_allowFlight;
+    }
+
+    void ServerProperties::setAllowFlight(bool allowFlight)
+    {
+        m_allowFlight = allowFlight;
+    }
+
+    bool ServerProperties::getAllowNether() const
+    {
+        return m_allowNether;
+    }
+
+    void ServerProperties::setAllowNether(bool allowNether)
+    {
+        m_allowNether = allowNether;
+    }
+
+    bool ServerProperties::getEnableCommandBlock() const
+    {
+        return m_enableCommandBlock;
+    }
+
+    void ServerProperties::setEnableCommandBlock(bool enableCommandBlock)
+    {
+        m_enableCommandBlock = enableCommandBlock;
+    }
+
+    bool ServerProperties::getGenerateStructures() const
+    {
+        return m_generateStructures;
+    }
+
+    void ServerProperties::setGenerateStructures(bool generateStructures)
+    {
+        m_generateStructures = generateStructures;
+    }
+
+    bool ServerProperties::getHardcore() const
+    {
+        return m_hardcore;
+    }
+
+    void ServerProperties::setHardcore(bool hardcore)
+    {
+        m_hardcore = hardcore;
+    }
+
+    bool ServerProperties::getPVP() const
+    {
+        return m_pvp;
+    }
+
+    void ServerProperties::setPVP(bool pvp)
+    {
+        m_pvp = pvp;
+    }
+
+    bool ServerProperties::getSpawnAnimals() const
+    {
+        return m_spawnAnimals;
+    }
+
+    void ServerProperties::setSpawnAnimals(bool spawnAnimals)
+    {
+        m_spawnAnimals = spawnAnimals;
+    }
+
+    bool ServerProperties::getSpawnMonsters() const
+    {
+        return m_spawnMonsters;
+    }
+
+    void ServerProperties::setSpawnMonsters(bool spawnMonsters)
+    {
+        m_spawnMonsters = spawnMonsters;
+    }
+
+    bool ServerProperties::getSpawnNPCs() const
+    {
+        return m_spawnNPCs;
+    }
+
+    void ServerProperties::setSpawnNPCs(bool spawnNPCs)
+    {
+        m_spawnNPCs = spawnNPCs;
+    }
+
+    bool ServerProperties::getAllowCheats() const
+    {
+        return m_allowCheats;
+    }
+
+    void ServerProperties::setAllowCheats(bool allowCheats)
+    {
+        m_allowCheats = allowCheats;
+    }
+
+    bool ServerProperties::getClientSideChunkGenerationEnabled() const
+    {
+        return m_clientSideChunkGenerationEnabled;
+    }
+
+    void ServerProperties::setClientSideChunkGenerationEnabled(bool clientSideChunkGenerationEnabled)
+    {
+        m_clientSideChunkGenerationEnabled = clientSideChunkGenerationEnabled;
+    }
+
+    bool ServerProperties::getDisableCustomSkins() const
+    {
+        return m_disableCustomSkins;
+    }
+
+    void ServerProperties::setDisableCustomSkins(bool disableCustomSkins)
+    {
+        m_disableCustomSkins = disableCustomSkins;
+    }
+
+    unsigned int ServerProperties::getTickDistance() const
+    {
+        return m_tickDistance;
+    }
+
+    void ServerProperties::setTickDistance(unsigned int tickDistance)
+    {
+        if(tickDistance < 4 || tickDistance > 12)
+        {
+            tickDistance = DEFAULT_TICK_DISTANCE;
+        }
+        m_tickDistance = tickDistance;
+    }
+
     std::string ServerProperties::toString() const
     {
         std::stringstream builder;
@@ -170,6 +330,25 @@ namespace Nickvision::Miniera::Shared::Models
         builder << "player-idle-timeout=" << m_playerIdleTimeout << '\n';
         builder << "server-port=" << m_serverPort << '\n';
         builder << "view-distance=" << m_viewDistance << '\n';
+        if(m_edition == Edition::Bedrock)
+        {
+            builder << "allow-cheats=" << m_allowCheats << "\n";
+            builder << "client-side-chunk-generation-enabled=" << m_clientSideChunkGenerationEnabled << "\n";
+            builder << "disable-custom-skins=" << m_disableCustomSkins << "\n";
+            builder << "tick-distance=" << m_tickDistance << "\n";
+        }
+        else
+        {
+            builder << "allow-flight=" << (m_allowFlight ? "true" : "false") << std::endl;
+            builder << "allow-nether=" << (m_allowNether ? "true" : "false") << std::endl;
+            builder << "enable-command-block=" << (m_enableCommandBlock ? "true" : "false") << std::endl;
+            builder << "generate-structures=" << (m_generateStructures ? "true" : "false") << std::endl;
+            builder << "hardcore=" << (m_hardcore ? "true" : "false") << std::endl;
+            builder << "pvp=" << (m_pvp ? "true" : "false") << std::endl;
+            builder << "spawn-animals=" << (m_spawnAnimals ? "true" : "false") << std::endl;
+            builder << "spawn-monsters=" << (m_spawnMonsters ? "true" : "false") << std::endl;
+            builder << "spawn-npcs=" << (m_spawnNPCs ? "true" : "false") << std::endl;
+        }
         return builder.str();
     }
 }

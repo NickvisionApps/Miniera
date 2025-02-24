@@ -5,10 +5,9 @@ endif()
 add_library(libminiera
     "src/controllers/mainwindowcontroller.cpp"
     "src/controllers/preferencesviewcontroller.cpp"
-    "src/models/bedrockserverproperties.cpp"
     "src/models/configuration.cpp"
-    "src/models/javaserverproperties.cpp"
     "src/models/serverproperties.cpp"
+    "src/models/serverversion.cpp"
     "src/models/startupinformation.cpp")
 target_include_directories(libminiera PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set_target_properties(libminiera PROPERTIES VERSION "${PROJECT_VERSION}" SOVERSION "${PROJECT_VERSION}")
