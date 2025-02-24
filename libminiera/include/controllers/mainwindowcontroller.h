@@ -19,6 +19,7 @@
 #include <libnick/update/updater.h>
 #include "controllers/newserverdialogcontroller.h"
 #include "controllers/preferencesviewcontroller.h"
+#include "models/servermanager.h"
 #include "models/startupinformation.h"
 #include "models/theme.h"
 
@@ -118,6 +119,7 @@ namespace Nickvision::Miniera::Shared::Controllers
         Nickvision::App::DataFileManager m_dataFileManager;
         std::shared_ptr<Nickvision::Update::Updater> m_updater;
         Nickvision::Taskbar::TaskbarItem m_taskbar;
+        Models::ServerManager m_serverManager;
         Nickvision::Events::Event<Nickvision::Notifications::NotificationSentEventArgs> m_notificationSent;
         Nickvision::Events::Event<Nickvision::Notifications::ShellNotificationSentEventArgs> m_shellNotificationSent;
     };

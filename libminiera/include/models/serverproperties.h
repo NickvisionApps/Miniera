@@ -2,6 +2,7 @@
 #define SERVERPROPERTIES_H
 
 #include <string>
+#include <boost/json.hpp>
 #include "difficulty.h"
 #include "edition.h"
 #include "gamemode.h"
@@ -19,6 +20,12 @@ namespace Nickvision::Miniera::Shared::Models
          * @param edition The edition of the server
          */
         ServerProperties(Edition edition);
+        /**
+         * @brief Constructs a ServerProperties.
+         * @param json The JSON object to construct the ServerProperties from
+         * @throw std::invalid_argument Thrown if the JSON object is invalid
+         */
+        ServerProperties(boost::json::object json);
         /**
          * @brief Gets the difficulty of the server.
          * @return The difficulty of the server
@@ -280,6 +287,11 @@ namespace Nickvision::Miniera::Shared::Models
          * @return The server properties as a string
          */
         std::string toString() const;
+        /**
+         * @brief Converts the ServerProperties to a JSON object.
+         * @return The ServerProperties as a JSON object
+         */
+        boost::json::object toJson() const;
 
     private:
         //Shared

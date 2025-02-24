@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+#include <boost/json.hpp>
 #include <libnick/update/version.h>
 #include "edition.h"
 
@@ -22,6 +23,12 @@ namespace Nickvision::Miniera::Shared::Models
          * @param releaseUrl The URL to the release json
          */
         ServerVersion(Edition edition, const Update::Version& version, const std::string& releaseUrl);
+        /**
+         * @brief Constructs a ServerVersion.
+         * @param json The JSON object to construct the ServerVersion from
+         * @throw std::invalid_argument Thrown if the JSON object is invalid
+         */
+        ServerVersion(boost::json::object json);
         /**
          * @brief Fetches all server versions for a given edition.
          * @param edition The edition of the server
@@ -44,11 +51,16 @@ namespace Nickvision::Miniera::Shared::Models
          */
         const std::string& getReleaseUrl() const;
         /**
-         * @brief Downloads the server files.
-         * @param path The path to save the server files
-         * @return True if the server jar was downloaded successfully, false otherwise
+         * @brief Downloads the server.
+         * @param path The path (or root directory) to save the server to
+         * @return The final path of the downloaded server file
          */
-        bool downloadServer(std::filesystem::path path) const;
+        std::filesystem::path downloadServer(std::filesystem::path path) const;
+        /**
+         * @brief Converts the ServerVersion to a JSON object.
+         * @return The ServerVersion as a JSON object
+         */
+        boost::json::object toJson() const;
 
     private:
         Edition m_edition;

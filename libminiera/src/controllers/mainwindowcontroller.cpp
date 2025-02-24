@@ -27,7 +27,8 @@ namespace Nickvision::Miniera::Shared::Controllers
         : m_started{ false },
         m_args{ args },
         m_appInfo{ "org.nickvision.miniera", "Nickvision Miniera", "Miniera" },
-        m_dataFileManager{ m_appInfo.getName() }
+        m_dataFileManager{ m_appInfo.getName() },
+        m_serverManager{ m_appInfo.getName() }
     {
         m_appInfo.setVersion({ "2025.2.0-next" });
         m_appInfo.setShortName(_("Miniera"));
@@ -105,7 +106,7 @@ namespace Nickvision::Miniera::Shared::Controllers
 
     std::shared_ptr<NewServerDialogController> MainWindowController::createNewServerDialogController()
     {
-        return std::make_shared<NewServerDialogController>();
+        return std::make_shared<NewServerDialogController>(m_serverManager);
     }
 
     std::shared_ptr<PreferencesViewController> MainWindowController::createPreferencesViewController()

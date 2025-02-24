@@ -1,5 +1,6 @@
 #include "models/serverversion.h"
 #include <algorithm>
+#include <stdexcept>
 #include <libnick/network/web.h>
 #include <libnick/system/environment.h>
 
@@ -15,6 +16,17 @@ namespace Nickvision::Miniera::Shared::Models
         m_releaseUrl{ releaseUrl }
     {
 
+    }
+
+    ServerVersion::ServerVersion(boost::json::object json)
+        : m_edition{ json["Edition"].is_int64() ? static_cast<Edition>(json["Edition"].as_int64()) : Edition::Java },
+        m_version{ json["Version"].is_string() ? json["Version"].as_string().c_str() : "1.0.0" },
+        m_releaseUrl{ json["ReleaseUrl"].is_string() ? json["ReleaseUrl"].as_string().c_str() : "" }
+    {
+        if(m_releaseUrl.empty())
+        {
+            throw std::invalid_argument("Invalid JSON");
+        }
     }
 
     std::vector<ServerVersion> ServerVersion::fetch(Edition edition)
@@ -103,7 +115,7 @@ namespace Nickvision::Miniera::Shared::Models
         return m_releaseUrl;
     }
 
-    bool ServerVersion::downloadServer(std::filesystem::path path) const
+    std::filesystem::path ServerVersion::downloadServer(std::filesystem::path path) const
     {
         if(m_edition == Edition::Java)
         {
@@ -117,7 +129,10 @@ namespace Nickvision::Miniera::Shared::Models
                 boost::json::object downloads = json.as_object()["downloads"].as_object();
                 if(downloads.contains("server"))
                 {
-                    return Web::downloadFile(downloads["server"].as_object()["url"].as_string().c_str(), path);
+                    if(Web::downloadFile(downloads["server"].as_object()["url"].as_string().c_str(), path))
+                    {
+                        return path;
+                    }
                 }
             }
         }
@@ -127,7 +142,10 @@ namespace Nickvision::Miniera::Shared::Models
             {
                 path /= "server.zip";
             }
-            return Web::downloadFile(m_releaseUrl, path);
+            if(Web::downloadFile(m_releaseUrl, path))
+            {
+                return path;
+            }
         }
         else if(m_edition == Edition::Forge)
         {
@@ -135,8 +153,20 @@ namespace Nickvision::Miniera::Shared::Models
             {
                 path /= "installer.jar";
             }
-            return Web::downloadFile(m_releaseUrl, path);
+            if(Web::downloadFile(m_releaseUrl, path))
+            {
+                return path;
+            }
         }
-        return false;
+        return {};
+    }
+
+    boost::json::object ServerVersion::toJson() const
+    {
+        boost::json::object json;
+        json["Edition"] = static_cast<int>(m_edition);
+        json["Version"] = m_version.str();
+        json["ReleaseUrl"] = m_releaseUrl;
+        return json;
     }
 }

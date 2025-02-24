@@ -7,8 +7,9 @@ using namespace Nickvision::Miniera::Shared::Models;
 
 namespace Nickvision::Miniera::Shared::Controllers
 {
-    NewServerDialogController::NewServerDialogController()
-        : m_serverProperties{ Edition::Java },
+    NewServerDialogController::NewServerDialogController(ServerManager& serverManager)
+        : m_serverManager{ serverManager }, 
+        m_serverProperties{ Edition::Java },
         m_selectedServerVersionIndex{ 0 }
     {
 
@@ -38,7 +39,7 @@ namespace Nickvision::Miniera::Shared::Controllers
     {
         m_selectedServerVersionIndex = index;
     }
-
+    
     void NewServerDialogController::loadServerVersions(Edition edition)
     {
         std::thread worker{ [this, edition]()
@@ -47,5 +48,22 @@ namespace Nickvision::Miniera::Shared::Controllers
             m_serverVersionsLoaded.invoke({ m_serverVersions });
         } };
         worker.detach();
+    }
+
+    ServerCheckStatus NewServerDialogController::createServer()
+    {
+        if(m_serverProperties.getLevelName().empty())
+        {
+            return ServerCheckStatus::EmptyName;
+        }
+        else if(m_serverManager.getServerExists(m_serverProperties.getLevelName()))
+        {
+            return ServerCheckStatus::ExistingName;
+        }
+        else if(m_serverManager.createServer(m_serverVersions.at(m_selectedServerVersionIndex), m_serverProperties) == nullptr)
+        {
+            return ServerCheckStatus::CreateError;
+        }
+        return ServerCheckStatus::Valid;
     }
 }

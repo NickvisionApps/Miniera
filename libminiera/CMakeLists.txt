@@ -8,6 +8,8 @@ add_library(libminiera
     "src/controllers/preferencesviewcontroller.cpp"
     "src/events/serverversionsloadedeventargs.cpp"
     "src/models/configuration.cpp"
+    "src/models/server.cpp"
+    "src/models/servermanager.cpp"
     "src/models/serverproperties.cpp"
     "src/models/serverversion.cpp"
     "src/models/startupinformation.cpp")

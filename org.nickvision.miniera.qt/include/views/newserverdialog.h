@@ -34,18 +34,15 @@ namespace Nickvision::Miniera::Qt::Views
          */
         int nextId() const override;
 
-    protected:
-        /**
-         * @brief Handles when the dialog is closed.
-         * @param event QCloseEvent
-         */
-        void closeEvent(QCloseEvent* event) override;
-
     private Q_SLOTS:
         /**
          * @brief Opens the server properties help website.
          */
         void help();
+        /**
+         * @brief Finishes the dialog.
+         */
+        void finish();
     
     private:
         /**

@@ -4,7 +4,7 @@
 #define DEFAULT_DIFFICULTY Difficulty::Easy
 #define DEFAULT_FORCE_GAMEMODE false
 #define DEFAULT_GAMEMODE Gamemode::Survival
-#define DEFAULT_LEVEL_NAME "world"
+#define DEFAULT_LEVEL_NAME "World"
 #define DEFAULT_LEVEL_SEED ""
 #define DEFAULT_MAX_PLAYERS 10u
 #define DEFAULT_ONLINE_MODE true
@@ -54,6 +54,35 @@ namespace Nickvision::Miniera::Shared::Models
         m_clientSideChunkGenerationEnabled{ DEFAULT_CLIENT_SIDE_CHUNK_GENERATION_ENABLED },
         m_disableCustomSkins{ DEFAULT_DISABLE_CUSTOM_SKINS },
         m_tickDistance{ DEFAULT_TICK_DISTANCE }
+    {
+
+    }
+
+    ServerProperties::ServerProperties(boost::json::object json)
+        : m_edition{ json["Edition"].is_int64() ? static_cast<Edition>(json["Edition"].as_int64()) : Edition::Java },
+        m_difficulty{ json["Difficulty"].is_int64() ? static_cast<Difficulty>(json["Difficulty"].as_int64()) : DEFAULT_DIFFICULTY },
+        m_forceGamemode{ json["ForceGamemode"].is_bool() ? json["ForceGamemode"].as_bool() : DEFAULT_FORCE_GAMEMODE },
+        m_gamemode{ json["Gamemode"].is_int64() ? static_cast<Gamemode>(json["Gamemode"].as_int64()) : DEFAULT_GAMEMODE },
+        m_levelName{ json["LevelName"].is_string() ? json["LevelName"].as_string().c_str() : DEFAULT_LEVEL_NAME },
+        m_levelSeed{ json["LevelSeed"].is_string() ? json["LevelSeed"].as_string().c_str() : DEFAULT_LEVEL_SEED },
+        m_maxPlayers{ json["MaxPlayers"].is_uint64() ? static_cast<unsigned int>(json["MaxPlayers"].as_uint64()) : DEFAULT_MAX_PLAYERS },
+        m_onlineMode{ json["OnlineMode"].is_bool() ? json["OnlineMode"].as_bool() : DEFAULT_ONLINE_MODE },
+        m_playerIdleTimeout{ json["PlayerIdleTimeout"].is_uint64() ? static_cast<unsigned int>(json["PlayerIdleTimeout"].as_uint64()) : DEFAULT_PLAYER_IDLE_TIMEOUT },
+        m_serverPort{ json["ServerPort"].is_uint64() ? static_cast<unsigned int>(json["ServerPort"].as_uint64()) : DEFAULT_JAVA_SERVER_PORT },
+        m_viewDistance{ json["ViewDistance"].is_uint64() ? static_cast<unsigned int>(json["ViewDistance"].as_uint64()) : DEFAULT_JAVA_VIEW_DISTANCE },
+        m_allowFlight{ json["AllowFlight"].is_bool() ? json["AllowFlight"].as_bool() : DEFAULT_ALLOW_FLIGHT },
+        m_allowNether{ json["AllowNether"].is_bool() ? json["AllowNether"].as_bool() : DEFAULT_ALLOW_NETHER },
+        m_enableCommandBlock{ json["EnableCommandBlock"].is_bool() ? json["EnableCommandBlock"].as_bool() : DEFAULT_ENABLE_COMMAND_BLOCK },
+        m_generateStructures{ json["GenerateStructures"].is_bool() ? json["GenerateStructures"].as_bool() : DEFAULT_GENERATE_STRUCTURES },
+        m_hardcore{ json["Hardcore"].is_bool() ? json["Hardcore"].as_bool() : DEFAULT_HARDCORE },
+        m_pvp{ json["PVP"].is_bool() ? json["PVP"].as_bool() : DEFAULT_PVP },
+        m_spawnAnimals{ json["SpawnAnimals"].is_bool() ? json["SpawnAnimals"].as_bool() : DEFAULT_SPAWN_ANIMALS },
+        m_spawnMonsters{ json["SpawnMonsters"].is_bool() ? json["SpawnMonsters"].as_bool() : DEFAULT_SPAWN_MONSTERS },
+        m_spawnNPCs{ json["SpawnNPCs"].is_bool() ? json["SpawnNPCs"].as_bool() : DEFAULT_SPAWN_NPCS },
+        m_allowCheats{ json["AllowCheats"].is_bool() ? json["AllowCheats"].as_bool() : DEFAULT_ALLOW_CHEATS },
+        m_clientSideChunkGenerationEnabled{ json["ClientSideChunkGenerationEnabled"].is_bool() ? json["ClientSideChunkGenerationEnabled"].as_bool() : DEFAULT_CLIENT_SIDE_CHUNK_GENERATION_ENABLED },
+        m_disableCustomSkins{ json["DisableCustomSkins"].is_bool() ? json["DisableCustomSkins"].as_bool() : DEFAULT_DISABLE_CUSTOM_SKINS },
+        m_tickDistance{ json["TickDistance"].is_uint64() ? static_cast<unsigned int>(json["TickDistance"].as_uint64()) : DEFAULT_TICK_DISTANCE }
     {
 
     }
@@ -350,5 +379,41 @@ namespace Nickvision::Miniera::Shared::Models
             builder << "spawn-npcs=" << (m_spawnNPCs ? "true" : "false") << std::endl;
         }
         return builder.str();
+    }
+
+    boost::json::object ServerProperties::toJson() const
+    {
+        boost::json::object json;
+        json["Edition"] = static_cast<int>(m_edition);
+        json["Difficulty"] = static_cast<int>(m_difficulty);
+        json["ForceGamemode"] = m_forceGamemode;
+        json["Gamemode"] = static_cast<int>(m_gamemode);
+        json["LevelName"] = m_levelName;
+        json["LevelSeed"] = m_levelSeed;
+        json["MaxPlayers"] = m_maxPlayers;
+        json["OnlineMode"] = m_onlineMode;
+        json["PlayerIdleTimeout"] = m_playerIdleTimeout;
+        json["ServerPort"] = m_serverPort;
+        json["ViewDistance"] = m_viewDistance;
+        if(m_edition == Edition::Bedrock)
+        {
+            json["AllowCheats"] = m_allowCheats;
+            json["ClientSideChunkGenerationEnabled"] = m_clientSideChunkGenerationEnabled;
+            json["DisableCustomSkins"] = m_disableCustomSkins;
+            json["TickDistance"] = m_tickDistance;
+        }
+        else
+        {
+            json["AllowFlight"] = m_allowFlight;
+            json["AllowNether"] = m_allowNether;
+            json["EnableCommandBlock"] = m_enableCommandBlock;
+            json["GenerateStructures"] = m_generateStructures;
+            json["Hardcore"] = m_hardcore;
+            json["PVP"] = m_pvp;
+            json["SpawnAnimals"] = m_spawnAnimals;
+            json["SpawnMonsters"] = m_spawnMonsters;
+            json["SpawnNPCs"] = m_spawnNPCs;
+        }
+        return json;
     }
 }
