@@ -1,7 +1,10 @@
 #ifndef NEWSERVERDIALOG_H
 #define NEWSERVERDIALOG_H
 
+#include <memory>
+#include <QCloseEvent>
 #include <QWizard>
+#include "controllers/newserverdialogcontroller.h"
 
 namespace Ui { class NewServerDialog; }
 
@@ -17,9 +20,10 @@ namespace Nickvision::Miniera::Qt::Views
     public:
         /**
          * @brief Constructs a NewServerDialog.
+         * @param controller The NewServerDialogController
          * @param parent The parent widget
          */
-        NewServerDialog(QWidget* parent = nullptr);
+        NewServerDialog(const std::shared_ptr<Shared::Controllers::NewServerDialogController>& controller, QWidget* parent = nullptr);
         /**
          * @brief Destructs a NewServerDialog.
          */
@@ -30,6 +34,13 @@ namespace Nickvision::Miniera::Qt::Views
          */
         int nextId() const override;
 
+    protected:
+        /**
+         * @brief Handles when the dialog is closed.
+         * @param event QCloseEvent
+         */
+        void closeEvent(QCloseEvent* event) override;
+
     private Q_SLOTS:
         /**
          * @brief Opens the server properties help website.
@@ -37,7 +48,18 @@ namespace Nickvision::Miniera::Qt::Views
         void help();
     
     private:
+        /**
+         * @brief Handles when the server versions are loaded.
+         * @param args ServerVersionsLoadedEventArgs
+         */
+        void onServerVersionsLoaded(const Shared::Events::ServerVersionsLoadedEventArgs& args);
+        /**
+         * @brief Loads the UI from the selected edition.
+         * @param edition The selected edition
+         */
+        void loadUiFromEdition(Shared::Models::Edition edition) const;
         Ui::NewServerDialog* m_ui;
+        std::shared_ptr<Shared::Controllers::NewServerDialogController> m_controller;
     };
 }
 

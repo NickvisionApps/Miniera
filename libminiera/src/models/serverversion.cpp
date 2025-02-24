@@ -1,4 +1,5 @@
 #include "models/serverversion.h"
+#include <algorithm>
 #include <libnick/network/web.h>
 #include <libnick/system/environment.h>
 
@@ -36,7 +37,12 @@ namespace Nickvision::Miniera::Shared::Models
                     {
                         continue;
                     }
-                    versions.push_back({ Edition::Java, { version["id"].as_string().c_str() }, version["url"].as_string().c_str() });
+                    std::string versionString{ version["id"].as_string().c_str() };
+                    if(std::count(versionString.begin(), versionString.end(), '.') != 2)
+                    {
+                        versionString += ".0";
+                    }
+                    versions.push_back({ Edition::Java, { versionString }, version["url"].as_string().c_str() });
                 }
             }
         }
@@ -68,10 +74,15 @@ namespace Nickvision::Miniera::Shared::Models
                     {
                         continue;
                     }
-                    Version version{ pair.key().substr(0, pair.key().find("-")) };
-                    std::string forgeId{ version.str() + "-" + pair.value().as_string().c_str() };
-                    versions.push_back({ Edition::Forge, version, "https://maven.minecraftforge.net/net/minecraftforge/forge/" + forgeId + "/forge-" + forgeId + "-installer.jar" });
+                    std::string versionString{ pair.key().substr(0, pair.key().find("-")) };
+                    if(std::count(versionString.begin(), versionString.end(), '.') != 2)
+                    {
+                        versionString += ".0";
+                    }
+                    std::string forgeId{ std::string(pair.key().substr(0, pair.key().find("-"))) + "-" + std::string(pair.value().as_string()) };
+                    versions.push_back({ Edition::Forge, { versionString }, "https://maven.minecraftforge.net/net/minecraftforge/forge/" + forgeId + "/forge-" + forgeId + "-installer.jar" });
                 }
+                std::reverse(versions.begin(), versions.end());
             }
         }
         return versions;

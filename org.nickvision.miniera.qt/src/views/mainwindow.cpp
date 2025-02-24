@@ -220,7 +220,7 @@ namespace Nickvision::Miniera::Qt::Views
 
     void MainWindow::newServer()
     {
-        NewServerDialog dialog{ this };
+        NewServerDialog dialog{ m_controller->createNewServerDialogController(), this };
         dialog.exec();
     }
 

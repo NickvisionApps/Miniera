@@ -14,6 +14,7 @@ qt_standard_project_setup()
 qt_add_executable(${OUTPUT_NAME}
     "include/controls/aboutdialog.h"
     "include/controls/infobar.h"
+    "include/controls/loadingwizardpage.h"
     "include/controls/statuspage.h"
     "include/helpers/qthelpers.h"
     "include/views/mainwindow.h"
@@ -22,6 +23,7 @@ qt_add_executable(${OUTPUT_NAME}
     "include/application.h"
     "src/controls/aboutdialog.cpp"
     "src/controls/infobar.cpp"
+    "src/controls/loadingwizardpage.cpp"
     "src/controls/statuspage.cpp"
     "src/helpers/qthelpers.cpp"
     "src/views/mainwindow.cpp"

@@ -17,6 +17,7 @@
 #include <libnick/notifications/shellnotificationsenteventargs.h>
 #include <libnick/taskbar/taskbaritem.h>
 #include <libnick/update/updater.h>
+#include "controllers/newserverdialogcontroller.h"
 #include "controllers/preferencesviewcontroller.h"
 #include "models/startupinformation.h"
 #include "models/theme.h"
@@ -70,6 +71,11 @@ namespace Nickvision::Miniera::Shared::Controllers
          * @return True if can shut down, else false
          */
         bool canShutdown() const;
+        /**
+         * @brief Gets a NewServerDialogController.
+         * @return The NewServerDialogController
+         */
+        std::shared_ptr<NewServerDialogController> createNewServerDialogController();
         /**
          * @brief Gets a PreferencesViewController.
          * @return The PreferencesViewController

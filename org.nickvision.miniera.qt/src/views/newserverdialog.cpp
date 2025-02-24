@@ -11,12 +11,20 @@
 #include <oclero/qlementine/widgets/Switch.hpp>
 #include <oclero/qlementine/widgets/LineEdit.hpp>
 #include <libnick/localization/gettext.h>
+#include "controls/loadingwizardpage.h"
+#include "helpers/qthelpers.h"
 
+using namespace Nickvision::Miniera::Shared::Controllers;
+using namespace Nickvision::Miniera::Shared::Events;
+using namespace Nickvision::Miniera::Shared::Models;
+using namespace Nickvision::Miniera::Qt::Controls;
+using namespace Nickvision::Miniera::Qt::Helpers;
 using namespace oclero::qlementine;
 
 enum NewServerDialogPage
 {
     Introduction = 0,
+    LoadingVersion,
     Basic,
     Network,
     Java,
@@ -49,11 +57,15 @@ namespace Ui
             introPage->setSubTitle(_("This wizard will help you create a new server."));
             introPage->setLayout(layoutIntro);
             parent->setPage(NewServerDialogPage::Introduction, introPage);
+            //Loading Version Page
+            pgLoadingVersions = new LoadingWizardPage(_("Loading Versions"), _("Please wait while the available server versions are loaded."), parent);
+            parent->setPage(NewServerDialogPage::LoadingVersion, pgLoadingVersions);
             //Basic Page
             txtServerName = new LineEdit(parent);
             txtServerName->setPlaceholderText(_("Enter server name here"));
             txtLevelSeed = new LineEdit(parent);
             txtLevelSeed->setPlaceholderText(_("Enter level seed here"));
+            cmbVersion = new QComboBox(parent);
             cmbGamemode = new QComboBox(parent);
             cmbGamemode->addItem(_("Survival"));
             cmbGamemode->addItem(_("Creative"));
@@ -68,6 +80,7 @@ namespace Ui
             QFormLayout* formBasic{ new QFormLayout(parent) };
             formBasic->addRow(_("Server Name *"), txtServerName);
             formBasic->addRow(_("Level Seed"), txtLevelSeed);
+            formBasic->addRow(_("Version"), cmbVersion);
             formBasic->addRow(_("Gamemode"), cmbGamemode);
             formBasic->addRow(_("Difficulty"), cmbDifficulty);
             formBasic->addRow(_("Force Gamemode"), chkForceGamemode);
@@ -185,8 +198,10 @@ namespace Ui
         QRadioButton* btnJava;
         QRadioButton* btnBedrock;
         QRadioButton* btnForge;
+        LoadingWizardPage* pgLoadingVersions;
         LineEdit* txtServerName;
         LineEdit* txtLevelSeed;
+        QComboBox* cmbVersion;
         QComboBox* cmbGamemode;
         QComboBox* cmbDifficulty;
         Switch* chkForceGamemode;
@@ -213,9 +228,10 @@ namespace Ui
 
 namespace Nickvision::Miniera::Qt::Views
 {
-    NewServerDialog::NewServerDialog(QWidget* parent)
+    NewServerDialog::NewServerDialog(const std::shared_ptr<NewServerDialogController>& controller, QWidget* parent)
         : QWizard{ parent },
-        m_ui{ new Ui::NewServerDialog() }
+        m_ui{ new Ui::NewServerDialog() },
+        m_controller{ controller }
     {
         //Window Settings
         setWindowTitle(_("New Server"));
@@ -226,6 +242,7 @@ namespace Nickvision::Miniera::Qt::Views
         //Load Ui
         m_ui->setupUi(this);
         //Signals
+        m_controller->serverVersionsLoaded() += [&](const ServerVersionsLoadedEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onServerVersionsLoaded(args); }); };
         connect(this, &QWizard::helpRequested, this, &NewServerDialog::help);
     }
 
@@ -236,9 +253,27 @@ namespace Nickvision::Miniera::Qt::Views
 
     int NewServerDialog::nextId() const
     {
+        Edition edition;
+        if(m_ui->btnJava->isChecked())
+        {
+            edition = Edition::Java;
+        }
+        else if(m_ui->btnBedrock->isChecked())
+        {
+            edition = Edition::Bedrock;
+        }
+        else if(m_ui->btnForge->isChecked())
+        {
+            edition = Edition::Forge;
+        }
         switch(currentId())
         {
         case NewServerDialogPage::Introduction:
+            loadUiFromEdition(edition);
+            m_ui->pgLoadingVersions->setIsFinished(false);
+            m_controller->loadServerVersions(edition);
+            return NewServerDialogPage::LoadingVersion;
+        case NewServerDialogPage::LoadingVersion:
             return NewServerDialogPage::Basic;
         case NewServerDialogPage::Basic:
             return NewServerDialogPage::Network;
@@ -273,8 +308,89 @@ namespace Nickvision::Miniera::Qt::Views
         return -1;
     }
 
+    void NewServerDialog::closeEvent(QCloseEvent* event)
+    {
+        Edition edition;
+        if(m_ui->btnJava->isChecked())
+        {
+            edition = Edition::Java;
+        }
+        else if(m_ui->btnBedrock->isChecked())
+        {
+            edition = Edition::Bedrock;
+        }
+        else if(m_ui->btnForge->isChecked())
+        {
+            edition = Edition::Forge;
+        }
+        ServerProperties properties{ edition };
+        properties.setDifficulty(static_cast<Difficulty>(m_ui->cmbDifficulty->currentIndex()));
+        properties.setForceGamemode(m_ui->chkForceGamemode->isChecked());
+        properties.setGamemode(static_cast<Gamemode>(m_ui->cmbGamemode->currentIndex()));
+        properties.setLevelName(m_ui->txtServerName->text().toStdString());
+        properties.setLevelSeed(m_ui->txtLevelSeed->text().toStdString());
+        properties.setMaxPlayers(m_ui->spnMaxPlayers->value());
+        properties.setOnlineMode(m_ui->chkOnlineMode->isChecked());
+        properties.setPlayerIdleTimeout(m_ui->spnPlayerIdleTimeout->value());
+        properties.setServerPort(m_ui->spnServerPort->value());
+        properties.setViewDistance(m_ui->spnViewDistance->value());
+        properties.setAllowFlight(m_ui->chkAllowFlight->isChecked());
+        properties.setAllowNether(m_ui->chkAllowNether->isChecked());
+        properties.setEnableCommandBlock(m_ui->chkEnableCommandBlock->isChecked());
+        properties.setGenerateStructures(m_ui->chkGenerateStructures->isChecked());
+        properties.setHardcore(m_ui->chkHardcore->isChecked());
+        properties.setPVP(m_ui->chkPVP->isChecked());
+        properties.setSpawnAnimals(m_ui->chkSpawnAnimals->isChecked());
+        properties.setSpawnMonsters(m_ui->chkSpawnMonsters->isChecked());
+        properties.setSpawnNPCs(m_ui->chkSpawnNPCs->isChecked());
+        properties.setAllowCheats(m_ui->chkAllowCheats->isChecked());
+        properties.setClientSideChunkGenerationEnabled(m_ui->chkClientSideChunkGenerationEnabled->isChecked());
+        properties.setDisableCustomSkins(m_ui->chkDisableCustomSkins->isChecked());
+        properties.setTickDistance(m_ui->spnTickDistance->value());
+        m_controller->setServerProperties(properties);
+        m_controller->setSelectedServerVersionIndex(m_ui->cmbVersion->currentIndex());
+    }
+
     void NewServerDialog::help()
     {
         QDesktopServices::openUrl(QUrl("https://minecraft.fandom.com/wiki/Server.properties"));
+    }
+
+    void NewServerDialog::onServerVersionsLoaded(const ServerVersionsLoadedEventArgs& args)
+    {
+        m_ui->pgLoadingVersions->setIsFinished(true);
+        m_ui->cmbVersion->clear();
+        for(const ServerVersion& version : args.getVersions())
+        {
+            m_ui->cmbVersion->addItem(QString::fromStdString(version.getVersion().str()));
+        }
+    }
+
+    void NewServerDialog::loadUiFromEdition(Edition edition) const
+    {
+        ServerProperties properties{ edition };
+        m_ui->cmbDifficulty->setCurrentIndex(static_cast<int>(properties.getDifficulty()));
+        m_ui->chkForceGamemode->setChecked(properties.getForceGamemode());
+        m_ui->cmbGamemode->setCurrentIndex(static_cast<int>(properties.getGamemode()));
+        m_ui->txtServerName->setText(QString::fromStdString(properties.getLevelName()));
+        m_ui->txtLevelSeed->setText(QString::fromStdString(properties.getLevelSeed()));
+        m_ui->spnMaxPlayers->setValue(properties.getMaxPlayers());
+        m_ui->chkOnlineMode->setChecked(properties.getOnlineMode());
+        m_ui->spnPlayerIdleTimeout->setValue(properties.getPlayerIdleTimeout());
+        m_ui->spnServerPort->setValue(properties.getServerPort());
+        m_ui->spnViewDistance->setValue(properties.getViewDistance());
+        m_ui->chkAllowFlight->setChecked(properties.getAllowFlight());
+        m_ui->chkAllowNether->setChecked(properties.getAllowNether());
+        m_ui->chkEnableCommandBlock->setChecked(properties.getEnableCommandBlock());
+        m_ui->chkGenerateStructures->setChecked(properties.getGenerateStructures());
+        m_ui->chkHardcore->setChecked(properties.getHardcore());
+        m_ui->chkPVP->setChecked(properties.getPVP());
+        m_ui->chkSpawnAnimals->setChecked(properties.getSpawnAnimals());
+        m_ui->chkSpawnMonsters->setChecked(properties.getSpawnMonsters());
+        m_ui->chkSpawnNPCs->setChecked(properties.getSpawnNPCs());
+        m_ui->chkAllowCheats->setChecked(properties.getAllowCheats());
+        m_ui->chkClientSideChunkGenerationEnabled->setChecked(properties.getClientSideChunkGenerationEnabled());
+        m_ui->chkDisableCustomSkins->setChecked(properties.getDisableCustomSkins());
+        m_ui->spnTickDistance->setValue(properties.getTickDistance());
     }
 }

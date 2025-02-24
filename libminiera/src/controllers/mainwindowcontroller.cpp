@@ -103,6 +103,11 @@ namespace Nickvision::Miniera::Shared::Controllers
         return true;
     }
 
+    std::shared_ptr<NewServerDialogController> MainWindowController::createNewServerDialogController()
+    {
+        return std::make_shared<NewServerDialogController>();
+    }
+
     std::shared_ptr<PreferencesViewController> MainWindowController::createPreferencesViewController()
     {
         return std::make_shared<PreferencesViewController>(m_dataFileManager.get<Configuration>("config"));

@@ -4,7 +4,9 @@ endif()
 
 add_library(libminiera
     "src/controllers/mainwindowcontroller.cpp"
+    "src/controllers/newserverdialogcontroller.cpp"
     "src/controllers/preferencesviewcontroller.cpp"
+    "src/events/serverversionsloadedeventargs.cpp"
     "src/models/configuration.cpp"
     "src/models/serverproperties.cpp"
     "src/models/serverversion.cpp"
