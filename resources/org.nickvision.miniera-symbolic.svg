@@ -1,4 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg height="16px" viewBox="0 0 16 16" width="16px" xmlns="http://www.w3.org/2000/svg">
-    <path d="m 1.636719 0 c -0.910157 0 -1.636719 0.769531 -1.636719 1.679688 v 12.636718 c 0 0.914063 0.726562 1.683594 1.636719 1.683594 h 12.726562 c 0.910157 0 1.636719 -0.769531 1.636719 -1.679688 v -12.636718 c 0 -0.914063 -0.726562 -1.683594 -1.636719 -1.683594 z m 0 0.957031 h 12.726562 c 0.375 0 0.679688 0.304688 0.679688 0.722657 v 0.65625 h -14.085938 v -0.65625 c 0 -0.417969 0.304688 -0.722657 0.679688 -0.722657 z m -0.679688 3.28125 h 14.085938 v 10.082031 c 0 0.417969 -0.304688 0.722657 -0.679688 0.722657 h -12.726562 c -0.375 0 -0.679688 -0.304688 -0.679688 -0.722657 z m 0 0" fill="#241f31"/>
+<svg height="16px" viewBox="0 0 16 16" width="16px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <filter id="a" height="100%" width="100%" x="0%" y="0%">
+        <feColorMatrix color-interpolation-filters="sRGB" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"/>
+    </filter>
+    <mask id="b">
+        <g filter="url(#a)">
+            <rect fill-opacity="0.2" height="19.2" width="19.2" x="-1.6" y="-1.6"/>
+        </g>
+    </mask>
+    <clipPath id="c">
+        <rect height="152" width="192"/>
+    </clipPath>
+    <mask id="d">
+        <g filter="url(#a)">
+            <rect fill-opacity="0.2" height="19.2" width="19.2" x="-1.6" y="-1.6"/>
+        </g>
+    </mask>
+    <clipPath id="e">
+        <rect height="152" width="192"/>
+    </clipPath>
+    <mask id="f">
+        <g filter="url(#a)">
+            <rect fill-opacity="0.2" height="19.2" width="19.2" x="-1.6" y="-1.6"/>
+        </g>
+    </mask>
+    <clipPath id="g">
+        <rect height="152" width="192"/>
+    </clipPath>
+    <mask id="h">
+        <g filter="url(#a)">
+            <rect fill-opacity="0.2" height="19.2" width="19.2" x="-1.6" y="-1.6"/>
+        </g>
+    </mask>
+    <clipPath id="i">
+        <rect height="152" width="192"/>
+    </clipPath>
+    <mask id="j">
+        <g filter="url(#a)">
+            <rect fill-opacity="0.2" height="19.2" width="19.2" x="-1.6" y="-1.6"/>
+        </g>
+    </mask>
+    <clipPath id="k">
+        <rect height="152" width="192"/>
+    </clipPath>
+    <mask id="l">
+        <g filter="url(#a)">
+            <rect fill-opacity="0.2" height="19.2" width="19.2" x="-1.6" y="-1.6"/>
+        </g>
+    </mask>
+    <clipPath id="m">
+        <rect height="152" width="192"/>
+    </clipPath>
+    <g mask="url(#b)">
+        <g clip-path="url(#c)" transform="matrix(1 0 0 1 -168 -16)">
+            <path d="m 40 106 v 2 c 0 2.214844 1.785156 4 4 4 h 56 c 2.214844 0 4 -1.785156 4 -4 v -2 c 0 2.214844 -1.785156 4 -4 4 h -56 c -2.214844 0 -4 -1.785156 -4 -4 z m 0 0"/>
+        </g>
+    </g>
+    <g mask="url(#d)">
+        <g clip-path="url(#e)" transform="matrix(1 0 0 1 -168 -16)">
+            <path d="m 40 50 v 12 c 0 2.210938 1.789062 4 4 4 h 4 v 8 h 8 v -8 h 8 v 8 h 8 v 8 h 8 v -16 h 8 v 8 h 8 v -8 h 4 c 2.210938 0 4 -1.789062 4 -4 v -12 z m 0 0"/>
+        </g>
+    </g>
+    <g mask="url(#f)">
+        <g clip-path="url(#g)" transform="matrix(1 0 0 1 -168 -16)">
+            <path d="m 40 50 v 2 c 0 2.214844 1.785156 4 4 4 h 56 c 2.214844 0 4 -1.785156 4 -4 v -2 c 0 2.214844 -1.785156 4 -4 4 h -56 c -2.214844 0 -4 -1.785156 -4 -4 z m 0 0" fill="#ffffff"/>
+        </g>
+    </g>
+    <g mask="url(#h)">
+        <g clip-path="url(#i)" transform="matrix(1 0 0 1 -168 -16)">
+            <path d="m 96 32 h -8 l -22 22 h 8 z m 0 0" fill="#ffffff"/>
+        </g>
+    </g>
+    <g mask="url(#j)">
+        <g clip-path="url(#k)" transform="matrix(1 0 0 1 -168 -16)">
+            <path d="m 72 32 l -22 22 h -4 l 22 -22 z m 0 0" fill="#ffffff"/>
+        </g>
+    </g>
+    <g mask="url(#l)">
+        <g clip-path="url(#m)" transform="matrix(1 0 0 1 -168 -16)">
+            <path d="m 40 58 v 2 c 0 2.210938 1.789062 4 4 4 h 4 v -2 h -4 c -2.210938 0 -4 -1.789062 -4 -4 z m 64 0 c 0 2.210938 -1.789062 4 -4 4 h -4 v 2 h 4 c 2.210938 0 4 -1.789062 4 -4 z m -48 4 v 2 h 8 v -2 z m 24 0 v 2 h 8 v -2 z m -32 8 v 2 h 8 v -2 z m 16 0 v 2 h 8 v -2 z m 24 0 v 2 h 8 v -2 z m -16 8 v 2 h 8 v -2 z m 0 0"/>
+        </g>
+    </g>
+    <path d="m 8 1 l -5 3 l 5 3 l 5 -3 z m -5 4.167969 v 4.832031 l 5 3 l 5 -3 v -4.832031 l -5 3 z m -2 4.832031 c -0.550781 0 -1 0.449219 -1 1 v 2 c 0 1.644531 1.355469 3 3 3 h 10 c 1.644531 0 3 -1.355469 3 -3 v -2 c 0 -0.550781 -0.449219 -1 -1 -1 s -1 0.449219 -1 1 v 2 c 0 0.5625 -0.4375 1 -1 1 h -10 c -0.5625 0 -1 -0.4375 -1 -1 v -2 c 0 -0.550781 -0.449219 -1 -1 -1 z m 0 0"/>
 </svg>
