@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-27 14:21-0500\n"
+"POT-Creation-Date: 2025-02-27 15:03-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,46 +17,50 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:31
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:180
+#: libminiera/src/controllers/mainwindowcontroller.cpp:33
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:164
 msgid "Miniera"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:32
+#: libminiera/src/controllers/mainwindowcontroller.cpp:34
 msgid "Run Minecraft servers"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:37
+#: libminiera/src/controllers/mainwindowcontroller.cpp:39
 msgid "Matrix Chat"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:39
+#: libminiera/src/controllers/mainwindowcontroller.cpp:41
 msgid "Contributors on GitHub"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:41
+#: libminiera/src/controllers/mainwindowcontroller.cpp:43
 msgid "Fyodor Sobolev"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:43
+#: libminiera/src/controllers/mainwindowcontroller.cpp:45
 msgid "David Lapshin"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:44
+#: libminiera/src/controllers/mainwindowcontroller.cpp:46
 msgid "translator-credits"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:163
+#: libminiera/src/controllers/mainwindowcontroller.cpp:179
 msgid "New update available"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:177
+#: libminiera/src/controllers/mainwindowcontroller.cpp:193
 msgid ""
 "The update is downloading in the background and will start once it finishes"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:182
+#: libminiera/src/controllers/mainwindowcontroller.cpp:198
 msgid "Unable to download and install update"
+msgstr ""
+
+#: libminiera/src/controllers/mainwindowcontroller.cpp:218
+msgid "Server already loaded"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/blueprints/main_window.blp:5
@@ -74,7 +78,7 @@ msgstr ""
 #: org.nickvision.miniera.gnome/blueprints/main_window.blp:7
 #: org.nickvision.miniera.gnome/blueprints/shortcuts_dialog.blp:39
 #: org.nickvision.miniera.qt/src/controls/aboutdialog.cpp:148
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:80
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:83
 msgid "About Miniera"
 msgstr ""
 
@@ -83,7 +87,7 @@ msgid "Main Menu"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/blueprints/main_window.blp:47
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:123
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:114
 msgid "Manage a Server"
 msgstr ""
 
@@ -93,8 +97,8 @@ msgstr ""
 
 #. Window Settings
 #: org.nickvision.miniera.gnome/blueprints/main_window.blp:61
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:52
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:129
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:55
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:120
 #: org.nickvision.miniera.qt/src/views/newserverdialog.cpp:238
 msgid "New Server"
 msgstr ""
@@ -161,12 +165,12 @@ msgid "Quit"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/src/views/mainwindow.cpp:105
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:317
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:302
 msgid "Open"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/src/views/mainwindow.cpp:152
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:71
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:74
 msgid "GitHub Repo"
 msgstr ""
 
@@ -212,64 +216,68 @@ msgstr ""
 msgid "Completed"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:56
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:135
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:242
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:250
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:59
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:126
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:227
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:235
 msgid "Load Server"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:60
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:63
 msgid "Exit"
 msgstr ""
 
 #. Dialog Settings
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:64
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:67
 #: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:95
 msgid "Settings"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:68
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:71
 msgid "Check for Updates"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:74
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:77
 msgid "Report a Bug"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:77
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:80
 msgid "Discussions"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:88
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:91
 msgid "File"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:94
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:97
 msgid "Edit"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:97
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:100
 msgid "Help"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:124
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:115
 msgid "Load or create a new server to get started"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:180
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:130
+msgid "Home"
+msgstr ""
+
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:164
 msgid "Miniera (Preview)"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:242
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:227
 msgid "No servers available to load. Please create a new server"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:250
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:235
 msgid "Select a server:"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:305
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:290
 msgid "Update"
 msgstr ""
 

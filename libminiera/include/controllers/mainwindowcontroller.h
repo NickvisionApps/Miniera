@@ -19,6 +19,7 @@
 #include <libnick/update/updater.h>
 #include "controllers/newserverdialogcontroller.h"
 #include "controllers/preferencesviewcontroller.h"
+#include "events/serverloadedeventargs.h"
 #include "models/servermanager.h"
 #include "models/startupinformation.h"
 #include "models/theme.h"
@@ -51,6 +52,11 @@ namespace Nickvision::Miniera::Shared::Controllers
          * @return The shell notification sent event
          */
         Nickvision::Events::Event<Nickvision::Notifications::ShellNotificationSentEventArgs>& shellNotificationSent();
+        /**
+         * @brief Gets the event for when a server is loaded.
+         * @return The server loaded event
+         */
+        Nickvision::Events::Event<Events::ServerLoadedEventArgs>& serverLoaded();
         /**
          * @brief Gets the AppInfo object for the application
          * @return The current AppInfo object
@@ -132,6 +138,7 @@ namespace Nickvision::Miniera::Shared::Controllers
         Models::ServerManager m_serverManager;
         Nickvision::Events::Event<Nickvision::Notifications::NotificationSentEventArgs> m_notificationSent;
         Nickvision::Events::Event<Nickvision::Notifications::ShellNotificationSentEventArgs> m_shellNotificationSent;
+        Nickvision::Events::Event<Events::ServerLoadedEventArgs> m_serverLoaded;
     };
 }
 

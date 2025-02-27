@@ -6,6 +6,8 @@ add_library(libminiera
     "src/controllers/mainwindowcontroller.cpp"
     "src/controllers/newserverdialogcontroller.cpp"
     "src/controllers/preferencesviewcontroller.cpp"
+    "src/controllers/serverviewcontroller.cpp"
+    "src/events/serverloadedeventargs.cpp"
     "src/events/serverversionsloadedeventargs.cpp"
     "src/models/configuration.cpp"
     "src/models/server.cpp"

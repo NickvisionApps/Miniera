@@ -7,9 +7,11 @@
 #include <libnick/helpers/stringhelpers.h>
 #include <libnick/localization/gettext.h>
 #include <libnick/system/environment.h>
+#include "controllers/serverviewcontroller.h"
 #include "models/configuration.h"
 
 using namespace Nickvision::App;
+using namespace Nickvision::Miniera::Shared::Events;
 using namespace Nickvision::Miniera::Shared::Models;
 using namespace Nickvision::Events;
 using namespace Nickvision::Filesystem;
@@ -63,6 +65,11 @@ namespace Nickvision::Miniera::Shared::Controllers
         return m_shellNotificationSent;
     }
 
+    Event<ServerLoadedEventArgs>& MainWindowController::serverLoaded()
+    {
+        return m_serverLoaded;
+    }
+
     const AppInfo& MainWindowController::getAppInfo() const
     {
         return m_appInfo;
@@ -83,7 +90,7 @@ namespace Nickvision::Miniera::Shared::Controllers
         }
         else
         {
-            builder << Environment::exec(Environment::findDependency("ngrok").string() + " --version") << std::endl;
+            builder << Environment::exec("\"" + Environment::findDependency("ngrok").string() + "\"" + " --version") << std::endl;
         }
         //Java
         if(Environment::findDependency("java").empty())
@@ -92,7 +99,7 @@ namespace Nickvision::Miniera::Shared::Controllers
         }
         else
         {
-            builder << Environment::exec(Environment::findDependency("java").string() + " --version") << std::endl;
+            builder << Environment::exec("\"" + Environment::findDependency("java").string() + "\"" + " --version") << std::endl;
         }
         //Extra
         if(!extraInformation.empty())
@@ -202,10 +209,19 @@ namespace Nickvision::Miniera::Shared::Controllers
 
     void MainWindowController::loadServer(const std::string& serverName)
     {
-        std::shared_ptr<Server> server{ m_serverManager.getServer(serverName) };
+        static std::vector<std::string> loadedServers;
+        const std::shared_ptr<Server>& server{ m_serverManager.getServer(serverName) };
         if(server)
         {
-            
+            if(std::find(loadedServers.begin(), loadedServers.end(), serverName) != loadedServers.end())
+            {
+                m_notificationSent.invoke({ _("Server already loaded"), NotificationSeverity::Warning });
+            }
+            else
+            {
+                loadedServers.push_back(serverName);
+                m_serverLoaded.invoke({ serverName, std::make_shared<ServerViewController>(server, m_serverManager) });
+            }
         }
     }
 }

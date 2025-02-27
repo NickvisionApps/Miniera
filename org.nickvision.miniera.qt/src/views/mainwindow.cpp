@@ -14,7 +14,7 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QScrollArea>
-#include <QStackedWidget>
+#include <QTabWidget>
 #include <QToolBar>
 #include <QVBoxLayout>
 #include <libnick/helpers/codehelpers.h>
@@ -26,12 +26,14 @@
 #include "controls/statuspage.h"
 #include "helpers/qthelpers.h"
 #include "views/newserverdialog.h"
+#include "views/serverpage.h"
 #include "views/settingsdialog.h"
 
 using namespace Nickvision::App;
 using namespace Nickvision::Miniera::Qt::Controls;
 using namespace Nickvision::Miniera::Qt::Helpers;
 using namespace Nickvision::Miniera::Shared::Controllers;
+using namespace Nickvision::Miniera::Shared::Events;
 using namespace Nickvision::Miniera::Shared::Models;
 using namespace Nickvision::Events;
 using namespace Nickvision::Helpers;
@@ -46,7 +48,8 @@ namespace Ui
     public:
         void setupUi(Nickvision::Miniera::Qt::Views::MainWindow* parent) 
         {
-            viewStack = new QStackedWidget(parent);
+            tabs = new QTabWidget(parent);
+            tabs->setDocumentMode(true);
             //Actions
             actionNewServer = new QAction(parent);
             actionNewServer->setText(_("New Server"));
@@ -105,18 +108,6 @@ namespace Ui
             parent->menuBar()->addMenu(menuFile);
             parent->menuBar()->addMenu(menuEdit);
             parent->menuBar()->addMenu(menuHelp);
-            //Loading Page
-            QWidget* pageLoading{ new QWidget(parent) };
-            QHBoxLayout* layoutLoading{ new QHBoxLayout(parent) };
-            QProgressBar* progressBar{ new QProgressBar(parent) };
-            progressBar->setRange(0, 0);
-            progressBar->setValue(-1);
-            progressBar->setTextVisible(false);
-            progressBar->setInvertedAppearance(false);
-            progressBar->setAlignment(::Qt::AlignCenter);
-            layoutLoading->addWidget(progressBar);
-            pageLoading->setLayout(layoutLoading);
-            viewStack->addWidget(pageLoading);
             //Home Page
             Nickvision::Miniera::Qt::Controls::StatusPage* pageHome{ new Nickvision::Miniera::Qt::Controls::StatusPage(parent) };
             pageHome->setIcon(QLEMENTINE_ICON(Hardware_Gamepad));
@@ -136,15 +127,14 @@ namespace Ui
             btnLoadServer->setIcon(QLEMENTINE_ICON(Document_Open));
             btnLoadServer->setAction(actionLoadServer);
             pageHome->addWidget(btnLoadServer);
-            viewStack->addWidget(pageHome);
+            tabs->addTab(pageHome, QLEMENTINE_ICON(Navigation_Home), _("Home"));
             //Main Layout
             QWidget* centralWidget{ new QWidget(parent) };
             QVBoxLayout* layoutMain{ new QVBoxLayout(parent) };
-            layoutMain->setContentsMargins(6, 6, 6, 6);
-            layoutMain->addWidget(viewStack);
+            layoutMain->setContentsMargins(0, 0, 0, 0);
+            layoutMain->addWidget(tabs);
             centralWidget->setLayout(layoutMain);
             parent->setCentralWidget(centralWidget);
-            viewStack->setCurrentIndex(1);
         }
 
         QAction* actionNewServer;
@@ -157,18 +147,12 @@ namespace Ui
         QAction* actionDiscussions;
         QAction* actionAbout;
         Nickvision::Miniera::Qt::Controls::InfoBar* infoBar;
-        QStackedWidget* viewStack;
+        QTabWidget* tabs;
     };
 }
 
 namespace Nickvision::Miniera::Qt::Views
 {
-    enum MainWindowPage
-    {
-        Loading = 0,
-        Home
-    };
-
     MainWindow::MainWindow(const std::shared_ptr<MainWindowController>& controller, oclero::qlementine::ThemeManager* themeManager, QWidget* parent) 
         : QMainWindow{ parent },
         m_ui{ new Ui::MainWindow() },
@@ -194,6 +178,7 @@ namespace Nickvision::Miniera::Qt::Views
         connect(m_ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
         m_controller->notificationSent() += [&](const NotificationSentEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onNotificationSent(args); }); };
         m_controller->shellNotificationSent() += [&](const ShellNotificationSentEventArgs& args) { onShellNotificationSent(args); };
+        m_controller->serverLoaded() += [&](const ServerLoadedEventArgs& args) { onServerLoaded(args);};
     }
 
     MainWindow::~MainWindow()
@@ -318,5 +303,11 @@ namespace Nickvision::Miniera::Qt::Views
 #else
         ShellNotification::send(args);
 #endif
+    }
+
+    void MainWindow::onServerLoaded(const ServerLoadedEventArgs& args)
+    {
+        m_ui->tabs->addTab(new ServerPage(args.getServerViewController(), this), QLEMENTINE_ICON(Hardware_Server), QString::fromStdString(args.getName()));
+        m_ui->tabs->setCurrentIndex(m_ui->tabs->count() - 1);
     }
 }

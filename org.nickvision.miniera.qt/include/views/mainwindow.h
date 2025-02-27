@@ -95,6 +95,11 @@ namespace Nickvision::Miniera::Qt::Views
          * @param args The ShellNotificationSentEventArgs
          */
         void onShellNotificationSent(const Notifications::ShellNotificationSentEventArgs& args);
+        /**
+         * @brief Handles when the server is loaded.
+         * @param args The ServerLoadedEventArgs
+         */
+        void onServerLoaded(const Shared::Events::ServerLoadedEventArgs& args);
         Ui::MainWindow* m_ui;
         std::shared_ptr<Shared::Controllers::MainWindowController> m_controller;
         oclero::qlementine::ThemeManager* m_themeManager;
