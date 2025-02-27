@@ -33,6 +33,11 @@ namespace Nickvision::Miniera::Shared::Models
          */
         const std::string& getName() const;
         /**
+         * @brief Gets the version of the server.
+         * @return The version of the server
+         */
+        const ServerVersion& getVersion() const;
+        /**
          * @brief Converts the Server to a JSON object.
          * @return The Server as a JSON object
          */

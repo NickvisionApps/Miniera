@@ -77,8 +77,8 @@ namespace Ui
             cmbDifficulty->addItem(_("Normal"));
             cmbDifficulty->addItem(_("Hard"));
             chkForceGamemode = new Switch(parent);
-            QVBoxLayout* layoutBasic{ new QVBoxLayout(parent) };
-            QFormLayout* formBasic{ new QFormLayout(parent) };
+            QVBoxLayout* layoutBasic{ new QVBoxLayout() };
+            QFormLayout* formBasic{ new QFormLayout() };
             formBasic->addRow(_("Server Name *"), txtServerName);
             formBasic->addRow(_("Level Seed"), txtLevelSeed);
             formBasic->addRow(_("Version"), cmbVersion);
@@ -107,8 +107,8 @@ namespace Ui
             chkOnlineMode = new Switch(parent);
             chkOnlineMode->setChecked(true);
             chkOnlineMode->setToolTip(_("Online Mode"));
-            QVBoxLayout* layoutNetwork{ new QVBoxLayout(parent) };
-            QFormLayout* formNetwork{ new QFormLayout(parent) };
+            QVBoxLayout* layoutNetwork{ new QVBoxLayout() };
+            QFormLayout* formNetwork{ new QFormLayout() };
             formNetwork->addRow(_("Server Port *"), spnServerPort);
             formNetwork->addRow(_("Maximum Connected Players"), spnMaxPlayers);
             formNetwork->addRow(_("View Distance *"), spnViewDistance);
@@ -132,7 +132,7 @@ namespace Ui
             chkSpawnAnimals = new Switch(parent);
             chkSpawnMonsters = new Switch(parent);
             chkSpawnNPCs = new Switch(parent);
-            QFormLayout* formJava{ new QFormLayout(parent) };
+            QFormLayout* formJava{ new QFormLayout() };
             formJava->addRow(_("Allow Flying"), chkAllowFlight);
             formJava->addRow(_("Allow Nether"), chkAllowNether);
             formJava->addRow(_("Enable Command Blocks"), chkEnableCommandBlock);
@@ -154,8 +154,8 @@ namespace Ui
             spnTickDistance = new QSpinBox(parent);
             spnTickDistance->setMinimum(4);
             spnTickDistance->setMaximum(12);
-            QVBoxLayout* layoutBedrock{ new QVBoxLayout(parent) };
-            QFormLayout* formBedrock{ new QFormLayout(parent) };
+            QVBoxLayout* layoutBedrock{ new QVBoxLayout() };
+            QFormLayout* formBedrock{ new QFormLayout() };
             formBedrock->addRow(_("Allow Cheats"), chkAllowCheats);
             formBedrock->addRow(_("Client-Side Chunk Generation *"), chkClientSideChunkGenerationEnabled);
             formBedrock->addRow(_("Disable Custom Skins"), chkDisableCustomSkins);
@@ -169,7 +169,7 @@ namespace Ui
             bedrockPage->setLayout(layoutBedrock);
             parent->setPage(NewServerDialogPage::Bedrock, bedrockPage);
             //Forge Page
-            QFormLayout* formForge{ new QFormLayout(parent) };
+            QFormLayout* formForge{ new QFormLayout() };
             QWizardPage* forgePage{ new QWizardPage(parent) };
             forgePage->setTitle(_("Forge Properties"));
             forgePage->setSubTitle(_("Please configure the properties of the forge server."));
@@ -185,7 +185,7 @@ namespace Ui
             lblEula->setTextInteractionFlags(Qt::TextBrowserInteraction);
             lblEula->setOpenExternalLinks(true);
             lblEula->setWordWrap(true);
-            QVBoxLayout* layoutFinal{ new QVBoxLayout(parent) };
+            QVBoxLayout* layoutFinal{ new QVBoxLayout() };
             layoutFinal->addWidget(lblFinal);
             layoutFinal->addStretch();
             layoutFinal->addWidget(lblEula);

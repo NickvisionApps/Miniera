@@ -25,6 +25,11 @@ namespace Nickvision::Miniera::Shared::Models
         return m_serverProperties.getLevelName();
     }
 
+    const ServerVersion& Server::getVersion() const
+    {
+        return m_serverVersion;
+    }
+
     boost::json::object Server::toJson() const
     {
         boost::json::object json;

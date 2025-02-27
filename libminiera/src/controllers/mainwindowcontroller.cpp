@@ -90,7 +90,7 @@ namespace Nickvision::Miniera::Shared::Controllers
         }
         else
         {
-            builder << Environment::exec("\"" + Environment::findDependency("ngrok").string() + "\"" + " --version") << std::endl;
+            builder << Environment::exec("\"" + Environment::findDependency("ngrok").string() + "\"" + " --version");
         }
         //Java
         if(Environment::findDependency("java").empty())

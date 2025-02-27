@@ -1,6 +1,8 @@
 #include "models/serverversion.h"
 #include <algorithm>
+#include <format>
 #include <stdexcept>
+#include <libnick/localization/gettext.h>
 #include <libnick/network/web.h>
 #include <libnick/system/environment.h>
 
@@ -10,6 +12,21 @@ using namespace Nickvision::Update;
 
 namespace Nickvision::Miniera::Shared::Models
 {
+    static std::string editionToString(Edition edition)
+    {
+        switch(edition)
+        {
+            case Edition::Java:
+                return _("Java Edition");
+            case Edition::Bedrock:
+                return _("Bedrock Edition");
+            case Edition::Forge:
+                return _("Forge Edition");
+            default:
+                return _("Unknown Edition");
+        }
+    }
+
     ServerVersion::ServerVersion(Edition edition, const Version& version, const std::string& releaseUrl)
         : m_edition{ edition },
         m_version{ version },
@@ -159,6 +176,11 @@ namespace Nickvision::Miniera::Shared::Models
             }
         }
         return {};
+    }
+
+    std::string ServerVersion::str() const
+    {
+        return std::format("{} ({})", editionToString(m_edition), m_version.str());
     }
 
     boost::json::object ServerVersion::toJson() const

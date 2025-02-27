@@ -27,6 +27,10 @@ namespace Nickvision::Miniera::Qt::Views
          * @brief Destructs a ServerPage.
          */
         ~ServerPage();
+        /**
+         * @brief Shows the page.
+         */
+        void show();
 
     private:
         Ui::ServerPage* m_ui;

@@ -57,6 +57,11 @@ namespace Nickvision::Miniera::Shared::Models
          */
         std::filesystem::path downloadServer(std::filesystem::path path) const;
         /**
+         * @brief Converts the ServerVersion to a string.
+         * @return The ServerVersion as a string
+         */
+        std::string str() const;
+        /**
          * @brief Converts the ServerVersion to a JSON object.
          * @return The ServerVersion as a JSON object
          */

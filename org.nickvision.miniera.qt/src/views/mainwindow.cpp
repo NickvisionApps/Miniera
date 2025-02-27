@@ -129,12 +129,7 @@ namespace Ui
             pageHome->addWidget(btnLoadServer);
             tabs->addTab(pageHome, QLEMENTINE_ICON(Navigation_Home), _("Home"));
             //Main Layout
-            QWidget* centralWidget{ new QWidget(parent) };
-            QVBoxLayout* layoutMain{ new QVBoxLayout(parent) };
-            layoutMain->setContentsMargins(0, 0, 0, 0);
-            layoutMain->addWidget(tabs);
-            centralWidget->setLayout(layoutMain);
-            parent->setCentralWidget(centralWidget);
+            parent->setCentralWidget(tabs);
         }
 
         QAction* actionNewServer;
@@ -232,8 +227,9 @@ namespace Nickvision::Miniera::Qt::Views
         {
             serverStrings.push_back(QString::fromStdString(server));
         }
-        QString selected{ QInputDialog::getItem(this, _("Load Server"), _("Select a server:"), serverStrings, 0, false) };
-        if(!selected.isEmpty())
+        bool ok;
+        QString selected{ QInputDialog::getItem(this, _("Load Server"), _("Select a server:"), serverStrings, 0, false, &ok) };
+        if(ok && !selected.isEmpty())
         {
             m_controller->loadServer(selected.toStdString());
         }
