@@ -85,6 +85,15 @@ namespace Nickvision::Miniera::Shared::Controllers
         {
             builder << Environment::exec(Environment::findDependency("ngrok").string() + " --version") << std::endl;
         }
+        //Java
+        if(Environment::findDependency("java").empty())
+        {
+            builder << "Java not found" << std::endl;
+        }
+        else
+        {
+            builder << Environment::exec(Environment::findDependency("java").string() + " --version") << std::endl;
+        }
         //Extra
         if(!extraInformation.empty())
         {

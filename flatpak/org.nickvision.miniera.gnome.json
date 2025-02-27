@@ -82,6 +82,7 @@
             "name": "ngrok",
             "buildsystem": "simple",
             "build-commands": [
+                "mkdir -p /app/bin",
                 "mv ngrok /app/bin/"
             ],
             "sources": [
