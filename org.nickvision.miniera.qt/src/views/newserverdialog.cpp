@@ -382,6 +382,10 @@ namespace Nickvision::Miniera::Qt::Views
         {
             m_ui->cmbVersion->addItem(QString::fromStdString(version.getVersion().str()));
         }
+        if(currentId() == NewServerDialogPage::LoadingVersion)
+        {
+            next();
+        }
     }
 
     void NewServerDialog::loadUiFromEdition(Edition edition) const
@@ -390,7 +394,7 @@ namespace Nickvision::Miniera::Qt::Views
         m_ui->cmbDifficulty->setCurrentIndex(static_cast<int>(properties.getDifficulty()));
         m_ui->chkForceGamemode->setChecked(properties.getForceGamemode());
         m_ui->cmbGamemode->setCurrentIndex(static_cast<int>(properties.getGamemode()));
-        m_ui->txtServerName->setText(QString::fromStdString(properties.getLevelName()));
+        m_ui->txtServerName->setText(QString::fromStdString(m_controller->ensureServerNameIsUnique(properties.getLevelName())));
         m_ui->txtLevelSeed->setText(QString::fromStdString(properties.getLevelSeed()));
         m_ui->spnMaxPlayers->setValue(properties.getMaxPlayers());
         m_ui->chkOnlineMode->setChecked(properties.getOnlineMode());

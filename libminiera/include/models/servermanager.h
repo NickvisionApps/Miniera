@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 #include "server.h"
 #include "serverproperties.h"
@@ -23,10 +24,10 @@ namespace Nickvision::Miniera::Shared::Models
          */
         ServerManager(const std::string& appName);
         /**
-         * @brief Gets the available servers.
-         * @return The list of available servers
+         * @brief Gets the names of the available servers.
+         * @return The list of available server names
          */
-        const std::vector<std::shared_ptr<Server>>& getAvailableServers();
+        std::vector<std::string> getAvailableServersNames();
         /**
          * @brief Gets whether or not a server with the given name exists.
          * @param name The name of the server
@@ -39,11 +40,17 @@ namespace Nickvision::Miniera::Shared::Models
          * @param properties The properties of the server
          * @return The created server
          */
-        std::shared_ptr<Server> createServer(const ServerVersion& version, const ServerProperties& properties);
+        const std::shared_ptr<Server>& createServer(const ServerVersion& version, const ServerProperties& properties);
+        /**
+         * @brief Gets a server.
+         * @param name The name of the server to get
+         * @return The server if found, else nullptr
+         */
+        const std::shared_ptr<Server>& getServer(const std::string& name);
 
     private:
         std::filesystem::path m_serversDirectory;
-        std::vector<std::shared_ptr<Server>> m_servers;
+        std::unordered_map<std::string, std::shared_ptr<Server>> m_servers;
     };
 }
 

@@ -8,9 +8,6 @@
 #include <libnick/localization/gettext.h>
 #include <libnick/system/environment.h>
 #include "models/configuration.h"
-#ifdef _WIN32
-#include <windows.h>
-#endif
 
 using namespace Nickvision::App;
 using namespace Nickvision::Miniera::Shared::Models;
@@ -188,4 +185,18 @@ namespace Nickvision::Miniera::Shared::Controllers
         worker.detach();
     }
 #endif
+
+    std::vector<std::string> MainWindowController::getAvailableServerNames()
+    {
+        return m_serverManager.getAvailableServersNames();
+    }
+
+    void MainWindowController::loadServer(const std::string& serverName)
+    {
+        std::shared_ptr<Server> server{ m_serverManager.getServer(serverName) };
+        if(server)
+        {
+            
+        }
+    }
 }

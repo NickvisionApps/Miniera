@@ -111,6 +111,16 @@ namespace Nickvision::Miniera::Shared::Controllers
          */
         void windowsUpdate();
 #endif
+        /**
+         * @brief Gets the list of available server names.
+         * @return The list of available server names
+         */
+        std::vector<std::string> getAvailableServerNames();
+        /**
+         * @brief Loads a server.
+         * @param serverName The name of the server to load
+         */
+        void loadServer(const std::string& serverName);
 
     private:
         bool m_started;

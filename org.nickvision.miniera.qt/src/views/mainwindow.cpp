@@ -4,6 +4,7 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QHBoxLayout>
+#include <QInputDialog>
 #include <QLabel>
 #include <QListWidget>
 #include <QMenu>
@@ -51,6 +52,10 @@ namespace Ui
             actionNewServer->setText(_("New Server"));
             actionNewServer->setIcon(QLEMENTINE_ICON(Action_AddFile));
             actionNewServer->setShortcut(Qt::CTRL | Qt::Key_N);
+            actionLoadServer = new QAction(parent);
+            actionLoadServer->setText(_("Load Server"));
+            actionLoadServer->setIcon(QLEMENTINE_ICON(Document_Open));
+            actionLoadServer->setShortcut(Qt::CTRL | Qt::Key_O);
             actionExit = new QAction(parent);
             actionExit->setText(_("Exit"));
             actionExit->setIcon(QLEMENTINE_ICON(Action_Close));
@@ -82,6 +87,7 @@ namespace Ui
             QMenu* menuFile{ new QMenu(parent) };
             menuFile->setTitle(_("File"));
             menuFile->addAction(actionNewServer);
+            menuFile->addAction(actionLoadServer);
             menuFile->addSeparator();
             menuFile->addAction(actionExit);
             QMenu* menuEdit{ new QMenu(parent) };
@@ -115,18 +121,21 @@ namespace Ui
             Nickvision::Miniera::Qt::Controls::StatusPage* pageHome{ new Nickvision::Miniera::Qt::Controls::StatusPage(parent) };
             pageHome->setIcon(QLEMENTINE_ICON(Hardware_Gamepad));
             pageHome->setTitle(_("Manage a Server"));
-            pageHome->setDescription(_("Select or add a new server to get started"));
-            cmbServers = new QComboBox(parent);
-            cmbServers->setMinimumWidth(300);
-            cmbServers->setEditable(false);
-            cmbServers->setPlaceholderText(_("Select a server"));
-            pageHome->addWidget(cmbServers);
+            pageHome->setDescription(_("Load or create a new server to get started"));
             ActionButton* btnNewServer = new ActionButton(parent);
+            btnNewServer->setAutoDefault(false);
+            btnNewServer->setDefault(false);
             btnNewServer->setMinimumWidth(300);
             btnNewServer->setText(_("New Server"));
             btnNewServer->setIcon(QLEMENTINE_ICON(Action_AddFile));
             btnNewServer->setAction(actionNewServer);
             pageHome->addWidget(btnNewServer);
+            ActionButton* btnLoadServer = new ActionButton(parent);
+            btnLoadServer->setMinimumWidth(300);
+            btnLoadServer->setText(_("Load Server"));
+            btnLoadServer->setIcon(QLEMENTINE_ICON(Document_Open));
+            btnLoadServer->setAction(actionLoadServer);
+            pageHome->addWidget(btnLoadServer);
             viewStack->addWidget(pageHome);
             //Main Layout
             QWidget* centralWidget{ new QWidget(parent) };
@@ -139,6 +148,7 @@ namespace Ui
         }
 
         QAction* actionNewServer;
+        QAction* actionLoadServer;
         QAction* actionExit;
         QAction* actionSettings;
         QAction* actionCheckForUpdates;
@@ -148,7 +158,6 @@ namespace Ui
         QAction* actionAbout;
         Nickvision::Miniera::Qt::Controls::InfoBar* infoBar;
         QStackedWidget* viewStack;
-        QComboBox* cmbServers;
     };
 }
 
@@ -169,12 +178,13 @@ namespace Nickvision::Miniera::Qt::Views
         //Window Settings
         bool stable{ m_controller->getAppInfo().getVersion().getVersionType() == VersionType::Stable };
         setWindowTitle(stable ? _("Miniera") : _("Miniera (Preview)"));
-        setWindowIcon(QIcon(":/icon.svg"));
+        setWindowIcon(QIcon(":/icon.ico"));
         setAcceptDrops(true);
         //Load Ui
         m_ui->setupUi(this);
         //Signals
         connect(m_ui->actionNewServer, &QAction::triggered, this, &MainWindow::newServer);
+        connect(m_ui->actionLoadServer, &QAction::triggered, this, &MainWindow::loadServer);
         connect(m_ui->actionExit, &QAction::triggered, this, &MainWindow::close);
         connect(m_ui->actionSettings, &QAction::triggered, this, &MainWindow::settings);
         connect(m_ui->actionCheckForUpdates, &QAction::triggered, this, &MainWindow::checkForUpdates);
@@ -222,6 +232,26 @@ namespace Nickvision::Miniera::Qt::Views
     {
         NewServerDialog dialog{ m_controller->createNewServerDialogController(), this };
         dialog.exec();
+    }
+
+    void MainWindow::loadServer()
+    {
+        std::vector<std::string> serverNames{ m_controller->getAvailableServerNames() };
+        if(serverNames.empty())
+        {
+            QMessageBox::critical(this, _("Load Server"), _("No servers available to load. Please create a new server"));
+            return;
+        }
+        QStringList serverStrings;
+        for(const std::string& server : serverNames)
+        {
+            serverStrings.push_back(QString::fromStdString(server));
+        }
+        QString selected{ QInputDialog::getItem(this, _("Load Server"), _("Select a server:"), serverStrings, 0, false) };
+        if(!selected.isEmpty())
+        {
+            m_controller->loadServer(selected.toStdString());
+        }
     }
 
     void MainWindow::settings()

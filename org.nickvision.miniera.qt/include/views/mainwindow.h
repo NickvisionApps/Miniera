@@ -50,6 +50,10 @@ namespace Nickvision::Miniera::Qt::Views
          */
         void newServer();
         /**
+         * @brief Opens the load server dialog.
+         */
+        void loadServer();
+        /**
          * @brief Opens the application's settings dialog.
          */
         void settings();
