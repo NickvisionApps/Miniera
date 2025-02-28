@@ -210,8 +210,10 @@ namespace Nickvision::Miniera::Qt::Views
 
     void MainWindow::newServer()
     {
-        NewServerDialog dialog{ m_controller->createNewServerDialogController(), this };
+        std::shared_ptr<NewServerDialogController> controller{ m_controller->createNewServerDialogController() };
+        NewServerDialog dialog{ controller, this };
         dialog.exec();
+        m_controller->loadServer(controller->getServerProperties().getLevelName());
     }
 
     void MainWindow::loadServer()

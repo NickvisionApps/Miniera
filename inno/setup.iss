@@ -49,7 +49,7 @@ procedure SetupJDK();
 var
   ResultCode: Integer;
 begin
-  if not ShellExec('', 'msiexec.exe', ExpandConstant('/i "{app}\deps\microsoft-jdk.msi" "ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome" "INSTALLDIR="C:\Program Files\Microsoft\"" /quiet /norestart'), '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
+  if not Exec(ExpandConstant('{app}\deps\ms-openjdk.msi'), 'ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome INSTALLDIR="C:\Program Files\Microsoft\Java" /qn /norestart', '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
   then
     MsgBox('Unable to install JDK . Please try again', mbError, MB_OK);
 end;
@@ -67,7 +67,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "vc_redist.x64.exe"; DestDir: "{app}\deps"; AfterInstall: SetupVC
-Source: "microsoft-jdk.msi"; DestDir: "{app}\deps"; AfterInstall: SetupJDK
+Source: "ms-openjdk.msi"; DestDir: "{app}\deps"; AfterInstall: SetupJDK
 Source: "ngrok.exe"; DestDir: "{app}\Release"; Flags: ignoreversion
 Source: "..\build\org.nickvision.miniera.qt\Release\{#MyAppExeName}"; DestDir: "{app}\Release"; Flags: ignoreversion 
 Source: "..\build\org.nickvision.miniera.qt\Release\*"; DestDir: "{app}\Release"; Flags: ignoreversion recursesubdirs createallsubdirs; AfterInstall: Cleanup
