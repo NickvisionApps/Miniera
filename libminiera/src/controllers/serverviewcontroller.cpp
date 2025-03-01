@@ -6,8 +6,9 @@ using namespace Nickvision::Miniera::Shared::Models;
 namespace Nickvision::Miniera::Shared::Controllers
 {
     ServerViewController::ServerViewController(const std::shared_ptr<Server>& server, ServerManager& serverManager)
-        : m_server{ server }, 
-        m_serverManager{ serverManager }
+        : m_server{ server },
+        m_serverManager{ serverManager },
+        m_started{ false }
     {
         if(!server)
         {
@@ -23,5 +24,14 @@ namespace Nickvision::Miniera::Shared::Controllers
     std::string ServerViewController::getVersion() const
     {
         return m_server->getVersion().str();
+    }
+
+    void ServerViewController::startup()
+    {
+        if(!m_started)
+        {
+            m_server->initialize();
+            m_started = true;
+        }
     }
 }

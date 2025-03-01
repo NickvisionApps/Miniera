@@ -31,10 +31,16 @@ namespace Nickvision::Miniera::Shared::Controllers
          * @return The version of the server
          */
         std::string getVersion() const;
+        /**
+         * @brief Starts the page.
+         * @brief Will only have an effect the first time called.
+         */
+        void startup();
 
     private:
         std::shared_ptr<Models::Server> m_server;
         Models::ServerManager& m_serverManager;
+        bool m_started;
     };
 }
 

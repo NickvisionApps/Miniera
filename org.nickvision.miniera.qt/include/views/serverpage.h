@@ -2,6 +2,7 @@
 #define SERVERPAGE_H
 
 #include <memory>
+#include <QShowEvent>
 #include <QWidget>
 #include "controllers/serverviewcontroller.h"
 
@@ -27,10 +28,13 @@ namespace Nickvision::Miniera::Qt::Views
          * @brief Destructs a ServerPage.
          */
         ~ServerPage();
+
+    protected:
         /**
-         * @brief Shows the page.
+         * @brief Handles when the page is shown.
+         * @param event QShowEvent
          */
-        void show();
+        void showEvent(QShowEvent* event) override;
 
     private:
         Ui::ServerPage* m_ui;

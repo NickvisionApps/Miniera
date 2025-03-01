@@ -212,8 +212,10 @@ namespace Nickvision::Miniera::Qt::Views
     {
         std::shared_ptr<NewServerDialogController> controller{ m_controller->createNewServerDialogController() };
         NewServerDialog dialog{ controller, this };
-        dialog.exec();
-        m_controller->loadServer(controller->getServerProperties().getLevelName());
+        if(dialog.exec() == QDialog::Accepted)
+        {
+            m_controller->loadServer(controller->getServerProperties().getLevelName());
+        }
     }
 
     void MainWindow::loadServer()

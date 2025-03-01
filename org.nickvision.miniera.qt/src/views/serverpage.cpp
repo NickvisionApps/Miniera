@@ -3,6 +3,7 @@
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMessageBox>
 #include <QVBoxLayout>
 #include <libnick/localization/gettext.h>
 #include <oclero/qlementine/widgets/ActionButton.hpp>
@@ -95,8 +96,9 @@ namespace Nickvision::Miniera::Qt::Views
         delete m_ui;
     }
 
-    void ServerPage::show()
+    void ServerPage::showEvent(QShowEvent* event)
     {
-        QWidget::show();
+        QWidget::showEvent(event);
+        m_controller->startup();
     }
 }

@@ -42,7 +42,7 @@ namespace Nickvision::Miniera::Shared::Models
     {
         if(m_releaseUrl.empty())
         {
-            throw std::invalid_argument("Invalid JSON");
+            throw std::invalid_argument("Invalid JSON object");
         }
     }
 

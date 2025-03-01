@@ -34,6 +34,7 @@ WizardStyle=modern
 PrivilegesRequired=admin
 DirExistsWarning=no
 CloseApplications=yes
+ChangesEnvironment=yes
 
 [Code]
 procedure SetupVC();
