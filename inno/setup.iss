@@ -34,6 +34,7 @@ WizardStyle=modern
 PrivilegesRequired=admin
 DirExistsWarning=no
 CloseApplications=yes
+ChangesEnvironment=yes
 
 [Code]
 procedure SetupVC();
@@ -43,6 +44,15 @@ begin
   if not Exec(ExpandConstant('{app}\deps\vc_redist.x64.exe'), '/install /quiet /norestart', '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
   then
     MsgBox('Unable to install VC . Please try again', mbError, MB_OK);
+end;
+
+procedure SetupJDK();
+var
+  ResultCode: Integer;
+begin
+  if not Exec(ExpandConstant('{app}\deps\ms-openjdk.msi'), 'ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome INSTALLDIR="C:\Program Files\Microsoft\Java" /qn /norestart', '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
+  then
+    MsgBox('Unable to install JDK . Please try again', mbError, MB_OK);
 end;
 
 procedure Cleanup();
@@ -58,6 +68,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "vc_redist.x64.exe"; DestDir: "{app}\deps"; AfterInstall: SetupVC
+Source: "ms-openjdk.msi"; DestDir: "{app}\deps"; AfterInstall: SetupJDK
 Source: "ngrok.exe"; DestDir: "{app}\Release"; Flags: ignoreversion
 Source: "..\build\org.nickvision.miniera.qt\Release\{#MyAppExeName}"; DestDir: "{app}\Release"; Flags: ignoreversion 
 Source: "..\build\org.nickvision.miniera.qt\Release\*"; DestDir: "{app}\Release"; Flags: ignoreversion recursesubdirs createallsubdirs; AfterInstall: Cleanup

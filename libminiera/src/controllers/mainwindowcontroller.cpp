@@ -7,12 +7,11 @@
 #include <libnick/helpers/stringhelpers.h>
 #include <libnick/localization/gettext.h>
 #include <libnick/system/environment.h>
+#include "controllers/serverviewcontroller.h"
 #include "models/configuration.h"
-#ifdef _WIN32
-#include <windows.h>
-#endif
 
 using namespace Nickvision::App;
+using namespace Nickvision::Miniera::Shared::Events;
 using namespace Nickvision::Miniera::Shared::Models;
 using namespace Nickvision::Events;
 using namespace Nickvision::Filesystem;
@@ -27,7 +26,8 @@ namespace Nickvision::Miniera::Shared::Controllers
         : m_started{ false },
         m_args{ args },
         m_appInfo{ "org.nickvision.miniera", "Nickvision Miniera", "Miniera" },
-        m_dataFileManager{ m_appInfo.getName() }
+        m_dataFileManager{ m_appInfo.getName() },
+        m_serverManager{ m_appInfo.getName() }
     {
         m_appInfo.setVersion({ "2025.2.0-next" });
         m_appInfo.setShortName(_("Miniera"));
@@ -65,6 +65,11 @@ namespace Nickvision::Miniera::Shared::Controllers
         return m_shellNotificationSent;
     }
 
+    Event<ServerLoadedEventArgs>& MainWindowController::serverLoaded()
+    {
+        return m_serverLoaded;
+    }
+
     const AppInfo& MainWindowController::getAppInfo() const
     {
         return m_appInfo;
@@ -85,7 +90,16 @@ namespace Nickvision::Miniera::Shared::Controllers
         }
         else
         {
-            builder << Environment::exec(Environment::findDependency("ngrok").string() + " --version") << std::endl;
+            builder << Environment::exec("\"" + Environment::findDependency("ngrok").string() + "\"" + " --version");
+        }
+        //Java
+        if(Environment::findDependency("java").empty())
+        {
+            builder << "Java not found" << std::endl;
+        }
+        else
+        {
+            builder << Environment::exec("\"" + Environment::findDependency("java").string() + "\"" + " --version") << std::endl;
         }
         //Extra
         if(!extraInformation.empty())
@@ -101,6 +115,11 @@ namespace Nickvision::Miniera::Shared::Controllers
     bool MainWindowController::canShutdown() const
     {
         return true;
+    }
+
+    std::shared_ptr<NewServerDialogController> MainWindowController::createNewServerDialogController()
+    {
+        return std::make_shared<NewServerDialogController>(m_serverManager);
     }
 
     std::shared_ptr<PreferencesViewController> MainWindowController::createPreferencesViewController()
@@ -182,4 +201,27 @@ namespace Nickvision::Miniera::Shared::Controllers
         worker.detach();
     }
 #endif
+
+    std::vector<std::string> MainWindowController::getAvailableServerNames()
+    {
+        return m_serverManager.getAvailableServersNames();
+    }
+
+    void MainWindowController::loadServer(const std::string& serverName)
+    {
+        static std::vector<std::string> loadedServers;
+        const std::shared_ptr<Server>& server{ m_serverManager.getServer(serverName) };
+        if(server)
+        {
+            if(std::find(loadedServers.begin(), loadedServers.end(), serverName) != loadedServers.end())
+            {
+                m_notificationSent.invoke({ _("Server already loaded"), NotificationSeverity::Warning });
+            }
+            else
+            {
+                loadedServers.push_back(serverName);
+                m_serverLoaded.invoke({ serverName, std::make_shared<ServerViewController>(server, m_serverManager) });
+            }
+        }
+    }
 }

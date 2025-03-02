@@ -35,7 +35,7 @@ namespace Ui
             QLabel* lblUpdates{ new QLabel(parent) };
             lblUpdates->setText(_("Automatically Check for Updates"));
             chkUpdates = new Switch(parent);
-            QFormLayout* layoutUserInterface{ new QFormLayout(parent) };
+            QFormLayout* layoutUserInterface{ new QFormLayout() };
             layoutUserInterface->addRow(lblTheme, cmbTheme);
             layoutUserInterface->addRow(lblUpdates, chkUpdates);
             QWidget* userInterfacePage{ new QWidget(parent) };
@@ -50,7 +50,7 @@ namespace Ui
             btnNgrokAuthToken->setAutoDefault(false);
             btnNgrokAuthToken->setText(_("Retrieve Auth Token"));
             btnNgrokAuthToken->setIcon(QLEMENTINE_ICON(Navigation_Search));
-            QFormLayout* layoutHosting{ new QFormLayout(parent) };
+            QFormLayout* layoutHosting{ new QFormLayout() };
             layoutHosting->addRow(lblNgrokAuthToken, txtNgrokAuthToken);
             layoutHosting->addRow(nullptr, btnNgrokAuthToken);
             QWidget* hostingPage{ new QWidget(parent) };

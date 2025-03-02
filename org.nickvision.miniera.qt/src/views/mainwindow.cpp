@@ -1,35 +1,45 @@
 #include "views/mainwindow.h"
 #include <QAction>
+#include <QComboBox>
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QHBoxLayout>
+#include <QInputDialog>
 #include <QLabel>
 #include <QListWidget>
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QProgressBar>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QTabWidget>
 #include <QToolBar>
 #include <QVBoxLayout>
 #include <libnick/helpers/codehelpers.h>
 #include <libnick/localization/gettext.h>
 #include <libnick/notifications/shellnotification.h>
+#include <oclero/qlementine/widgets/ActionButton.hpp>
 #include "controls/aboutdialog.h"
 #include "controls/infobar.h"
+#include "controls/statuspage.h"
 #include "helpers/qthelpers.h"
+#include "views/newserverdialog.h"
+#include "views/serverpage.h"
 #include "views/settingsdialog.h"
 
 using namespace Nickvision::App;
 using namespace Nickvision::Miniera::Qt::Controls;
 using namespace Nickvision::Miniera::Qt::Helpers;
 using namespace Nickvision::Miniera::Shared::Controllers;
+using namespace Nickvision::Miniera::Shared::Events;
 using namespace Nickvision::Miniera::Shared::Models;
 using namespace Nickvision::Events;
 using namespace Nickvision::Helpers;
 using namespace Nickvision::Notifications;
 using namespace Nickvision::Update;
+using namespace oclero::qlementine;
 
 namespace Ui
 {
@@ -38,7 +48,17 @@ namespace Ui
     public:
         void setupUi(Nickvision::Miniera::Qt::Views::MainWindow* parent) 
         {
+            tabs = new QTabWidget(parent);
+            tabs->setDocumentMode(true);
             //Actions
+            actionNewServer = new QAction(parent);
+            actionNewServer->setText(_("New Server"));
+            actionNewServer->setIcon(QLEMENTINE_ICON(Action_AddFile));
+            actionNewServer->setShortcut(Qt::CTRL | Qt::Key_N);
+            actionLoadServer = new QAction(parent);
+            actionLoadServer->setText(_("Load Server"));
+            actionLoadServer->setIcon(QLEMENTINE_ICON(Document_Open));
+            actionLoadServer->setShortcut(Qt::CTRL | Qt::Key_O);
             actionExit = new QAction(parent);
             actionExit->setText(_("Exit"));
             actionExit->setIcon(QLEMENTINE_ICON(Action_Close));
@@ -69,6 +89,9 @@ namespace Ui
             //MenuBar
             QMenu* menuFile{ new QMenu(parent) };
             menuFile->setTitle(_("File"));
+            menuFile->addAction(actionNewServer);
+            menuFile->addAction(actionLoadServer);
+            menuFile->addSeparator();
             menuFile->addAction(actionExit);
             QMenu* menuEdit{ new QMenu(parent) };
             menuEdit->setTitle(_("Edit"));
@@ -85,15 +108,32 @@ namespace Ui
             parent->menuBar()->addMenu(menuFile);
             parent->menuBar()->addMenu(menuEdit);
             parent->menuBar()->addMenu(menuHelp);
+            //Home Page
+            Nickvision::Miniera::Qt::Controls::StatusPage* pageHome{ new Nickvision::Miniera::Qt::Controls::StatusPage(parent) };
+            pageHome->setIcon(QLEMENTINE_ICON(Hardware_Gamepad));
+            pageHome->setTitle(_("Manage a Server"));
+            pageHome->setDescription(_("Load or create a new server to get started"));
+            ActionButton* btnNewServer = new ActionButton(parent);
+            btnNewServer->setAutoDefault(false);
+            btnNewServer->setDefault(false);
+            btnNewServer->setMinimumWidth(300);
+            btnNewServer->setText(_("New Server"));
+            btnNewServer->setIcon(QLEMENTINE_ICON(Action_AddFile));
+            btnNewServer->setAction(actionNewServer);
+            pageHome->addWidget(btnNewServer);
+            ActionButton* btnLoadServer = new ActionButton(parent);
+            btnLoadServer->setMinimumWidth(300);
+            btnLoadServer->setText(_("Load Server"));
+            btnLoadServer->setIcon(QLEMENTINE_ICON(Document_Open));
+            btnLoadServer->setAction(actionLoadServer);
+            pageHome->addWidget(btnLoadServer);
+            tabs->addTab(pageHome, QLEMENTINE_ICON(Navigation_Home), _("Home"));
             //Main Layout
-            QWidget* centralWidget{ new QWidget(parent) };
-            QVBoxLayout* layoutMain{ new QVBoxLayout(parent) };
-            centralWidget->setLayout(layoutMain);
-            parent->setCentralWidget(centralWidget);
+            parent->setCentralWidget(tabs);
         }
 
-        QAction* actionOpenFolder;
-        QAction* actionCloseFolder;
+        QAction* actionNewServer;
+        QAction* actionLoadServer;
         QAction* actionExit;
         QAction* actionSettings;
         QAction* actionCheckForUpdates;
@@ -102,6 +142,7 @@ namespace Ui
         QAction* actionDiscussions;
         QAction* actionAbout;
         Nickvision::Miniera::Qt::Controls::InfoBar* infoBar;
+        QTabWidget* tabs;
     };
 }
 
@@ -116,11 +157,13 @@ namespace Nickvision::Miniera::Qt::Views
         //Window Settings
         bool stable{ m_controller->getAppInfo().getVersion().getVersionType() == VersionType::Stable };
         setWindowTitle(stable ? _("Miniera") : _("Miniera (Preview)"));
-        setWindowIcon(QIcon(":/icon.svg"));
+        setWindowIcon(QIcon(":/icon.ico"));
         setAcceptDrops(true);
         //Load Ui
         m_ui->setupUi(this);
         //Signals
+        connect(m_ui->actionNewServer, &QAction::triggered, this, &MainWindow::newServer);
+        connect(m_ui->actionLoadServer, &QAction::triggered, this, &MainWindow::loadServer);
         connect(m_ui->actionExit, &QAction::triggered, this, &MainWindow::close);
         connect(m_ui->actionSettings, &QAction::triggered, this, &MainWindow::settings);
         connect(m_ui->actionCheckForUpdates, &QAction::triggered, this, &MainWindow::checkForUpdates);
@@ -130,6 +173,7 @@ namespace Nickvision::Miniera::Qt::Views
         connect(m_ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
         m_controller->notificationSent() += [&](const NotificationSentEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onNotificationSent(args); }); };
         m_controller->shellNotificationSent() += [&](const ShellNotificationSentEventArgs& args) { onShellNotificationSent(args); };
+        m_controller->serverLoaded() += [&](const ServerLoadedEventArgs& args) { onServerLoaded(args);};
     }
 
     MainWindow::~MainWindow()
@@ -162,6 +206,37 @@ namespace Nickvision::Miniera::Qt::Views
         }
         m_controller->shutdown({ geometry().width(), geometry().height(), isMaximized() });
         event->accept();
+    }
+
+    void MainWindow::newServer()
+    {
+        std::shared_ptr<NewServerDialogController> controller{ m_controller->createNewServerDialogController() };
+        NewServerDialog dialog{ controller, this };
+        if(dialog.exec() == QDialog::Accepted)
+        {
+            m_controller->loadServer(controller->getServerProperties().getLevelName());
+        }
+    }
+
+    void MainWindow::loadServer()
+    {
+        std::vector<std::string> serverNames{ m_controller->getAvailableServerNames() };
+        if(serverNames.empty())
+        {
+            QMessageBox::critical(this, _("Load Server"), _("No servers available to load. Please create a new server"));
+            return;
+        }
+        QStringList serverStrings;
+        for(const std::string& server : serverNames)
+        {
+            serverStrings.push_back(QString::fromStdString(server));
+        }
+        bool ok;
+        QString selected{ QInputDialog::getItem(this, _("Load Server"), _("Select a server:"), serverStrings, 0, false, &ok) };
+        if(ok && !selected.isEmpty())
+        {
+            m_controller->loadServer(selected.toStdString());
+        }
     }
 
     void MainWindow::settings()
@@ -228,5 +303,11 @@ namespace Nickvision::Miniera::Qt::Views
 #else
         ShellNotification::send(args);
 #endif
+    }
+
+    void MainWindow::onServerLoaded(const ServerLoadedEventArgs& args)
+    {
+        m_ui->tabs->addTab(new ServerPage(args.getServerViewController(), this), QLEMENTINE_ICON(Hardware_Server), QString::fromStdString(args.getName()));
+        m_ui->tabs->setCurrentIndex(m_ui->tabs->count() - 1);
     }
 }
