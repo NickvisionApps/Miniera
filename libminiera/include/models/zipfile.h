@@ -2,6 +2,7 @@
 #define ZIPFILE_H
 
 #include <filesystem>
+#include <vector>
 #include <zip.h>
 
 namespace Nickvision::Miniera::Shared::Models

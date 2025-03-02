@@ -1,7 +1,6 @@
 #include "models/zipfile.h"
 #include <cstring>
 #include <fstream>
-#include <vector>
 
 namespace Nickvision::Miniera::Shared::Models
 {
