@@ -9,9 +9,9 @@
 #include <QStyleFactory>
 #include <QVBoxLayout>
 #include <QWizardPage>
-#include <oclero/qlementine/widgets/Switch.hpp>
-#include <oclero/qlementine/widgets/LineEdit.hpp>
 #include <libnick/localization/gettext.h>
+#include <oclero/qlementine/widgets/LineEdit.hpp>
+#include <oclero/qlementine/widgets/Switch.hpp>
 #include "controls/loadingwizardpage.h"
 #include "helpers/qthelpers.h"
 

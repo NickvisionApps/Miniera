@@ -1,10 +1,10 @@
 #ifndef LOADINGWIZARDPAGE_H
 #define LOADINGWIZARDPAGE_H
 
-#include <QProgressBar>
 #include <QStackedWidget>
 #include <QString>
 #include <QWizardPage>
+#include <oclero/qlementine/widgets/LoadingSpinner.hpp>
 
 namespace Nickvision::Miniera::Qt::Controls
 {
@@ -44,7 +44,7 @@ namespace Nickvision::Miniera::Qt::Controls
     private:
         bool m_finished;
         QStackedWidget* m_viewStack;
-        QProgressBar* m_prgLoading;
+        oclero::qlementine::LoadingSpinner* m_spinner;
     };
 }
 

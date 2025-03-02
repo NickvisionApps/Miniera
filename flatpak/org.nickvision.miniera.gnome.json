@@ -72,6 +72,21 @@
             ]
         },
         {
+            "name": "libzip",
+            "buildsystem": "cmake-ninja",
+            "builddir": true,
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE=Release"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/nih-at/libzip",
+                    "tag": "v1.11.3"
+                }
+            ]
+        },
+        {
             "name" : "openjdk",
             "buildsystem" : "simple",
             "build-commands" : [

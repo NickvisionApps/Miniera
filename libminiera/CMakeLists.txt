@@ -15,7 +15,8 @@ add_library(libminiera
     "src/models/servermanager.cpp"
     "src/models/serverproperties.cpp"
     "src/models/serverversion.cpp"
-    "src/models/startupinformation.cpp")
+    "src/models/startupinformation.cpp"
+    "src/models/zipfile.cpp")
 target_include_directories(libminiera PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set_target_properties(libminiera PROPERTIES VERSION "${PROJECT_VERSION}" SOVERSION "${PROJECT_VERSION}")
 if(MSVC)
@@ -25,7 +26,8 @@ else()
 endif()
 
 find_package(libnick CONFIG REQUIRED)
-target_link_libraries(libminiera PUBLIC libnick::libnick)
+find_package(libzip CONFIG REQUIRED)
+target_link_libraries(libminiera PUBLIC libnick::libnick libzip::zip)
 
 add_custom_target(shared_commands ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/__shared.h")
 add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/__shared.h" "${CMAKE_CURRENT_BINARY_DIR}/shared.h" COMMAND "${CMAKE_COMMAND}" -E touch "${CMAKE_CURRENT_BINARY_DIR}/shared.h")

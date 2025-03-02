@@ -1,9 +1,10 @@
 #include "controls/loadingwizardpage.h"
-#include <QProgressBar>
 #include <QVBoxLayout>
 #include <libnick/localization/gettext.h>
 #include "controls/statuspage.h"
 #include "helpers/qthelpers.h"
+
+using namespace oclero::qlementine;
 
 namespace Nickvision::Miniera::Qt::Controls
 {
@@ -16,14 +17,17 @@ namespace Nickvision::Miniera::Qt::Controls
         setTitle(title);
         setSubTitle(subtitle);
         //Progress Page
-        m_prgLoading = new QProgressBar(this);
-        m_prgLoading->setRange(0, 0);
-        m_prgLoading->setValue(-1);
-        m_prgLoading->setAlignment(::Qt::AlignCenter);
+        m_spinner = new LoadingSpinner(this);
+        m_spinner->setMinimumSize(48, 48);
+        m_spinner->setSpinning(true);
         QWidget* progressPage{ new QWidget(this) };
+        QHBoxLayout* layoutSpinner{ new QHBoxLayout() };
+        layoutSpinner->addStretch();
+        layoutSpinner->addWidget(m_spinner);
+        layoutSpinner->addStretch();
         QVBoxLayout* layoutProgress{ new QVBoxLayout() };
         layoutProgress->addStretch();
-        layoutProgress->addWidget(m_prgLoading);
+        layoutProgress->addLayout(layoutSpinner);
         layoutProgress->addStretch();
         progressPage->setLayout(layoutProgress);
         m_viewStack->addWidget(progressPage);
@@ -48,7 +52,7 @@ namespace Nickvision::Miniera::Qt::Controls
     {
         m_finished = finished;
         m_viewStack->setCurrentIndex(m_finished ? 1 : 0);
-        m_prgLoading->setValue(-1);
+        m_spinner->setSpinning(!finished);
         Q_EMIT completeChanged();
     }
 

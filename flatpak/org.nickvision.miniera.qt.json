@@ -89,6 +89,21 @@
             ]
         },
         {
+            "name": "libzip",
+            "buildsystem": "cmake-ninja",
+            "builddir": true,
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE=Release"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/nih-at/libzip",
+                    "tag": "v1.11.3"
+                }
+            ]
+        },
+        {
             "name" : "openjdk",
             "buildsystem" : "simple",
             "build-commands" : [
@@ -123,7 +138,7 @@
                 {
                     "type": "git",
                     "url": "https://github.com/oclero/qlementine",
-                    "tag": "v1.0.3"
+                    "tag": "v1.1.2"
                 }
             ]
         },
@@ -135,7 +150,7 @@
                 {
                     "type": "git",
                     "url": "https://github.com/oclero/qlementine-icons",
-                    "commit": "bc9dd5e6d270321b799e43ae3600acf86125bb4b"
+                    "tag": "v1.7.0"
                 }
             ]
         },
