@@ -23,7 +23,6 @@ UsePreviousAppDir=no
 DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
 LicenseFile=..\COPYING
-PrivilegesRequired=admin
 OutputDir=..\inno
 OutputBaseFilename=NickvisionMinieraSetup
 SetupIconFile=..\resources\org.nickvision.miniera.ico
