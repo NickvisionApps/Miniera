@@ -50,7 +50,7 @@ procedure SetupJDK();
 var
   ResultCode: Integer;
 begin
-  if not Exec(ExpandConstant('{app}\deps\ms-openjdk.msi'), 'ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome INSTALLDIR="C:\Program Files\Microsoft\Java" /qn /norestart', '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
+  if not Exec(ExpandConstant('{win}\msiexec.exe'), ExpandConstant('"{app}\deps\ms-openjdk.msi" ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome INSTALLDIR="C:\Program Files\Microsoft\Java" /qn /norestart'), '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
   then
     MsgBox('Unable to install JDK . Please try again', mbError, MB_OK);
 end;
