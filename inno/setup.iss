@@ -33,6 +33,7 @@ PrivilegesRequired=admin
 DirExistsWarning=no
 CloseApplications=yes
 ChangesEnvironment=yes
+AlwaysRestart=yes
 
 [Code]
 procedure SetupVC();
@@ -44,13 +45,13 @@ begin
     MsgBox('Unable to install VC . Please try again', mbError, MB_OK);
 end;
 
-procedure SetupJDK();
+procedure SetupJava();
 var
   ResultCode: Integer;
 begin
-  if not ShellExec('', ExpandConstant('{win}\msiexec.exe'), ExpandConstant('"{app}\deps\ms-openjdk.msi" ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome INSTALLDIR="{autopf}\Microsoft\Java" /qn /norestart'), '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
+  if not ShellExec('', ExpandConstant('{app}\deps\java.exe'), 'INSTALL_SILENT=Enable REBOOT=Disable SPONSORS=Disable', '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
   then
-    MsgBox('Unable to install JDK . Please try again', mbError, MB_OK);
+    MsgBox('Unable to install Java . Please try again', mbError, MB_OK);
 end;
 
 procedure Cleanup();
@@ -66,7 +67,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "vc_redist.x64.exe"; DestDir: "{app}\deps"; AfterInstall: SetupVC
-Source: "ms-openjdk.msi"; DestDir: "{app}\deps"; AfterInstall: SetupJDK
+Source: "java.exe"; DestDir: "{app}\deps"; AfterInstall: SetupJava
 Source: "ngrok.exe"; DestDir: "{app}\Release"; Flags: ignoreversion
 Source: "..\build\org.nickvision.miniera.qt\Release\{#MyAppExeName}"; DestDir: "{app}\Release"; Flags: ignoreversion 
 Source: "..\build\org.nickvision.miniera.qt\Release\*"; DestDir: "{app}\Release"; Flags: ignoreversion recursesubdirs createallsubdirs; AfterInstall: Cleanup
