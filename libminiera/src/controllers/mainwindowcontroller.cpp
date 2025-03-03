@@ -1,5 +1,4 @@
 ﻿#include "controllers/mainwindowcontroller.h"
-#include <format>
 #include <sstream>
 #include <thread>
 #include <libnick/filesystem/userdirectories.h>
@@ -209,10 +208,10 @@ namespace Nickvision::Miniera::Shared::Controllers
 
     void MainWindowController::loadServer(const std::string& serverName)
     {
-        static std::vector<std::string> loadedServers;
         const std::shared_ptr<Server>& server{ m_serverManager.getServer(serverName) };
         if(server)
         {
+            static std::vector<std::string> loadedServers;
             if(std::find(loadedServers.begin(), loadedServers.end(), serverName) != loadedServers.end())
             {
                 m_notificationSent.invoke({ _("Server already loaded"), NotificationSeverity::Warning });

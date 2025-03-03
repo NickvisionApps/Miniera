@@ -6,8 +6,6 @@ using namespace Nickvision::Filesystem;
 
 namespace Nickvision::Miniera::Shared::Models
 {
-    static std::shared_ptr<Server> s_nullServer{ nullptr };
-
     ServerManager::ServerManager(const std::string& appName)
         : m_serversDirectory{ UserDirectories::get(ApplicationUserDirectory::LocalData, appName) / "Servers" }
     {
@@ -55,7 +53,8 @@ namespace Nickvision::Miniera::Shared::Models
     {
         if(getServerExists(properties.getLevelName()))
         {
-            return s_nullServer;
+            static std::shared_ptr<Server> null{ nullptr };
+            return null;
         }
         m_servers.emplace(properties.getLevelName(), std::make_shared<Server>(version, properties, m_serversDirectory / properties.getLevelName()));
         return m_servers.at(properties.getLevelName());
@@ -65,7 +64,8 @@ namespace Nickvision::Miniera::Shared::Models
     {
         if(!m_servers.contains(name))
         {
-            return s_nullServer;
+            static std::shared_ptr<Server> null{ nullptr };
+            return null;
         }
         return m_servers.at(name);
     }
