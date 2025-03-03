@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-02 20:16-0500\n"
+"POT-Creation-Date: 2025-03-03 17:14-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,49 +17,49 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:33
+#: libminiera/src/controllers/mainwindowcontroller.cpp:32
 #: org.nickvision.miniera.qt/src/views/mainwindow.cpp:159
 msgid "Miniera"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:34
+#: libminiera/src/controllers/mainwindowcontroller.cpp:33
 msgid "Run Minecraft servers"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:39
+#: libminiera/src/controllers/mainwindowcontroller.cpp:38
 msgid "Matrix Chat"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:41
+#: libminiera/src/controllers/mainwindowcontroller.cpp:40
 msgid "Contributors on GitHub"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:43
+#: libminiera/src/controllers/mainwindowcontroller.cpp:42
 msgid "Fyodor Sobolev"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:45
+#: libminiera/src/controllers/mainwindowcontroller.cpp:44
 msgid "David Lapshin"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:46
+#: libminiera/src/controllers/mainwindowcontroller.cpp:45
 msgid "translator-credits"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:179
+#: libminiera/src/controllers/mainwindowcontroller.cpp:178
 msgid "New update available"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:193
+#: libminiera/src/controllers/mainwindowcontroller.cpp:192
 msgid ""
 "The update is downloading in the background and will start once it finishes"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:198
+#: libminiera/src/controllers/mainwindowcontroller.cpp:197
 msgid "Unable to download and install update"
 msgstr ""
 
-#: libminiera/src/controllers/mainwindowcontroller.cpp:218
+#: libminiera/src/controllers/mainwindowcontroller.cpp:217
 msgid "Server already loaded"
 msgstr ""
 

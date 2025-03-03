@@ -28,7 +28,7 @@ namespace Nickvision::Miniera::Shared::Controllers
         m_dataFileManager{ m_appInfo.getName() },
         m_serverManager{ m_appInfo.getName() }
     {
-        m_appInfo.setVersion({ "2025.2.0-next" });
+        m_appInfo.setVersion({ "2025.3.0-next" });
         m_appInfo.setShortName(_("Miniera"));
         m_appInfo.setDescription(_("Run Minecraft servers"));
         m_appInfo.setChangelog("- Initial Release");

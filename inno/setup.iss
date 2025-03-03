@@ -3,7 +3,7 @@
 
 #define MyAppName "Nickvision Miniera"
 #define MyAppShortName "Miniera"
-#define MyAppVersion "2025.2.0"
+#define MyAppVersion "2025.3.0"
 #define MyAppPublisher "Nickvision"
 #define MyAppURL "https://nickvision.org"
 #define MyAppExeName "org.nickvision.miniera.qt.exe"
@@ -23,8 +23,7 @@ UsePreviousAppDir=no
 DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
 LicenseFile=..\COPYING
-; Uncomment the following line to run in non administrative install mode (install for current user only.)
-;PrivilegesRequired=lowest
+PrivilegesRequired=admin
 OutputDir=..\inno
 OutputBaseFilename=NickvisionMinieraSetup
 SetupIconFile=..\resources\org.nickvision.miniera.ico
@@ -41,7 +40,7 @@ procedure SetupVC();
 var
   ResultCode: Integer;
 begin
-  if not Exec(ExpandConstant('{app}\deps\vc_redist.x64.exe'), '/install /quiet /norestart', '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
+  if not ShellExec('', ExpandConstant('{app}\deps\vc_redist.x64.exe'), '/install /quiet /norestart', '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
   then
     MsgBox('Unable to install VC . Please try again', mbError, MB_OK);
 end;
@@ -50,7 +49,7 @@ procedure SetupJDK();
 var
   ResultCode: Integer;
 begin
-  if not Exec(ExpandConstant('{win}\msiexec.exe'), ExpandConstant('"{app}\deps\ms-openjdk.msi" ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome INSTALLDIR="C:\Program Files\Microsoft\Java" /qn /norestart'), '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
+  if not ShellExec('', ExpandConstant('{win}\msiexec.exe'), ExpandConstant('"{app}\deps\ms-openjdk.msi" ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome INSTALLDIR="{autopf}\Microsoft\Java" /qn /norestart'), '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
   then
     MsgBox('Unable to install JDK . Please try again', mbError, MB_OK);
 end;
@@ -79,5 +78,5 @@ Name: "{autoprograms}\{#MyAppShortName}"; Filename: "{app}\Release\{#MyAppExeNam
 Name: "{autodesktop}\{#MyAppShortName}"; Filename: "{app}\Release\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\Release\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\Release\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: runascurrentuser nowait postinstall skipifsilent
 
