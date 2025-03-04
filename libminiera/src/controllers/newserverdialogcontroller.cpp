@@ -70,7 +70,7 @@ namespace Nickvision::Miniera::Shared::Controllers
         {
             return ServerCheckStatus::ExistingName;
         }
-        else if(m_serverManager.createServer(m_serverVersions.at(m_selectedServerVersionIndex), m_serverProperties) == nullptr)
+        else if(!m_serverManager.createServer(m_serverVersions.at(m_selectedServerVersionIndex), m_serverProperties))
         {
             return ServerCheckStatus::CreateError;
         }

@@ -66,7 +66,7 @@ namespace Nickvision::Miniera::Shared::Controllers
 
     Event<ServerLoadedEventArgs>& MainWindowController::serverLoaded()
     {
-        return m_serverLoaded;
+        return m_serverManager.serverLoaded();
     }
 
     const AppInfo& MainWindowController::getAppInfo() const
@@ -94,11 +94,11 @@ namespace Nickvision::Miniera::Shared::Controllers
         //Java
         if(Environment::findDependency("java").empty())
         {
-            builder << "Java not found" << std::endl;
+            builder << "Java not found" << std::endl << std::endl;
         }
         else
         {
-            builder << Environment::exec("\"" + Environment::findDependency("java").string() + "\"" + " --version") << std::endl;
+            builder << Environment::exec("\"" + Environment::findDependency("java").string() + "\"" + " -version") << std::endl;
         }
         //Extra
         if(!extraInformation.empty())
@@ -208,19 +208,9 @@ namespace Nickvision::Miniera::Shared::Controllers
 
     void MainWindowController::loadServer(const std::string& serverName)
     {
-        const std::shared_ptr<Server>& server{ m_serverManager.getServer(serverName) };
-        if(server)
+        if(!m_serverManager.loadServer(serverName))
         {
-            static std::vector<std::string> loadedServers;
-            if(std::find(loadedServers.begin(), loadedServers.end(), serverName) != loadedServers.end())
-            {
-                m_notificationSent.invoke({ _("Server already loaded"), NotificationSeverity::Warning });
-            }
-            else
-            {
-                loadedServers.push_back(serverName);
-                m_serverLoaded.invoke({ serverName, std::make_shared<ServerViewController>(server, m_serverManager) });
-            }
+            m_notificationSent.invoke({ _("Server already loaded"), NotificationSeverity::Warning });
         }
     }
 }

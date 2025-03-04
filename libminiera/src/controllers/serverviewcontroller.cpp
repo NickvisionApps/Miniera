@@ -5,9 +5,8 @@ using namespace Nickvision::Miniera::Shared::Models;
 
 namespace Nickvision::Miniera::Shared::Controllers
 {
-    ServerViewController::ServerViewController(const std::shared_ptr<Server>& server, ServerManager& serverManager)
+    ServerViewController::ServerViewController(const std::shared_ptr<Server>& server)
         : m_server{ server },
-        m_serverManager{ serverManager },
         m_started{ false }
     {
         if(!server)

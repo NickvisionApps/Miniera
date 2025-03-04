@@ -1,8 +1,12 @@
 #include "models/servermanager.h"
 #include <fstream>
 #include <libnick/filesystem/userdirectories.h>
+#include "controllers/serverviewcontroller.h"
 
+using namespace Nickvision::Events;
 using namespace Nickvision::Filesystem;
+using namespace Nickvision::Miniera::Shared::Controllers;
+using namespace Nickvision::Miniera::Shared::Events;
 
 namespace Nickvision::Miniera::Shared::Models
 {
@@ -29,9 +33,15 @@ namespace Nickvision::Miniera::Shared::Models
                 if(value.is_object() )
                 {
                     m_servers.emplace(name, std::make_shared<Server>(value.get_object()));
+                    m_loadedServers.emplace(name, false);
                 }
             }
         }
+    }
+
+    Event<ServerLoadedEventArgs>& ServerManager::serverLoaded()
+    {
+        return m_serverLoaded;
     }
 
     std::vector<std::string> ServerManager::getAvailableServersNames()
@@ -49,24 +59,28 @@ namespace Nickvision::Miniera::Shared::Models
         return m_servers.contains(name);
     }
 
-    const std::shared_ptr<Server>& ServerManager::createServer(const ServerVersion& version, const ServerProperties& properties)
+    bool ServerManager::createServer(const ServerVersion& version, const ServerProperties& properties)
     {
         if(getServerExists(properties.getLevelName()))
         {
-            static std::shared_ptr<Server> null{ nullptr };
-            return null;
+            return false;
         }
-        m_servers.emplace(properties.getLevelName(), std::make_shared<Server>(version, properties, m_serversDirectory / properties.getLevelName()));
-        return m_servers.at(properties.getLevelName());
+        std::shared_ptr<Server> server{ std::make_shared<Server>(version, properties, m_serversDirectory / properties.getLevelName()) };
+        m_servers.emplace(server->getName(), server);
+        m_loadedServers.emplace(server->getName(), true);
+        //TODO: Intialize server
+        m_serverLoaded.invoke({ server->getName(), std::make_shared<ServerViewController>(server) });
+        return true;
     }
     
-    const std::shared_ptr<Server>& ServerManager::getServer(const std::string& name)
+    bool ServerManager::loadServer(const std::string& name)
     {
-        if(!m_servers.contains(name))
+        if(!m_servers.contains(name) || m_loadedServers.at(name))
         {
-            static std::shared_ptr<Server> null{ nullptr };
-            return null;
+            return false;
         }
-        return m_servers.at(name);
+        m_loadedServers[name] = true;
+        m_serverLoaded.invoke({ name, std::make_shared<ServerViewController>(m_servers.at(name)) });
+        return true;
     }
 }

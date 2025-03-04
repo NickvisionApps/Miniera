@@ -138,7 +138,6 @@ namespace Nickvision::Miniera::Shared::Controllers
         Models::ServerManager m_serverManager;
         Nickvision::Events::Event<Nickvision::Notifications::NotificationSentEventArgs> m_notificationSent;
         Nickvision::Events::Event<Nickvision::Notifications::ShellNotificationSentEventArgs> m_shellNotificationSent;
-        Nickvision::Events::Event<Events::ServerLoadedEventArgs> m_serverLoaded;
     };
 }
 

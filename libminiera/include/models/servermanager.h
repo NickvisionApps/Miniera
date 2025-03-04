@@ -6,9 +6,11 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <libnick/events/event.h>
+#include "events/serverloadedeventargs.h"
 #include "server.h"
 #include "serverproperties.h"
-#include "serverversion.h" 
+#include "serverversion.h"
 
 namespace Nickvision::Miniera::Shared::Models
 {
@@ -24,6 +26,11 @@ namespace Nickvision::Miniera::Shared::Models
          */
         ServerManager(const std::string& appName);
         /**
+         * @brief Gets the event for when a server is loaded.
+         * @return The server loaded event
+         */
+        Nickvision::Events::Event<Shared::Events::ServerLoadedEventArgs>& serverLoaded();
+        /**
          * @brief Gets the names of the available servers.
          * @return The list of available server names
          */
@@ -36,21 +43,28 @@ namespace Nickvision::Miniera::Shared::Models
         bool getServerExists(const std::string& name) const;
         /**
          * @brief Creates a server.
+         * @brief This function will also initalize the server as well.
+         * @brief This function will call the server loaded event when creation is complete.
          * @param version The version of the server
          * @param properties The properties of the server
-         * @return The created server
+         * @return True if successful
+         * @return False if the server creation failed.
          */
-        const std::shared_ptr<Server>& createServer(const ServerVersion& version, const ServerProperties& properties);
+        bool createServer(const ServerVersion& version, const ServerProperties& properties);
         /**
-         * @brief Gets a server.
-         * @param name The name of the server to get
-         * @return The server if found, else nullptr
+         * @brief Loads a server.
+         * @brief This function will call the server loaded event when loading is complete.
+         * @param name The name of the server to load
+         * @return True if successful
+         * @return False if the server is already loaded
          */
-        const std::shared_ptr<Server>& getServer(const std::string& name);
+        bool loadServer(const std::string& name);
 
     private:
         std::filesystem::path m_serversDirectory;
         std::unordered_map<std::string, std::shared_ptr<Server>> m_servers;
+        std::unordered_map<std::string, bool> m_loadedServers;
+        Nickvision::Events::Event<Shared::Events::ServerLoadedEventArgs> m_serverLoaded;
     };
 }
 

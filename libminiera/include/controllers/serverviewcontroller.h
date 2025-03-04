@@ -4,7 +4,6 @@
 #include <memory>
 #include <string>
 #include "models/server.h"
-#include "models/servermanager.h"
 
 namespace Nickvision::Miniera::Shared::Controllers
 {
@@ -17,10 +16,9 @@ namespace Nickvision::Miniera::Shared::Controllers
         /**
          * @brief Constructs a ServerViewController.
          * @param server The server to manage
-         * @param serverManager The server manager
          * @throw std::invalid_argument Thrown if the server is nullptr
          */
-        ServerViewController(const std::shared_ptr<Models::Server>& server, Models::ServerManager& serverManager);
+        ServerViewController(const std::shared_ptr<Models::Server>& server);
         /**
          * @brief Gets the name of the server.
          * @return The name of the server
@@ -39,7 +37,6 @@ namespace Nickvision::Miniera::Shared::Controllers
 
     private:
         std::shared_ptr<Models::Server> m_server;
-        Models::ServerManager& m_serverManager;
         bool m_started;
     };
 }
