@@ -10,9 +10,9 @@
 
 #define CONTINUE_DOWNLOAD 0
 #define SERVER_NAME dir.stem().string()
-#define JAVA_SERVER_FILE dir / "server.jar"
-#define BEDROCK_SERVER_FILE dir / "server.zip"
-#define FORGE_SERVER_FILE dir / "installer.jar"
+#define JAVA_SERVER_FILE (dir / "server.jar")
+#define BEDROCK_SERVER_FILE (dir / "server.zip")
+#define FORGE_SERVER_FILE (dir / "installer.jar")
 
 using namespace Nickvision::Helpers;
 using namespace Nickvision::Miniera::Shared::Models;
@@ -23,9 +23,10 @@ namespace Nickvision::Miniera::Shared::Helpers
 {
     bool ServerInitializationHelpers::check(const std::filesystem::path& dir, const ServerVersion& version)
     {
+        bool initalized{ false };
         std::filesystem::create_directories(dir);
         //TODO: Implement
-        return false;
+        return initalized;
     }
 
     bool ServerInitializationHelpers::download(SERVER_INITIALIZATION_HELPER_ARGS)
@@ -78,16 +79,28 @@ namespace Nickvision::Miniera::Shared::Helpers
         progressChanged.invoke({ SERVER_NAME, 0.0, log, false, false });
         if(version.getEdition() == Edition::Java)
         {
+            //The Java edition downloads the ready-to-go server.jar file, no extraction needed.
             extractionSuccessful = true;
         }
         else if(version.getEdition() == Edition::Bedrock)
         {
-            ZipFile zip{ BEDROCK_SERVER_FILE };
-            extractionSuccessful = zip.extract(dir);
+            std::unique_ptr<ZipFile> zip{ std::make_unique<ZipFile>(BEDROCK_SERVER_FILE) };
+            extractionSuccessful = zip->extract(dir);
+            zip.reset();
+            std::filesystem::remove(BEDROCK_SERVER_FILE);
         }
         else if(version.getEdition() == Edition::Forge)
         {
-            //TODO: Run installer jar to extract server
+            std::vector<std::string> args;
+            args.push_back("-jar");
+            args.push_back(FORGE_SERVER_FILE.string());
+            args.push_back("--installServer");
+            args.push_back("\"" + dir.string() + "\"");
+            Process proc{ Environment::findDependency("java"), args };
+            proc.start();
+            proc.waitForExit();
+            extractionSuccessful = proc.getExitCode() == 0;
+            std::filesystem::remove(FORGE_SERVER_FILE);
         }
         if(extractionSuccessful)
         {

@@ -59,7 +59,7 @@ namespace Nickvision::Miniera::Shared::Models
             struct zip_stat stat;
             zip_stat_index(m_zip, i, 0, &stat);
             std::filesystem::path filePath{ dir / stat.name };
-            std::filesystem::create_directories(filePath);
+            std::filesystem::create_directories(filePath.parent_path());
             if(stat.name[strlen(stat.name) - 1] == '/')
             {
                 continue;
