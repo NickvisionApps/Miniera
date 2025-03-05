@@ -82,13 +82,13 @@ namespace Nickvision::Miniera::Shared::Models
             {
                 if(Environment::getOperatingSystem() == OperatingSystem::Windows)
                 {
-                    url = "https://www.minecraft.net/bedrockdedicatedserver/bin-win/bedrock-server-1.21.61.01.zip";
+                    url = "https://www.minecraft.net/bedrockdedicatedserver/bin-win/bedrock-server-1.21.62.01.zip";
                 }
                 else if(Environment::getOperatingSystem() == OperatingSystem::Linux)
                 {
-                    url = "https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-1.21.61.01.zip";
+                    url = "https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-1.21.62.01.zip";
                 }
-                versions.push_back({ Edition::Bedrock, { "1.21.61" }, url });
+                versions.push_back({ Edition::Bedrock, { "1.21.62" }, url });
             }
         }
         else if(edition == Edition::Forge)
