@@ -9,9 +9,10 @@
 #include "models/zipfile.h"
 
 #define CONTINUE_DOWNLOAD 0
-#define JAVA_SERVER_FILE serverDir / "server.jar"
-#define BEDROCK_SERVER_FILE serverDir / "server.zip"
-#define FORGE_SERVER_FILE serverDir / "installer.jar"
+#define SERVER_NAME dir.stem().string()
+#define JAVA_SERVER_FILE dir / "server.jar"
+#define BEDROCK_SERVER_FILE dir / "server.zip"
+#define FORGE_SERVER_FILE dir / "installer.jar"
 
 using namespace Nickvision::Helpers;
 using namespace Nickvision::Miniera::Shared::Models;
@@ -20,21 +21,28 @@ using namespace Nickvision::System;
 
 namespace Nickvision::Miniera::Shared::Helpers
 {
+    bool ServerInitializationHelpers::check(const std::filesystem::path& dir, const ServerVersion& version)
+    {
+        std::filesystem::create_directories(dir);
+        //TODO: Implement
+        return false;
+    }
+
     bool ServerInitializationHelpers::download(SERVER_INITIALIZATION_HELPER_ARGS)
     {
         bool downloadSuccessful{ false };
-        std::function<int(curl_off_t, curl_off_t, curl_off_t, curl_off_t)> downloadProgress{ [&log, &name, &progressChanged](curl_off_t dltotal, curl_off_t dlnow, curl_off_t, curl_off_t)
+        std::function<int(curl_off_t, curl_off_t, curl_off_t, curl_off_t)> downloadProgress{ [&log, &dir, &progressChanged](curl_off_t dltotal, curl_off_t dlnow, curl_off_t, curl_off_t)
         {
             if(dltotal == 0)
             {
                 dltotal = 1;
             }
             log += std::vformat(_("[Download] {}% completed"), std::make_format_args(CodeHelpers::unmove((dlnow / dltotal) * 100)));
-            progressChanged.invoke({ name, static_cast<double>(dlnow) / static_cast<double>(dltotal), log, false, false });
+            progressChanged.invoke({ SERVER_NAME, static_cast<double>(dlnow) / static_cast<double>(dltotal), log, false, false });
             return CONTINUE_DOWNLOAD;
         } };
         log += _("[Download] Starting server files download...");
-        progressChanged.invoke({ name, 0.0, log, false, false });
+        progressChanged.invoke({ SERVER_NAME, 0.0, log, false, false });
         if(version.getEdition() == Edition::Java)
         {
             boost::json::value json = Web::fetchJson(version.getReleaseUrl());
@@ -58,7 +66,7 @@ namespace Nickvision::Miniera::Shared::Helpers
         else
         {
             log += _("[Download] Error downloading server files.");
-            progressChanged.invoke({ name, 1.0, log, true, true });
+            progressChanged.invoke({ SERVER_NAME, 1.0, log, true, true });
         }
         return downloadSuccessful;
     }
@@ -67,7 +75,7 @@ namespace Nickvision::Miniera::Shared::Helpers
     {
         bool extractionSuccessful{ false };
         log += _("[Extract] Starting server files extraction...");
-        progressChanged.invoke({ name, 0.0, log, false, false });
+        progressChanged.invoke({ SERVER_NAME, 0.0, log, false, false });
         if(version.getEdition() == Edition::Java)
         {
             extractionSuccessful = true;
@@ -75,7 +83,7 @@ namespace Nickvision::Miniera::Shared::Helpers
         else if(version.getEdition() == Edition::Bedrock)
         {
             ZipFile zip{ BEDROCK_SERVER_FILE };
-            extractionSuccessful = zip.extract(serverDir);
+            extractionSuccessful = zip.extract(dir);
         }
         else if(version.getEdition() == Edition::Forge)
         {
@@ -88,7 +96,7 @@ namespace Nickvision::Miniera::Shared::Helpers
         else
         {
             log += _("[Extract] Error extracting server files.");
-            progressChanged.invoke({ name, 1.0, log, true, true });
+            progressChanged.invoke({ SERVER_NAME, 1.0, log, true, true });
         }
         return extractionSuccessful;
     }
@@ -97,7 +105,7 @@ namespace Nickvision::Miniera::Shared::Helpers
     {
         bool writingSuccessful{ false };
         log += _("[Write] Starting server property files writing...");
-        progressChanged.invoke({ name, 0.0, log, false, false });
+        progressChanged.invoke({ SERVER_NAME, 0.0, log, false, false });
         if(version.getEdition() == Edition::Java)
         {
             //TODO: Write eula file
@@ -119,7 +127,7 @@ namespace Nickvision::Miniera::Shared::Helpers
         else
         {
             log += _("[Write] Error writing server property files.");
-            progressChanged.invoke({ name, 1.0, log, true, true });
+            progressChanged.invoke({ SERVER_NAME, 1.0, log, true, true });
         }
         return writingSuccessful;
     }

@@ -46,12 +46,6 @@ namespace Nickvision::Miniera::Shared::Models
          */
         const ServerVersion& getVersion() const;
         /**
-         * @brief Gets whether or not the server has been initialized (downloaded server files).
-         * @return True if initialized
-         * @return False if not initialized
-         */
-        bool isInitialized() const;
-        /**
          * @brief Initializes the server.
          * @brief This will download and setup the main server executable and directories.
          * @brief This function runs on another thread. Progress should be tracked via the ServerInitializationProgressChanged event.
@@ -83,7 +77,6 @@ namespace Nickvision::Miniera::Shared::Models
         ServerVersion m_serverVersion;
         ServerProperties m_serverProperties;
         std::filesystem::path m_serverDirectory;
-        bool m_isInitialized;
         Nickvision::Events::Event<Events::ServerInitializationProgressChangedEventArgs> m_initializationProgressChanged;
     };
 }

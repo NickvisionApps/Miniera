@@ -5,8 +5,6 @@
 #include <libnick/localization/gettext.h>
 #include "helpers/serverinitializationhelpers.h"
 
-#define SERVER_INITIALIZATION_HELPER_ARGS log, m_serverDirectory, getName(), m_serverVersion, m_initializationProgressChanged
-
 using namespace Nickvision::Events;
 using namespace Nickvision::Miniera::Shared::Events;
 using namespace Nickvision::Miniera::Shared::Helpers;
@@ -16,8 +14,7 @@ namespace Nickvision::Miniera::Shared::Models
     Server::Server(const ServerVersion& serverVersion, const ServerProperties& serverProperties, const std::filesystem::path& serverDirectory)
         : m_serverVersion{ serverVersion },
         m_serverProperties{ serverProperties },
-        m_serverDirectory{ serverDirectory },
-        m_isInitialized{ false }
+        m_serverDirectory{ serverDirectory }
     {
         std::filesystem::create_directories(m_serverDirectory);
         writeJsonToDisk();
@@ -26,8 +23,7 @@ namespace Nickvision::Miniera::Shared::Models
     Server::Server(boost::json::object json)
         : m_serverVersion{ json["Version"].is_object() ? json["Version"].as_object() : boost::json::object() },
         m_serverProperties{ json["Properties"].is_object() ? json["Properties"].as_object() : boost::json::object() },
-        m_serverDirectory{ json["Directory"].is_string() ? json["Directory"].as_string().c_str() : "" },
-        m_isInitialized{ json["IsInitialized"].is_bool() ? json["IsInitialized"].as_bool() : false }
+        m_serverDirectory{ json["Directory"].is_string() ? json["Directory"].as_string().c_str() : "" }
     {
         if(!std::filesystem::exists(m_serverDirectory))
         {
@@ -50,14 +46,9 @@ namespace Nickvision::Miniera::Shared::Models
         return m_serverVersion;
     }
 
-    bool Server::isInitialized() const
-    {
-        return m_isInitialized;
-    }
-
     void Server::initialize()
     {
-        if(m_isInitialized)
+        if(ServerInitializationHelpers::check(m_serverDirectory, m_serverVersion))
         {
             m_initializationProgressChanged.invoke({ getName(), 1.0, _("[Initialization] Server already initialized."), true, false });
             return;
@@ -65,20 +56,18 @@ namespace Nickvision::Miniera::Shared::Models
         std::thread worker{ [this]()
         {
             std::string log{ _("[Initialization] Starting server initialization process...") };
-            if(!ServerInitializationHelpers::download(SERVER_INITIALIZATION_HELPER_ARGS))
+            if(!ServerInitializationHelpers::download(log, m_serverDirectory, m_serverVersion, m_initializationProgressChanged))
             {
                 return;
             }
-            if(!ServerInitializationHelpers::extract(SERVER_INITIALIZATION_HELPER_ARGS))
+            if(!ServerInitializationHelpers::extract(log, m_serverDirectory, m_serverVersion, m_initializationProgressChanged))
             {
                 return;
             }
-            //if(!ServerInitializationHelpers::write(SERVER_INITIALIZATION_HELPER_ARGS))
-            //{
-            //    return;
-            //}
-            m_isInitialized = true;
-            writeJsonToDisk();
+            if(!ServerInitializationHelpers::write(log, m_serverDirectory, m_serverVersion, m_initializationProgressChanged))
+            {
+                return;
+            }
             log += _("[Initialization] Server initialization process completed..");
             m_initializationProgressChanged.invoke({ getName(), 1.0, log, true, false });
         } };
@@ -91,7 +80,6 @@ namespace Nickvision::Miniera::Shared::Models
         json["Version"] = m_serverVersion.toJson();
         json["Properties"] = m_serverProperties.toJson();
         json["Directory"] = m_serverDirectory.string();
-        json["IsInitialized"] = m_isInitialized;
         return json;
     }
 
