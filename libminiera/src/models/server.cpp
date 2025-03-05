@@ -73,10 +73,10 @@ namespace Nickvision::Miniera::Shared::Models
             {
                 return;
             }
-            if(!ServerInitializationHelpers::write(SERVER_INITIALIZATION_HELPER_ARGS))
-            {
-                return;
-            }
+            //if(!ServerInitializationHelpers::write(SERVER_INITIALIZATION_HELPER_ARGS))
+            //{
+            //    return;
+            //}
             m_isInitialized = true;
             writeJsonToDisk();
             log += _("[Initialization] Server initialization process completed..");

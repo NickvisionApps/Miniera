@@ -25,6 +25,10 @@ namespace Nickvision::Miniera::Shared::Helpers
         bool downloadSuccessful{ false };
         std::function<int(curl_off_t, curl_off_t, curl_off_t, curl_off_t)> downloadProgress{ [&log, &name, &progressChanged](curl_off_t dltotal, curl_off_t dlnow, curl_off_t, curl_off_t)
         {
+            if(dltotal == 0)
+            {
+                dltotal = 1;
+            }
             log += std::vformat(_("[Download] {}% completed"), std::make_format_args(CodeHelpers::unmove((dlnow / dltotal) * 100)));
             progressChanged.invoke({ name, static_cast<double>(dlnow) / static_cast<double>(dltotal), log, false, false });
             return CONTINUE_DOWNLOAD;
@@ -63,6 +67,7 @@ namespace Nickvision::Miniera::Shared::Helpers
     {
         bool extractionSuccessful{ false };
         log += _("[Extract] Starting server files extraction...");
+        progressChanged.invoke({ name, 0.0, log, false, false });
         if(version.getEdition() == Edition::Java)
         {
             extractionSuccessful = true;
@@ -92,6 +97,7 @@ namespace Nickvision::Miniera::Shared::Helpers
     {
         bool writingSuccessful{ false };
         log += _("[Write] Starting server property files writing...");
+        progressChanged.invoke({ name, 0.0, log, false, false });
         if(version.getEdition() == Edition::Java)
         {
             //TODO: Write eula file

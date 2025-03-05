@@ -24,13 +24,4 @@ namespace Nickvision::Miniera::Shared::Controllers
     {
         return m_server->getVersion().str();
     }
-
-    void ServerViewController::startup()
-    {
-        if(!m_started)
-        {
-            m_server->initialize();
-            m_started = true;
-        }
-    }
 }

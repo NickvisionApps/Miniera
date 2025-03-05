@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-05 00:18-0500\n"
+"POT-Creation-Date: 2025-03-05 00:35-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,44 +63,44 @@ msgstr ""
 msgid "Server already loaded"
 msgstr ""
 
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:28
+#: libminiera/src/helpers/serverinitializationhelpers.cpp:32
 #, c-format, c++-format
 msgid "[Download] {}% completed"
 msgstr ""
 
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:32
+#: libminiera/src/helpers/serverinitializationhelpers.cpp:36
 msgid "[Download] Starting server files download..."
 msgstr ""
 
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:52
+#: libminiera/src/helpers/serverinitializationhelpers.cpp:56
 msgid "[Download] Server files download completed."
 msgstr ""
 
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:56
+#: libminiera/src/helpers/serverinitializationhelpers.cpp:60
 msgid "[Download] Error downloading server files."
 msgstr ""
 
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:65
+#: libminiera/src/helpers/serverinitializationhelpers.cpp:69
 msgid "[Extract] Starting server files extraction..."
 msgstr ""
 
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:81
+#: libminiera/src/helpers/serverinitializationhelpers.cpp:86
 msgid "[Extract] Server files extraction completed."
 msgstr ""
 
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:85
+#: libminiera/src/helpers/serverinitializationhelpers.cpp:90
 msgid "[Extract] Error extracting server files."
 msgstr ""
 
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:94
+#: libminiera/src/helpers/serverinitializationhelpers.cpp:99
 msgid "[Write] Starting server property files writing..."
 msgstr ""
 
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:111
+#: libminiera/src/helpers/serverinitializationhelpers.cpp:117
 msgid "[Write] Server propety files writing completed."
 msgstr ""
 
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:115
+#: libminiera/src/helpers/serverinitializationhelpers.cpp:121
 msgid "[Write] Error writing server property files."
 msgstr ""
 

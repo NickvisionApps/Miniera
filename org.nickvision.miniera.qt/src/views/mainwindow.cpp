@@ -173,7 +173,7 @@ namespace Nickvision::Miniera::Qt::Views
         connect(m_ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
         m_controller->notificationSent() += [&](const NotificationSentEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onNotificationSent(args); }); };
         m_controller->shellNotificationSent() += [&](const ShellNotificationSentEventArgs& args) { onShellNotificationSent(args); };
-        m_controller->serverLoaded() += [&](const ServerLoadedEventArgs& args) { onServerLoaded(args);};
+        m_controller->serverLoaded() += [&](const ServerLoadedEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onServerLoaded(args); }); };
     }
 
     MainWindow::~MainWindow()

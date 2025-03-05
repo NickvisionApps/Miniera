@@ -95,10 +95,4 @@ namespace Nickvision::Miniera::Qt::Views
     {
         delete m_ui;
     }
-
-    void ServerPage::showEvent(QShowEvent* event)
-    {
-        QWidget::showEvent(event);
-        m_controller->startup();
-    }
 }
