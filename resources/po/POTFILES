@@ -1,4 +1,5 @@
 libminiera/src/controllers/mainwindowcontroller.cpp
+libminiera/src/models/server.cpp
 libminiera/src/models/serverversion.cpp
 org.nickvision.miniera.gnome/blueprints/main_window.blp
 org.nickvision.miniera.gnome/blueprints/preferences_dialog.blp

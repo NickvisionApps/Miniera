@@ -39,6 +39,11 @@ namespace Nickvision::Miniera::Shared::Models
         }
     }
 
+    Event<ServerInitializationProgressChangedEventArgs>& ServerManager::serverInitializationProgressChanged()
+    {
+        return m_serverInitializationProgressChanged;
+    }
+
     Event<ServerLoadedEventArgs>& ServerManager::serverLoaded()
     {
         return m_serverLoaded;
@@ -68,8 +73,15 @@ namespace Nickvision::Miniera::Shared::Models
         std::shared_ptr<Server> server{ std::make_shared<Server>(version, properties, m_serversDirectory / properties.getLevelName()) };
         m_servers.emplace(server->getName(), server);
         m_loadedServers.emplace(server->getName(), true);
-        //TODO: Intialize server
-        m_serverLoaded.invoke({ server->getName(), std::make_shared<ServerViewController>(server) });
+        server->initializationProgressChanged() += [this, server](const ServerInitializationProgressChangedEventArgs& args)
+        {
+            m_serverInitializationProgressChanged.invoke(args);
+            if(args.isFinished() && !args.isError())
+            {
+                m_serverLoaded.invoke({ server->getName(), std::make_shared<ServerViewController>(server) });
+            }
+        };
+        server->initialize();
         return true;
     }
     

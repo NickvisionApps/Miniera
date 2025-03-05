@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <vector>
 #include <libnick/events/event.h>
+#include "events/serverinitializationprogresschangedeventargs.h"
 #include "events/serverloadedeventargs.h"
 #include "server.h"
 #include "serverproperties.h"
@@ -25,6 +26,11 @@ namespace Nickvision::Miniera::Shared::Models
          * @param appName The name of the app
          */
         ServerManager(const std::string& appName);
+        /**
+         * @brief Gets the event for when a server's initialization's progress is changed.
+         * @return The server's initialization's progress changed event
+         */
+        Nickvision::Events::Event<Shared::Events::ServerInitializationProgressChangedEventArgs>& serverInitializationProgressChanged();
         /**
          * @brief Gets the event for when a server is loaded.
          * @return The server loaded event
@@ -64,6 +70,7 @@ namespace Nickvision::Miniera::Shared::Models
         std::filesystem::path m_serversDirectory;
         std::unordered_map<std::string, std::shared_ptr<Server>> m_servers;
         std::unordered_map<std::string, bool> m_loadedServers;
+        Nickvision::Events::Event<Shared::Events::ServerInitializationProgressChangedEventArgs> m_serverInitializationProgressChanged;
         Nickvision::Events::Event<Shared::Events::ServerLoadedEventArgs> m_serverLoaded;
     };
 }

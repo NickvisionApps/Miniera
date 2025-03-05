@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-04 14:43-0500\n"
+"POT-Creation-Date: 2025-03-04 23:39-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -61,6 +61,47 @@ msgstr ""
 
 #: libminiera/src/controllers/mainwindowcontroller.cpp:213
 msgid "Server already loaded"
+msgstr ""
+
+#: libminiera/src/models/server.cpp:70
+msgid "[Initialization] Server already initialized."
+msgstr ""
+
+#: libminiera/src/models/server.cpp:75
+msgid "[Initialization] Starting server initialization process..."
+msgstr ""
+
+#: libminiera/src/models/server.cpp:80
+#, c-format, c++-format
+msgid "[Download] {}% completed"
+msgstr ""
+
+#: libminiera/src/models/server.cpp:84
+msgid "[Download] Starting server files download..."
+msgstr ""
+
+#: libminiera/src/models/server.cpp:104
+msgid "[Download] Error downloading server files."
+msgstr ""
+
+#: libminiera/src/models/server.cpp:108
+msgid "[Download] Server files download completed."
+msgstr ""
+
+#: libminiera/src/models/server.cpp:111
+msgid "[Extract] Starting server files extraction..."
+msgstr ""
+
+#: libminiera/src/models/server.cpp:127
+msgid "[Extract] Error extracting server files."
+msgstr ""
+
+#: libminiera/src/models/server.cpp:131
+msgid "[Extract] Server files extraction completed."
+msgstr ""
+
+#: libminiera/src/models/server.cpp:136
+msgid "[Initialization] Server initialization process completed.."
 msgstr ""
 
 #: libminiera/src/models/serverversion.cpp:20

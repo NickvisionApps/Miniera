@@ -6,6 +6,7 @@
 #include <boost/json.hpp>
 #include <libnick/events/event.h>
 #include <libnick/network/curleasy.h>
+#include "events/serverinitializationprogresschangedeventargs.h"
 #include "serverproperties.h"
 #include "serverversion.h"
 
@@ -31,6 +32,11 @@ namespace Nickvision::Miniera::Shared::Models
          */
         Server(boost::json::object json);
         /**
+         * @brief Gets the event for when the initialization's progress is changed.
+         * @return The initialization progress changed event.
+         */
+        Nickvision::Events::Event<Events::ServerInitializationProgressChangedEventArgs>& initializationProgressChanged();
+        /**
          * @brief Gets the name of the server.
          * @return The name of the server
          */
@@ -49,10 +55,9 @@ namespace Nickvision::Miniera::Shared::Models
         /**
          * @brief Initializes the server.
          * @brief This will download and setup the main server executable and directories.
-         * @return True if initialization successful
-         * @return False if initialization failed
+         * @brief This function runs on another thread. Progress should be tracked via the ServerInitializationProgressChanged event.
          */
-        bool initialize();
+        void initialize();
         /**
          * @brief Converts the Server to a JSON object.
          * @return The Server as a JSON object
@@ -76,19 +81,11 @@ namespace Nickvision::Miniera::Shared::Models
          * @brief Writes the server json to disk.
          */
         void writeJsonToDisk() const;
-        /**
-         * @brief Handles when the initaliazation download progress changes.
-         * @param dltotal The total number of bytes to download
-         * @param dlnow The total number of bytes downloaded
-         * @param utotal The total number of bytes to upload
-         * @param unow The total number of bytes uploaded
-         * @return 0
-         */
-        int onInitializationDownloadProgressChanged(curl_off_t dltotal, curl_off_t dlnow, curl_off_t utotal, curl_off_t unow);
         ServerVersion m_serverVersion;
         ServerProperties m_serverProperties;
         std::filesystem::path m_serverDirectory;
         bool m_isInitialized;
+        Nickvision::Events::Event<Events::ServerInitializationProgressChangedEventArgs> m_initializationProgressChanged;
     };
 }
 
