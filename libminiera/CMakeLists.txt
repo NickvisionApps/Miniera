@@ -10,6 +10,7 @@ add_library(libminiera
     "src/events/serverinitializationprogresschangedeventargs.cpp"
     "src/events/serverloadedeventargs.cpp"
     "src/events/serverversionsloadedeventargs.cpp"
+    "src/helpers/serverinitializationhelpers.cpp"
     "src/models/configuration.cpp"
     "src/models/server.cpp"
     "src/models/servermanager.cpp"

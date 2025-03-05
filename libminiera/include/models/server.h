@@ -5,7 +5,6 @@
 #include <string>
 #include <boost/json.hpp>
 #include <libnick/events/event.h>
-#include <libnick/network/curleasy.h>
 #include "events/serverinitializationprogresschangedeventargs.h"
 #include "serverproperties.h"
 #include "serverversion.h"
