@@ -49,7 +49,7 @@ procedure SetupJava();
 var
   ResultCode: Integer;
 begin
-  if not ShellExec('', ExpandConstant('{app}\deps\java.exe'), 'INSTALL_SILENT=Enable REBOOT=Disable SPONSORS=Disable', '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
+  if not ShellExec('RunAs', ExpandConstant('{win}\msiexec.exe'), ExpandConstant('/i "{app}\deps\java.msi" "ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome,FeatureOracleJavaSoft" "INSTALLDIR="C:\Program Files\Java"" /quiet'), '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
   then
     MsgBox('Unable to install Java . Please try again', mbError, MB_OK);
 end;
@@ -67,7 +67,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "vc_redist.x64.exe"; DestDir: "{app}\deps"; AfterInstall: SetupVC
-Source: "java.exe"; DestDir: "{app}\deps"; AfterInstall: SetupJava
+Source: "java.msi"; DestDir: "{app}\deps"; AfterInstall: SetupJava
 Source: "ngrok.exe"; DestDir: "{app}\Release"; Flags: ignoreversion
 Source: "..\build\org.nickvision.miniera.qt\Release\{#MyAppExeName}"; DestDir: "{app}\Release"; Flags: ignoreversion 
 Source: "..\build\org.nickvision.miniera.qt\Release\*"; DestDir: "{app}\Release"; Flags: ignoreversion recursesubdirs createallsubdirs; AfterInstall: Cleanup
