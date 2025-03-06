@@ -42,19 +42,22 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "vc_redist.x64.exe"; DestDir: "{app}\deps"; Flags: deleteafterinstall
-Source: "java.msi"; DestDir: "{app}\deps"; Flags: deleteafterinstall
+Source: "vc_redist.x64.exe"; DestDir: "{app}"; Flags: deleteafterinstall
+Source: "java.msi"; DestDir: "{app}"; Flags: deleteafterinstall
 Source: "ngrok.exe"; DestDir: "{app}\Release"; Flags: ignoreversion
 Source: "..\build\org.nickvision.miniera.qt\Release\{#MyAppExeName}"; DestDir: "{app}\Release"; Flags: ignoreversion 
 Source: "..\build\org.nickvision.miniera.qt\Release\*"; DestDir: "{app}\Release"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
+[Dirs]
+Name: "{autopf}\Microsoft\Java"
 
 [Icons]
 Name: "{autoprograms}\{#MyAppShortName}"; Filename: "{app}\Release\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppShortName}"; Filename: "{app}\Release\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\deps\vc_redist.x64.exe"; Parameters: "/install /quiet /norestart"
-Filename: "{win}\msiexec.exe"; Parameters: "/i ""{app}\deps\java.msi"" ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome,FeatureOracleJavaSoft INSTALLDIR=""c:\Program Files\Microsoft\"" /quiet"
+Filename: "{app}\vc_redist.x64.exe"; Parameters: "/install /quiet /norestart"
+Filename: "{win}\msiexec.exe"; Parameters: "/i ""{app}\java.msi"" ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome,FeatureOracleJavaSoft INSTALLDIR=""{autopf}\Microsoft\Java"" /quiet"
 Filename: "{app}\Release\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: runascurrentuser nowait postinstall skipifsilent
 
