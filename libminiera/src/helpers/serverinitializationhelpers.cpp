@@ -79,7 +79,13 @@ namespace Nickvision::Miniera::Shared::Helpers
         progressChanged.invoke({ SERVER_NAME, 0.0, log, false, false });
         if(version.getEdition() == Edition::Java)
         {
-            //The Java edition downloads the ready-to-go server.jar file, no extraction needed.
+            std::vector<std::string> args;
+            args.push_back("-jar");
+            args.push_back(JAVA_SERVER_FILE.string());
+            args.push_back("--initSettings");
+            Process proc{ Environment::findDependency("java"), args, dir };
+            proc.start();
+            proc.waitForExit();
             extractionSuccessful = true;
         }
         else if(version.getEdition() == Edition::Bedrock)
@@ -95,8 +101,7 @@ namespace Nickvision::Miniera::Shared::Helpers
             args.push_back("-jar");
             args.push_back(FORGE_SERVER_FILE.string());
             args.push_back("--installServer");
-            args.push_back("\"" + dir.string() + "\"");
-            Process proc{ Environment::findDependency("java"), args };
+            Process proc{ Environment::findDependency("java"), args, dir };
             proc.start();
             proc.waitForExit();
             extractionSuccessful = proc.getExitCode() == 0;
@@ -119,18 +124,13 @@ namespace Nickvision::Miniera::Shared::Helpers
         bool writingSuccessful{ false };
         log += _("[Write] Starting server property files writing...");
         progressChanged.invoke({ SERVER_NAME, 0.0, log, false, false });
-        if(version.getEdition() == Edition::Java)
+        if(version.getEdition() == Edition::Java || version.getEdition() == Edition::Forge)
         {
             //TODO: Write eula file
             //TODO: Write properties file
         }
         else if(version.getEdition() == Edition::Bedrock)
         {
-            //TODO: Write properties file
-        }
-        else if(version.getEdition() == Edition::Forge)
-        {
-            //TODO: Write eula file
             //TODO: Write properties file
         }
         if(writingSuccessful)

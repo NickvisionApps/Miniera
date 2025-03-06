@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-05 15:11-0500\n"
+"POT-Creation-Date: 2025-03-06 00:26-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,7 +64,7 @@ msgid "Server already loaded"
 msgstr ""
 
 #: libminiera/src/helpers/serverinitializationhelpers.cpp:41
-#, c-format, c++-format
+#, c-format
 msgid "[Download] {}% completed"
 msgstr ""
 
@@ -84,15 +84,15 @@ msgstr ""
 msgid "[Extract] Starting server files extraction..."
 msgstr ""
 
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:107
+#: libminiera/src/helpers/serverinitializationhelpers.cpp:112
 msgid "[Extract] Server files extraction completed."
 msgstr ""
 
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:111
+#: libminiera/src/helpers/serverinitializationhelpers.cpp:116
 msgid "[Extract] Error extracting server files."
 msgstr ""
 
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:120
+#: libminiera/src/helpers/serverinitializationhelpers.cpp:125
 msgid "[Write] Starting server property files writing..."
 msgstr ""
 

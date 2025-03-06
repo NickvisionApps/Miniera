@@ -49,7 +49,7 @@ procedure SetupJava();
 var
   ResultCode: Integer;
 begin
-  if not ShellExec('RunAs', ExpandConstant('{win}\msiexec.exe'), ExpandConstant('/i "{app}\deps\java.msi" "ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome,FeatureOracleJavaSoft" "INSTALLDIR="C:\Program Files\Java"" /quiet'), '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
+  if not ShellExec('', ExpandConstant('{win}\msiexec.exe'), ExpandConstant('/i "{app}\deps\java.msi"'), '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
   then
     MsgBox('Unable to install Java . Please try again', mbError, MB_OK);
 end;
