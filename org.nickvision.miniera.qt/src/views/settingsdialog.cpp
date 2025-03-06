@@ -68,7 +68,7 @@ namespace Ui
                 viewStack->setCurrentIndex(listNavigation->currentRow());
             });
             //Main Layout
-            QHBoxLayout* layout{ new QHBoxLayout(parent) };
+            QHBoxLayout* layout{ new QHBoxLayout() };
             layout->addWidget(listNavigation);
             layout->addWidget(viewStack);
             parent->setLayout(layout);
