@@ -35,30 +35,6 @@ CloseApplications=yes
 ChangesEnvironment=yes
 AlwaysRestart=yes
 
-[Code]
-procedure SetupVC();
-var
-  ResultCode: Integer;
-begin
-  if not ShellExec('', ExpandConstant('{app}\deps\vc_redist.x64.exe'), '/install /quiet /norestart', '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
-  then
-    MsgBox('Unable to install VC . Please try again', mbError, MB_OK);
-end;
-
-procedure SetupJava();
-var
-  ResultCode: Integer;
-begin
-  if not ShellExec('', ExpandConstant('{win}\msiexec.exe'), ExpandConstant('/i "{app}\deps\java.msi"'), '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
-  then
-    MsgBox('Unable to install Java . Please try again', mbError, MB_OK);
-end;
-
-procedure Cleanup();
-begin
-  DelTree(ExpandConstant('{app}\deps'), True, True, True);
-end;
-
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
@@ -66,11 +42,11 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "vc_redist.x64.exe"; DestDir: "{app}\deps"; AfterInstall: SetupVC
-Source: "java.msi"; DestDir: "{app}\deps"; AfterInstall: SetupJava
+Source: "vc_redist.x64.exe"; DestDir: "{app}\deps"; Flags: deleteafterinstall
+Source: "java.msi"; DestDir: "{app}\deps"; Flags: deleteafterinstall
 Source: "ngrok.exe"; DestDir: "{app}\Release"; Flags: ignoreversion
 Source: "..\build\org.nickvision.miniera.qt\Release\{#MyAppExeName}"; DestDir: "{app}\Release"; Flags: ignoreversion 
-Source: "..\build\org.nickvision.miniera.qt\Release\*"; DestDir: "{app}\Release"; Flags: ignoreversion recursesubdirs createallsubdirs; AfterInstall: Cleanup
+Source: "..\build\org.nickvision.miniera.qt\Release\*"; DestDir: "{app}\Release"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -78,5 +54,7 @@ Name: "{autoprograms}\{#MyAppShortName}"; Filename: "{app}\Release\{#MyAppExeNam
 Name: "{autodesktop}\{#MyAppShortName}"; Filename: "{app}\Release\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
+Filename: "{app}\deps\vc_redist.x64.exe"; Parameters: "/install /quiet /norestart"
+Filename: "{win}\msiexec.exe"; Parameters: "/i ""{app}\deps\java.msi"" ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome,FeatureOracleJavaSoft INSTALLDIR=""c:\Program Files\Microsoft\"" /quiet"
 Filename: "{app}\Release\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: runascurrentuser nowait postinstall skipifsilent
 
