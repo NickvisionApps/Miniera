@@ -58,6 +58,6 @@ Name: "{autodesktop}\{#MyAppShortName}"; Filename: "{app}\Release\{#MyAppExeName
 
 [Run]
 Filename: "{app}\vc_redist.x64.exe"; Parameters: "/install /quiet /norestart"
-Filename: "{win}\msiexec.exe"; Parameters: "/i ""{app}\java.msi"" ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome,FeatureOracleJavaSoft INSTALLDIR=""{autopf}\Microsoft\Java"" /quiet"
+Filename: "{win}\System32\msiexec.exe"; Parameters: "/i ""{app}\java.msi"" ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome,FeatureOracleJavaSoft INSTALLDIR=""{autopf}\Microsoft\Java"" /quiet"
 Filename: "{app}\Release\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: runascurrentuser nowait postinstall skipifsilent
 
