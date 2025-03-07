@@ -184,11 +184,7 @@ namespace Nickvision::Miniera::Shared::Models
         m_initializationProgressChanged.invoke({ getName(), 0.0, log, false, false });
         if(m_serverVersion.getEdition() == Edition::Java)
         {
-            std::vector<std::string> args;
-            args.push_back("-jar");
-            args.push_back(JAVA_SERVER_FILE_RAW.string());
-            args.push_back("--initSettings");
-            Process proc{ Environment::findDependency("java"), args, m_serverDirectory };
+            Process proc{ Environment::findDependency("java"), std::vector<std::string>{ "-jar", JAVA_SERVER_FILE_RAW.string(), "--initSettings" }, m_serverDirectory };
             proc.start();
             proc.waitForExit();
             extractionSuccessful = proc.getExitCode() == 0;
@@ -211,11 +207,7 @@ namespace Nickvision::Miniera::Shared::Models
         }
         else if(m_serverVersion.getEdition() == Edition::Forge)
         {
-            std::vector<std::string> args;
-            args.push_back("-jar");
-            args.push_back(FORGE_SERVER_FILE_RAW.string());
-            args.push_back("--installServer");
-            Process proc{ Environment::findDependency("java"), args, m_serverDirectory };
+            Process proc{ Environment::findDependency("java"), std::vector<std::string>{ "-jar", FORGE_SERVER_FILE_RAW.string(), "--installServer" }, m_serverDirectory };
             proc.start();
             proc.waitForExit();
             extractionSuccessful = proc.getExitCode() == 0;
