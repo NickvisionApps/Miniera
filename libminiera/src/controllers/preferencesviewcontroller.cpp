@@ -1,6 +1,10 @@
 #include "controllers/preferencesviewcontroller.h"
+#include <libnick/helpers/sizehelpers.h>
+#include <libnick/system/hardwareinfo.h>
 
+using namespace Nickvision::Helpers;
 using namespace Nickvision::Miniera::Shared::Models;
+using namespace Nickvision::System;
 
 namespace Nickvision::Miniera::Shared::Controllers
 {
@@ -33,6 +37,21 @@ namespace Nickvision::Miniera::Shared::Controllers
     std::string PreferencesViewController::getNgrokAuthToken() const
     {
         return m_configuration.getNgrokAuthToken();
+    }
+
+    unsigned int PreferencesViewController::getMaxServerRamInGB() const
+    {
+        return m_configuration.getMaxServerRamInGB();
+    }
+
+    void PreferencesViewController::setMaxServerRamInGB(unsigned int ram)
+    {
+        m_configuration.setMaxServerRamInGB(ram);
+    }
+
+    unsigned int PreferencesViewController::getSystemRamInGB() const
+    {
+        return static_cast<unsigned int>(SizeHelpers::bytesToGigabytes(HardwareInfo::getTotalRamSize()));
     }
 
     void PreferencesViewController::setNgrokAuthToken(const std::string& token)

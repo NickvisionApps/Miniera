@@ -1,7 +1,11 @@
 #include "models/configuration.h"
+#include <cmath>
+#include <libnick/helpers/sizehelpers.h>
 #include <libnick/system/environment.h>
+#include <libnick/system/hardwareinfo.h>
 
 using namespace Nickvision::App;
+using namespace Nickvision::Helpers;
 using namespace Nickvision::System;
 
 namespace Nickvision::Miniera::Shared::Models
@@ -56,6 +60,21 @@ namespace Nickvision::Miniera::Shared::Models
     void Configuration::setAutomaticallyCheckForUpdates(bool check)
     {
         m_json["AutomaticallyCheckForUpdates"] = check;
+    }
+
+    unsigned int Configuration::getMaxServerRamInGB() const
+    {
+        return m_json["MaxServerRamInGB"].is_uint64() ? static_cast<unsigned int>(m_json["MaxServerRamInGB"].as_uint64()) : static_cast<unsigned int>(std::round(SizeHelpers::bytesToGigabytes(HardwareInfo::getTotalRamSize()) / 4.0));
+    }
+
+    void Configuration::setMaxServerRamInGB(unsigned int ram)
+    {
+        unsigned int systemRam{ static_cast<unsigned int>(SizeHelpers::bytesToGigabytes(HardwareInfo::getTotalRamSize())) };
+        if(ram > systemRam)
+        {
+            ram = static_cast<unsigned int>(std::round(systemRam / 4.0));
+        }
+        m_json["MaxServerRamInGB"] = ram;
     }
 
     std::string Configuration::getNgrokAuthToken() const

@@ -38,6 +38,21 @@ namespace Nickvision::Miniera::Shared::Controllers
          */
         void setAutomaticallyCheckForUpdates(bool check);
         /**
+         * @brief Gets the maximum amount of RAM a server can use in GB.
+         * @return The maximum amount of RAM a server can use
+         */
+        unsigned int getMaxServerRamInGB() const;
+        /**
+         * @brief Sets the maximum amount of RAM a server can use in GB.
+         * @param ram The new maximum amount of RAM a server can use
+         */
+        void setMaxServerRamInGB(unsigned int ram);
+        /**
+         * @brief Gets the maximum amount of available system RAM in GB.
+         * @return The maximum amount of system RAM
+         */
+        unsigned int getSystemRamInGB() const;
+        /**
          * @brief Gets the auth token for ngrok.
          * @return The auth token for ngrok
          */

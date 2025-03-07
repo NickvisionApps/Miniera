@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-06 23:13-0500\n"
+"POT-Creation-Date: 2025-03-07 12:35-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -178,12 +178,12 @@ msgid "New Server"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/blueprints/preferences_dialog.blp:12
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:64
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:75
 msgid "User Interface"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/blueprints/preferences_dialog.blp:15
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:30
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:31
 msgid "Theme"
 msgstr ""
 
@@ -203,17 +203,17 @@ msgid "System"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/blueprints/preferences_dialog.blp:28
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:65
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:77
 msgid "Hosting"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/blueprints/preferences_dialog.blp:31
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:46
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:57
 msgid "Ngrok Auth Token"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/blueprints/preferences_dialog.blp:41
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:51
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:62
 msgid "Retrieve Auth Token"
 msgstr ""
 
@@ -325,7 +325,7 @@ msgstr ""
 #. Dialog Settings
 #: org.nickvision.miniera.qt/src/views/mainwindow.cpp:68
 #: org.nickvision.miniera.qt/src/views/serverpage.cpp:57
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:95
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:108
 msgid "Settings"
 msgstr ""
 
@@ -635,22 +635,30 @@ msgstr ""
 msgid "Console"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:32
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:33
 msgid "Light"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:33
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:34
 msgid "Dark"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:34
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:35
 msgid "System"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:36
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:37
 msgid "Automatically Check for Updates"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:48
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:47
+msgid "Maximum Server RAM (GB)"
+msgstr ""
+
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:59
 msgid "Enter ngrok auth token here"
+msgstr ""
+
+#: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:76
+msgid "Server"
 msgstr ""
