@@ -1,5 +1,4 @@
 libminiera/src/controllers/mainwindowcontroller.cpp
-libminiera/src/helpers/serverinitializationhelpers.cpp
 libminiera/src/models/server.cpp
 libminiera/src/models/serverversion.cpp
 org.nickvision.miniera.gnome/blueprints/main_window.blp

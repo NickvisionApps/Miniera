@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-06 22:45-0500\n"
+"POT-Creation-Date: 2025-03-06 23:03-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,61 +63,60 @@ msgstr ""
 msgid "Server already loaded"
 msgstr ""
 
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:72
-msgid "[Download] Starting server files download...\n"
-msgstr ""
-
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:92
-msgid "[Download] Server files download completed.\n"
-msgstr ""
-
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:96
-msgid "[Download] Error downloading server files.\n"
-msgstr ""
-
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:105
-msgid "[Extract] Starting server files extraction...\n"
-msgstr ""
-
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:144
-msgid "[Extract] Server files extraction completed.\n"
-msgstr ""
-
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:148
-msgid "[Extract] Error extracting server files.\n"
-msgstr ""
-
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:157
-msgid "[Write] Starting server property files writing...\n"
-msgstr ""
-
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:166
-msgid "[Write] Wrote EULA file.\n"
-msgstr ""
-
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:171
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:183
-msgid "[Write] Wrote server properties file.\n"
-msgstr ""
-
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:190
-msgid "[Write] Server propety files writing completed.\n"
-msgstr ""
-
-#: libminiera/src/helpers/serverinitializationhelpers.cpp:194
-msgid "[Write] Error writing server property files.\n"
-msgstr ""
-
-#: libminiera/src/models/server.cpp:53
+#: libminiera/src/models/server.cpp:78
 msgid "[Initialization] Server already initialized."
 msgstr ""
 
-#: libminiera/src/models/server.cpp:58
+#: libminiera/src/models/server.cpp:83
 msgid "[Initialization] Starting server initialization process...\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:71
+#: libminiera/src/models/server.cpp:96
 msgid "[Initialization] Server initialization process completed..\n"
+msgstr ""
+
+#: libminiera/src/models/server.cpp:151
+msgid "[Download] Starting server files download...\n"
+msgstr ""
+
+#: libminiera/src/models/server.cpp:171
+msgid "[Download] Server files download completed.\n"
+msgstr ""
+
+#: libminiera/src/models/server.cpp:175
+msgid "[Download] Error downloading server files.\n"
+msgstr ""
+
+#: libminiera/src/models/server.cpp:184
+msgid "[Extract] Starting server files extraction...\n"
+msgstr ""
+
+#: libminiera/src/models/server.cpp:223
+msgid "[Extract] Server files extraction completed.\n"
+msgstr ""
+
+#: libminiera/src/models/server.cpp:227
+msgid "[Extract] Error extracting server files.\n"
+msgstr ""
+
+#: libminiera/src/models/server.cpp:236
+msgid "[Write] Starting server property files writing...\n"
+msgstr ""
+
+#: libminiera/src/models/server.cpp:245
+msgid "[Write] Wrote EULA file.\n"
+msgstr ""
+
+#: libminiera/src/models/server.cpp:250 libminiera/src/models/server.cpp:262
+msgid "[Write] Wrote server properties file.\n"
+msgstr ""
+
+#: libminiera/src/models/server.cpp:269
+msgid "[Write] Server propety files writing completed.\n"
+msgstr ""
+
+#: libminiera/src/models/server.cpp:273
+msgid "[Write] Error writing server property files.\n"
 msgstr ""
 
 #: libminiera/src/models/serverversion.cpp:20

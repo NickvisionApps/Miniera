@@ -74,6 +74,34 @@ namespace Nickvision::Miniera::Shared::Models
          * @brief Writes the server json to disk.
          */
         void writeJsonToDisk() const;
+        /**
+         * @brief Checks if a server has been initalized or not.
+         * @return True if the server has been initialized
+         * @return False if the server has not been initialized
+         */
+        bool initializeCheck();
+        /**
+         * @brief Downloads a server's files.
+         * @param log The log variable to write to
+         * @return True if download successful
+         * @return False if download failed
+         */
+        bool initializeDownload(std::string& log);
+        /**
+         * @brief Exracts a server's files.
+         * @param log The log variable to write to
+         * @return True if extraction successful
+         * @return False if extraction failed
+         */
+        bool initializeExtract(std::string& log);
+        /**
+         * @brief Writes a server's property files.
+         * @brief This function writes the eula and server.properties files.
+         * @param log The log variable to write to
+         * @return True if writting successful
+         * @return False if writting failed
+         */
+        bool initializeWrite(std::string& log);
         ServerVersion m_serverVersion;
         ServerProperties m_serverProperties;
         std::filesystem::path m_serverDirectory;
