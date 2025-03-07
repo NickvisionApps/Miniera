@@ -196,7 +196,11 @@ namespace Nickvision::Miniera::Shared::Models
         else if(m_serverVersion.getEdition() == Edition::Bedrock)
         {
             std::unique_ptr<ZipFile> zip{ std::make_unique<ZipFile>(BEDROCK_SERVER_FILE_RAW) };
-            extractionSuccessful = zip->extract(m_serverDirectory);
+            std::function<void(double)> extractionProgress{ [&](double progress)
+            {
+                m_initializationProgressChanged.invoke({ getName(), progress, log, false, false });
+            }};
+            extractionSuccessful = zip->extract(m_serverDirectory, extractionProgress);
             zip.reset();
             std::filesystem::remove(BEDROCK_SERVER_FILE_RAW);
             if(Environment::getOperatingSystem() == OperatingSystem::Windows)

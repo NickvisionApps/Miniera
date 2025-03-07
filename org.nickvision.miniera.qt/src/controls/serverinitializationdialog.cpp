@@ -87,8 +87,8 @@ namespace Nickvision::Miniera::Qt::Controls
     {
         setWindowFlags(m_flags & ~::Qt::WindowCloseButtonHint);
         m_ui->progBar->setMinimum(0);
-        m_ui->progBar->setMaximum(1);
-        m_ui->progBar->setValue(args.getProgress());
+        m_ui->progBar->setMaximum(100);
+        m_ui->progBar->setValue(static_cast<int>(args.getProgress() * 100));
         m_ui->lblLog->setText(QString::fromStdString(args.getLog()));
         if(args.isFinished())
         {

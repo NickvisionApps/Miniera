@@ -2,6 +2,7 @@
 #define ZIPFILE_H
 
 #include <filesystem>
+#include <functional>
 #include <vector>
 #include <zip.h>
 
@@ -41,10 +42,11 @@ namespace Nickvision::Miniera::Shared::Models
         /**
          * @brief Extracts the zip file to a directory.
          * @param dir The directory to extract too
+         * @param progress An optional progress function callback
          * @return True if successful
          * @return False if failed
          */
-        bool extract(const std::filesystem::path& dir);
+        bool extract(const std::filesystem::path& dir, const std::function<void(double)>& progress = {});
         /**
          * @brief Gets whether or not the ZipFile object is valid.
          * @return True if valid

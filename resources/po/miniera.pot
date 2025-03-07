@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-06 23:03-0500\n"
+"POT-Creation-Date: 2025-03-06 23:13-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,47 +75,47 @@ msgstr ""
 msgid "[Initialization] Server initialization process completed..\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:151
+#: libminiera/src/models/server.cpp:150
 msgid "[Download] Starting server files download...\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:171
+#: libminiera/src/models/server.cpp:170
 msgid "[Download] Server files download completed.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:175
+#: libminiera/src/models/server.cpp:174
 msgid "[Download] Error downloading server files.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:184
+#: libminiera/src/models/server.cpp:183
 msgid "[Extract] Starting server files extraction...\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:223
+#: libminiera/src/models/server.cpp:226
 msgid "[Extract] Server files extraction completed.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:227
+#: libminiera/src/models/server.cpp:230
 msgid "[Extract] Error extracting server files.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:236
+#: libminiera/src/models/server.cpp:239
 msgid "[Write] Starting server property files writing...\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:245
+#: libminiera/src/models/server.cpp:248
 msgid "[Write] Wrote EULA file.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:250 libminiera/src/models/server.cpp:262
+#: libminiera/src/models/server.cpp:253 libminiera/src/models/server.cpp:265
 msgid "[Write] Wrote server properties file.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:269
+#: libminiera/src/models/server.cpp:272
 msgid "[Write] Server propety files writing completed.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:273
+#: libminiera/src/models/server.cpp:276
 msgid "[Write] Error writing server property files.\n"
 msgstr ""
 

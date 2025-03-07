@@ -44,7 +44,7 @@ namespace Nickvision::Miniera::Shared::Models
         return entries;
     }
 
-    bool ZipFile::extract(const std::filesystem::path& dir)
+    bool ZipFile::extract(const std::filesystem::path& dir, const std::function<void(double)>& progress)
     {
         if(!m_zip)
         {
@@ -54,7 +54,8 @@ namespace Nickvision::Miniera::Shared::Models
         {
             std::filesystem::create_directories(dir);
         }
-        for(zip_int64_t i = 0; i < zip_get_num_entries(m_zip, 0); i++)
+        zip_int64_t n{ zip_get_num_entries(m_zip, 0) };
+        for(zip_int64_t i = 0; i < n; i++)
         {
             struct zip_stat stat;
             zip_stat_index(m_zip, i, 0, &stat);
@@ -74,6 +75,10 @@ namespace Nickvision::Miniera::Shared::Models
             zip_fclose(file);
             std::ofstream out{ filePath, std::ios::binary };
             out.write(buffer.data(), buffer.size());
+            if(progress)
+            {
+                progress(static_cast<double>(i) / static_cast<double>(n));
+            }
         }
         return true;
     }
