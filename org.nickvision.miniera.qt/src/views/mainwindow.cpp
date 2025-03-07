@@ -23,6 +23,7 @@
 #include <oclero/qlementine/widgets/ActionButton.hpp>
 #include "controls/aboutdialog.h"
 #include "controls/infobar.h"
+#include "controls/serverinitializationdialog.h"
 #include "controls/statuspage.h"
 #include "helpers/qthelpers.h"
 #include "views/newserverdialog.h"
@@ -86,6 +87,8 @@ namespace Ui
             //InfoBar
             infoBar = new Nickvision::Miniera::Qt::Controls::InfoBar(parent);
             parent->addDockWidget(::Qt::BottomDockWidgetArea, infoBar);
+            //InitDialog
+            initDialog = new Nickvision::Miniera::Qt::Controls::ServerInitializationDialog(parent);
             //MenuBar
             QMenu* menuFile{ new QMenu(parent) };
             menuFile->setTitle(_("File"));
@@ -143,6 +146,7 @@ namespace Ui
         QAction* actionAbout;
         Nickvision::Miniera::Qt::Controls::InfoBar* infoBar;
         QTabWidget* tabs;
+        Nickvision::Miniera::Qt::Controls::ServerInitializationDialog* initDialog;
     };
 }
 
@@ -174,6 +178,7 @@ namespace Nickvision::Miniera::Qt::Views
         m_controller->notificationSent() += [&](const NotificationSentEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onNotificationSent(args); }); };
         m_controller->shellNotificationSent() += [&](const ShellNotificationSentEventArgs& args) { onShellNotificationSent(args); };
         m_controller->serverLoaded() += [&](const ServerLoadedEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onServerLoaded(args); }); };
+        m_controller->serverInitializationProgressChanged() += [&](const ServerInitializationProgressChangedEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onServerInitializationProgressChanged(args); }); };
     }
 
     MainWindow::~MainWindow()
@@ -299,6 +304,11 @@ namespace Nickvision::Miniera::Qt::Views
 #else
         ShellNotification::send(args);
 #endif
+    }
+
+    void MainWindow::onServerInitializationProgressChanged(const ServerInitializationProgressChangedEventArgs& args)
+    {
+        m_ui->initDialog->updateProgress(args);
     }
 
     void MainWindow::onServerLoaded(const ServerLoadedEventArgs& args)

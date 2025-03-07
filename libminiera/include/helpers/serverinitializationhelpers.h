@@ -5,9 +5,10 @@
 #include <string>
 #include <libnick/events/event.h>
 #include "events/serverinitializationprogresschangedeventargs.h"
+#include "models/serverproperties.h"
 #include "models/serverversion.h"
 
-#define SERVER_INITIALIZATION_HELPER_ARGS std::string& log, const std::filesystem::path& dir, const Models::ServerVersion& version, Nickvision::Events::Event<Events::ServerInitializationProgressChangedEventArgs>& progressChanged
+#define SERVER_INITIALIZATION_HELPER_ARGS std::string& log, const std::filesystem::path& dir, const Models::ServerVersion& version, const Models::ServerProperties& properties, Nickvision::Events::Event<Events::ServerInitializationProgressChangedEventArgs>& progressChanged
 
 namespace Nickvision::Miniera::Shared::Helpers::ServerInitializationHelpers
 {

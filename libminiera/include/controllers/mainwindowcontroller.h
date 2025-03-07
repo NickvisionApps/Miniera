@@ -53,6 +53,11 @@ namespace Nickvision::Miniera::Shared::Controllers
          */
         Nickvision::Events::Event<Nickvision::Notifications::ShellNotificationSentEventArgs>& shellNotificationSent();
         /**
+         * @brief Gets the event for when a server's initialization's progress is changed.
+         * @return The server's initialization's progress changed event
+         */
+        Nickvision::Events::Event<Events::ServerInitializationProgressChangedEventArgs>& serverInitializationProgressChanged();
+        /**
          * @brief Gets the event for when a server is loaded.
          * @return The server loaded event
          */

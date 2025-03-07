@@ -69,6 +69,11 @@ namespace Nickvision::Miniera::Shared::Controllers
         return m_serverManager.serverLoaded();
     }
 
+    Event<ServerInitializationProgressChangedEventArgs>& MainWindowController::serverInitializationProgressChanged()
+    {
+        return m_serverManager.serverInitializationProgressChanged();
+    }
+
     const AppInfo& MainWindowController::getAppInfo() const
     {
         return m_appInfo;

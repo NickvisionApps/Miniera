@@ -53,7 +53,7 @@ namespace Nickvision::Miniera::Shared::Controllers
          * @param name The name to ensure is unique
          * @return The unique server name
          */
-        std::string ensureServerNameIsUnique(std::string name);
+        std::string ensureServerNameIsUnique(const std::string& name);
         /**
          * @brief Loads the server versions.
          * @param edition The server edition to load servers for

@@ -96,6 +96,11 @@ namespace Nickvision::Miniera::Qt::Views
          */
         void onShellNotificationSent(const Notifications::ShellNotificationSentEventArgs& args);
         /**
+         * @brief Handles when a server's initialization progress changes.
+         * @param args The ServerInitializationProgressChangedEventArgs
+         */
+        void onServerInitializationProgressChanged(const Shared::Events::ServerInitializationProgressChangedEventArgs& args);
+        /**
          * @brief Handles when the server is loaded.
          * @param args The ServerLoadedEventArgs
          */

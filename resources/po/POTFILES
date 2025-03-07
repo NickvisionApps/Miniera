@@ -9,6 +9,7 @@ org.nickvision.miniera.gnome/src/views/mainwindow.cpp
 org.nickvision.miniera.qt/src/controls/aboutdialog.cpp
 org.nickvision.miniera.qt/src/controls/infobar.cpp
 org.nickvision.miniera.qt/src/controls/loadingwizardpage.cpp
+org.nickvision.miniera.qt/src/controls/serverinitializationdialog.cpp
 org.nickvision.miniera.qt/src/views/mainwindow.cpp
 org.nickvision.miniera.qt/src/views/newserverdialog.cpp
 org.nickvision.miniera.qt/src/views/serverpage.cpp

@@ -40,14 +40,15 @@ namespace Nickvision::Miniera::Shared::Controllers
         m_selectedServerVersionIndex = index;
     }
 
-    std::string NewServerDialogController::ensureServerNameIsUnique(std::string name)
+    std::string NewServerDialogController::ensureServerNameIsUnique(const std::string& name)
     {
         int i{ 1 };
-        while(m_serverManager.getServerExists(name))
+        std::string unique{ name };
+        while(m_serverManager.getServerExists(unique))
         {
-            name = name + " " + std::to_string(i++);
+            unique = name + " " + std::to_string(i++);
         }
-        return name;
+        return unique;
     }
     
     void NewServerDialogController::loadServerVersions(Edition edition)

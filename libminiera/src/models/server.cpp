@@ -55,20 +55,20 @@ namespace Nickvision::Miniera::Shared::Models
         }
         std::thread worker{ [this]()
         {
-            std::string log{ _("[Initialization] Starting server initialization process...") };
-            if(!ServerInitializationHelpers::download(log, m_serverDirectory, m_serverVersion, m_initializationProgressChanged))
+            std::string log{ _("[Initialization] Starting server initialization process...\n") };
+            if(!ServerInitializationHelpers::download(log, m_serverDirectory, m_serverVersion, m_serverProperties, m_initializationProgressChanged))
             {
                 return;
             }
-            if(!ServerInitializationHelpers::extract(log, m_serverDirectory, m_serverVersion, m_initializationProgressChanged))
+            if(!ServerInitializationHelpers::extract(log, m_serverDirectory, m_serverVersion, m_serverProperties, m_initializationProgressChanged))
             {
                 return;
             }
-            if(!ServerInitializationHelpers::write(log, m_serverDirectory, m_serverVersion, m_initializationProgressChanged))
+            if(!ServerInitializationHelpers::write(log, m_serverDirectory, m_serverVersion, m_serverProperties, m_initializationProgressChanged))
             {
                 return;
             }
-            log += _("[Initialization] Server initialization process completed..");
+            log += _("[Initialization] Server initialization process completed..\n");
             m_initializationProgressChanged.invoke({ getName(), 1.0, log, true, false });
         } };
         worker.detach();

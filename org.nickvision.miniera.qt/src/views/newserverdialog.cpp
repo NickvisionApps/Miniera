@@ -30,7 +30,6 @@ enum NewServerDialogPage
     Network,
     Java,
     Bedrock,
-    Forge,
     Final
 };
 
@@ -168,13 +167,6 @@ namespace Ui
             bedrockPage->setSubTitle(_("Please configure the properties of the bedrock server."));
             bedrockPage->setLayout(layoutBedrock);
             parent->setPage(NewServerDialogPage::Bedrock, bedrockPage);
-            //Forge Page
-            QFormLayout* formForge{ new QFormLayout() };
-            QWizardPage* forgePage{ new QWizardPage(parent) };
-            forgePage->setTitle(_("Forge Properties"));
-            forgePage->setSubTitle(_("Please configure the properties of the forge server."));
-            forgePage->setLayout(formForge);
-            parent->setPage(NewServerDialogPage::Forge, forgePage);
             //Final Page
             QLabel* lblFinal{ new QLabel(parent) };
             lblFinal->setText(_("Once the server is created, you will not be able to change some of these settings."));
@@ -294,17 +286,7 @@ namespace Nickvision::Miniera::Qt::Views
             }
             break;
         case NewServerDialogPage::Java:
-            if(m_ui->btnForge->isChecked())
-            {
-                return NewServerDialogPage::Forge;
-            }
-            else
-            {
-                return NewServerDialogPage::Final;
-            }
-            break;
         case NewServerDialogPage::Bedrock:
-        case NewServerDialogPage::Forge:
             return NewServerDialogPage::Final;
         }
         return -1;
