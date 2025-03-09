@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-09 15:36-0400\n"
+"POT-Creation-Date: 2025-03-09 16:01-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,51 +63,51 @@ msgstr ""
 msgid "Server already loaded"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:107
+#: libminiera/src/models/server.cpp:112
 msgid "[Initialization] Server already initialized."
 msgstr ""
 
-#: libminiera/src/models/server.cpp:112
+#: libminiera/src/models/server.cpp:117
 msgid "[Initialization] Starting server initialization process...\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:125
+#: libminiera/src/models/server.cpp:130
 msgid "[Initialization] Server initialization process completed..\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:242
+#: libminiera/src/models/server.cpp:257
 msgid "[Download] Starting server files download...\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:262
+#: libminiera/src/models/server.cpp:277
 msgid "[Download] Server files download completed.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:266
+#: libminiera/src/models/server.cpp:281
 msgid "[Download] Error downloading server files.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:275
+#: libminiera/src/models/server.cpp:290
 msgid "[Extract] Starting server files extraction...\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:310
+#: libminiera/src/models/server.cpp:325
 msgid "[Extract] Server files extraction completed.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:314
+#: libminiera/src/models/server.cpp:329
 msgid "[Extract] Error extracting server files.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:322
+#: libminiera/src/models/server.cpp:337
 msgid "[Write] Starting server property files writing...\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:326
+#: libminiera/src/models/server.cpp:341
 msgid "[Write] Server propety files writing completed.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:331
+#: libminiera/src/models/server.cpp:346
 msgid "[Write] Error writing server property files.\n"
 msgstr ""
 

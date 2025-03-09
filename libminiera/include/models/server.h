@@ -147,6 +147,7 @@ namespace Nickvision::Miniera::Shared::Models
         ServerVersion m_version;
         ServerProperties m_properties;
         std::filesystem::path m_directory;
+        bool m_initialized;
         std::shared_ptr<System::Process> m_proc;
         std::shared_ptr<Broadcaster> m_broadcaster;
         Nickvision::Events::Event<Events::ServerInitializationProgressChangedEventArgs> m_initializationProgressChanged;

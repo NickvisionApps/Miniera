@@ -32,6 +32,8 @@ using namespace Nickvision::System;
 
 namespace Nickvision::Miniera::Shared::Models
 {
+    static bool s_serverRunning{ false };
+
     static std::string getJavaRamString(unsigned int ramInGB)
     {
         return "-Xmx" + std::to_string(ramInGB) + "G";
@@ -52,7 +54,8 @@ namespace Nickvision::Miniera::Shared::Models
     Server::Server(const ServerVersion& version, const ServerProperties& properties, const std::filesystem::path& directory)
         : m_version{ version },
         m_properties{ properties },
-        m_directory{ directory }
+        m_directory{ directory },
+        m_initialized{ false }
     {
         std::filesystem::create_directories(m_directory);
         wrtieFilesToDisk();
@@ -61,7 +64,8 @@ namespace Nickvision::Miniera::Shared::Models
     Server::Server(boost::json::object json)
         : m_version{ json["Version"].is_object() ? json["Version"].as_object() : boost::json::object() },
         m_properties{ json["Properties"].is_object() ? json["Properties"].as_object() : boost::json::object() },
-        m_directory{ json["Directory"].is_string() ? json["Directory"].as_string().c_str() : "" }
+        m_directory{ json["Directory"].is_string() ? json["Directory"].as_string().c_str() : "" },
+        m_initialized{ false }
     {
         if(!std::filesystem::exists(m_directory))
         {
@@ -102,8 +106,9 @@ namespace Nickvision::Miniera::Shared::Models
 
     void Server::initialize()
     {
-        if(initializeCheck())
+        if(m_initialized || initializeCheck())
         {
+            m_initialized = true;
             m_initializationProgressChanged.invoke({ getName(), 1.0, _("[Initialization] Server already initialized."), true, false });
             return;
         }
@@ -123,6 +128,7 @@ namespace Nickvision::Miniera::Shared::Models
                 return;
             }
             log += _("[Initialization] Server initialization process completed..\n");
+            m_initialized = true;
             m_initializationProgressChanged.invoke({ getName(), 1.0, log, true, false });
         } };
         worker.detach();
@@ -130,8 +136,7 @@ namespace Nickvision::Miniera::Shared::Models
 
     bool Server::start(unsigned int maxServerRamInGB)
     {
-        static bool serverRunning{ false };
-        if(serverRunning)
+        if(s_serverRunning || !m_initialized)
         {
             return m_proc ? true : false;
         }
@@ -147,7 +152,12 @@ namespace Nickvision::Miniera::Shared::Models
             m_proc = std::make_shared<Process>(Environment::findDependency("java"), std::vector<std::string>{ getJavaRamString(maxServerRamInGB), "-jar", getForgeShimFile(m_directory).string(), "nogui" }, m_directory);
             break;
         }
-        return m_proc->start();
+        if(m_proc->start())
+        {
+            s_serverRunning = true;
+            return true;
+        }
+        return false;
     }
 
     bool Server::stop()
@@ -159,7 +169,12 @@ namespace Nickvision::Miniera::Shared::Models
         m_proc->sendCommand("stop");
         m_proc->waitForExit();
         m_broadcaster->stop();
-        return m_proc->getExitCode() == 0;
+        if(!m_proc->isRunning())
+        {
+            s_serverRunning = false;
+            return true;
+        }
+        return false;
     }
 
     bool Server::command(const std::string& cmd)
