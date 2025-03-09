@@ -10,22 +10,18 @@
 #include <libnick/system/process.h>
 #include "models/zipfile.h"
 
-#define SERVER_PROPERTIES_FILE (m_serverDirectory / "server.properties")
-#define EULA_FILE (m_serverDirectory / "eula.txt")
-#define JAVA_SERVER_FILE_RAW (m_serverDirectory / "server.jar")
-#define JAVA_SERVER_FILE_EXTRACTED (m_serverDirectory / "server.jar")
-#define BEDROCK_SERVER_FILE_RAW (m_serverDirectory / "server.zip")
+#define MINIERA_FILE (m_directory / "miniera.json")
+#define SERVER_PROPERTIES_FILE (m_directory / "server.properties")
+#define EULA_FILE (m_directory / "eula.txt")
+#define JAVA_SERVER_FILE_RAW (m_directory / "server.jar")
+#define JAVA_SERVER_FILE_EXTRACTED (m_directory / "server.jar")
+#define BEDROCK_SERVER_FILE_RAW (m_directory / "server.zip")
 #ifdef _WIN32
-#define BEDROCK_SERVER_FILE_EXTRACTED (m_serverDirectory / "bedrock_server.exe")
+#define BEDROCK_SERVER_FILE_EXTRACTED (m_directory / "bedrock_server.exe")
 #else
-#define BEDROCK_SERVER_FILE_EXTRACTED (m_serverDirectory / "bedrock_server")
+#define BEDROCK_SERVER_FILE_EXTRACTED (m_directory / "bedrock_server")
 #endif
-#define FORGE_SERVER_FILE_RAW (m_serverDirectory / "installer.jar")
-#ifdef _WIN32
-#define FORGE_SERVER_FILE_EXTRACTED (m_serverDirectory / "run.bat")
-#else
-#define FORGE_SERVER_FILE_EXTRACTED (m_serverDirectory / "run.sh")
-#endif
+#define FORGE_SERVER_FILE_RAW (m_directory / "installer.jar")
 
 using namespace Nickvision::Events;
 using namespace Nickvision::Helpers;
@@ -36,24 +32,47 @@ using namespace Nickvision::System;
 
 namespace Nickvision::Miniera::Shared::Models
 {
-    Server::Server(const ServerVersion& serverVersion, const ServerProperties& serverProperties, const std::filesystem::path& serverDirectory)
-        : m_serverVersion{ serverVersion },
-        m_serverProperties{ serverProperties },
-        m_serverDirectory{ serverDirectory }
+    static std::string getJavaRamString(unsigned int ramInGB)
     {
-        std::filesystem::create_directories(m_serverDirectory);
-        writeJsonToDisk();
+        return "-Xmx" + std::to_string(ramInGB) + "G";
+    }
+
+    static std::filesystem::path getForgeShimFile(const std::filesystem::path& dir)
+    {
+        for(const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(dir))
+        {
+            if(entry.is_regular_file() && entry.path().stem().string().find("shim") != std::string::npos)
+            {
+                return entry.path();
+            }
+        }
+        return {};
+    }
+
+    Server::Server(const ServerVersion& version, const ServerProperties& properties, const std::filesystem::path& directory)
+        : m_version{ version },
+        m_properties{ properties },
+        m_directory{ directory }
+    {
+        std::filesystem::create_directories(m_directory);
+        wrtieFilesToDisk();
     }
 
     Server::Server(boost::json::object json)
-        : m_serverVersion{ json["Version"].is_object() ? json["Version"].as_object() : boost::json::object() },
-        m_serverProperties{ json["Properties"].is_object() ? json["Properties"].as_object() : boost::json::object() },
-        m_serverDirectory{ json["Directory"].is_string() ? json["Directory"].as_string().c_str() : "" }
+        : m_version{ json["Version"].is_object() ? json["Version"].as_object() : boost::json::object() },
+        m_properties{ json["Properties"].is_object() ? json["Properties"].as_object() : boost::json::object() },
+        m_directory{ json["Directory"].is_string() ? json["Directory"].as_string().c_str() : "" }
     {
-        if(!std::filesystem::exists(m_serverDirectory))
+        if(!std::filesystem::exists(m_directory))
         {
             throw std::invalid_argument("Invalid JSON object");
         }
+    }
+
+    Server::~Server()
+    {
+        stop();
+        wrtieFilesToDisk();
     }
 
     Event<ServerInitializationProgressChangedEventArgs>& Server::initializationProgressChanged()
@@ -63,12 +82,22 @@ namespace Nickvision::Miniera::Shared::Models
 
     const std::string& Server::getName() const
     {
-        return m_serverProperties.getLevelName();
+        return m_properties.getLevelName();
     }
 
     const ServerVersion& Server::getVersion() const
     {
-        return m_serverVersion;
+        return m_version;
+    }
+
+    const std::string& Server::getOutput() const
+    {
+        if(!m_proc)
+        {
+            static std::string empty;
+            return empty;
+        }
+        return m_proc->getOutput();
     }
 
     void Server::initialize()
@@ -99,35 +128,98 @@ namespace Nickvision::Miniera::Shared::Models
         worker.detach();
     }
 
+    bool Server::start(unsigned int maxServerRamInGB)
+    {
+        static bool serverRunning{ false };
+        if(serverRunning)
+        {
+            return m_proc ? true : false;
+        }
+        switch(m_version.getEdition())
+        {
+        case Edition::Java:
+            m_proc = std::make_shared<Process>(Environment::findDependency("java"), std::vector<std::string>{ getJavaRamString(maxServerRamInGB), "-jar", JAVA_SERVER_FILE_EXTRACTED.string(), "nogui" }, m_directory);
+            break;
+        case Edition::Bedrock:
+            m_proc = std::make_shared<Process>(BEDROCK_SERVER_FILE_EXTRACTED);
+            break;
+        case Edition::Forge:
+            m_proc = std::make_shared<Process>(Environment::findDependency("java"), std::vector<std::string>{ getJavaRamString(maxServerRamInGB), "-jar", getForgeShimFile(m_directory).string(), "nogui" }, m_directory);
+            break;
+        }
+        return m_proc->start();
+    }
+
+    bool Server::stop()
+    {
+        if(!m_proc)
+        {
+            return true;
+        }
+        m_proc->sendCommand("stop");
+        m_proc->waitForExit();
+        m_broadcaster->stop();
+        return m_proc->getExitCode() == 0;
+    }
+
+    bool Server::command(const std::string& cmd)
+    {
+        if(!m_proc)
+        {
+            return false;
+        }
+        return m_proc->sendCommand(cmd);
+    }
+
+    const std::string& Server::broadcast(const std::string& ngrokToken)
+    {
+        if(ngrokToken.empty())
+        {
+            static std::string empty;
+            return empty;
+        }
+        m_broadcaster = std::make_shared<Broadcaster>(m_properties.getServerPort(), ngrokToken);
+        return m_broadcaster->start();
+    }
+
     boost::json::object Server::toJson() const
     {
         boost::json::object json;
-        json["Version"] = m_serverVersion.toJson();
-        json["Properties"] = m_serverProperties.toJson();
-        json["Directory"] = m_serverDirectory.string();
+        json["Version"] = m_version.toJson();
+        json["Properties"] = m_properties.toJson();
+        json["Directory"] = m_directory.string();
         return json;
     }
 
-    void Server::writeJsonToDisk() const
+    bool Server::wrtieFilesToDisk()
     {
-        std::ofstream file{ m_serverDirectory / "miniera.json" };
-        file << toJson() << std::endl;
+        std::ofstream json{ MINIERA_FILE, std::ios::trunc };
+        json << toJson() << std::endl;
+        std::ofstream prop{ SERVER_PROPERTIES_FILE, std::ios::trunc };
+        prop << m_properties.toString() << std::endl;
+        if(m_version.getEdition() != Edition::Bedrock)
+        {
+            std::ofstream eula{ EULA_FILE, std::ios::trunc };
+            eula << "eula=true" << std::endl;
+            return json.is_open() && prop.is_open() && eula.is_open();
+        }
+        return json.is_open() && prop.is_open();
     }
 
     bool Server::initializeCheck()
     {
-        std::filesystem::create_directories(m_serverDirectory);
-        if(m_serverVersion.getEdition() == Edition::Java)
+        std::filesystem::create_directories(m_directory);
+        if(m_version.getEdition() == Edition::Java)
         {
             return std::filesystem::exists(JAVA_SERVER_FILE_EXTRACTED) && std::filesystem::exists(EULA_FILE) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
         }
-        else if(m_serverVersion.getEdition() == Edition::Bedrock)
+        else if(m_version.getEdition() == Edition::Bedrock)
         {
             return std::filesystem::exists(BEDROCK_SERVER_FILE_EXTRACTED) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
         }
-        else if(m_serverVersion.getEdition() == Edition::Forge)
+        else if(m_version.getEdition() == Edition::Forge)
         {
-            return std::filesystem::exists(FORGE_SERVER_FILE_EXTRACTED) && std::filesystem::exists(EULA_FILE) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
+            return std::filesystem::exists(Environment::getOperatingSystem() == OperatingSystem::Windows ? "run.bat" : "run.sh") && std::filesystem::exists(EULA_FILE) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
         }
         return false;
     }
@@ -149,21 +241,21 @@ namespace Nickvision::Miniera::Shared::Models
         }};
         log += _("[Download] Starting server files download...\n");
         m_initializationProgressChanged.invoke({ getName(), 0.0, log, false, false });
-        if(m_serverVersion.getEdition() == Edition::Java)
+        if(m_version.getEdition() == Edition::Java)
         {
-            boost::json::value json = Web::fetchJson(m_serverVersion.getReleaseUrl());
+            boost::json::value json = Web::fetchJson(m_version.getReleaseUrl());
             if(json.is_object())
             {
                 downloadSuccessful = Web::downloadFile(json.as_object()["downloads"].as_object()["server"].as_object()["url"].as_string().c_str(), JAVA_SERVER_FILE_RAW, downloadProgress);
             }
         }
-        else if(m_serverVersion.getEdition() == Edition::Bedrock)
+        else if(m_version.getEdition() == Edition::Bedrock)
         {
-            downloadSuccessful = Web::downloadFile(m_serverVersion.getReleaseUrl(), BEDROCK_SERVER_FILE_RAW, downloadProgress);
+            downloadSuccessful = Web::downloadFile(m_version.getReleaseUrl(), BEDROCK_SERVER_FILE_RAW, downloadProgress);
         }
-        else if(m_serverVersion.getEdition() == Edition::Forge)
+        else if(m_version.getEdition() == Edition::Forge)
         {
-            downloadSuccessful = Web::downloadFile(m_serverVersion.getReleaseUrl(), FORGE_SERVER_FILE_RAW, downloadProgress);
+            downloadSuccessful = Web::downloadFile(m_version.getReleaseUrl(), FORGE_SERVER_FILE_RAW, downloadProgress);
         }
         if(downloadSuccessful)
         {
@@ -182,21 +274,21 @@ namespace Nickvision::Miniera::Shared::Models
         bool extractionSuccessful{ false };
         log += _("[Extract] Starting server files extraction...\n");
         m_initializationProgressChanged.invoke({ getName(), 0.0, log, false, false });
-        if(m_serverVersion.getEdition() == Edition::Java)
+        if(m_version.getEdition() == Edition::Java)
         {
-            Process proc{ Environment::findDependency("java"), std::vector<std::string>{ "-jar", JAVA_SERVER_FILE_RAW.string(), "--initSettings" }, m_serverDirectory };
+            Process proc{ Environment::findDependency("java"), std::vector<std::string>{ "-jar", JAVA_SERVER_FILE_RAW.string(), "--initSettings" }, m_directory };
             proc.start();
             proc.waitForExit();
             extractionSuccessful = proc.getExitCode() == 0;
         }
-        else if(m_serverVersion.getEdition() == Edition::Bedrock)
+        else if(m_version.getEdition() == Edition::Bedrock)
         {
             std::unique_ptr<ZipFile> zip{ std::make_unique<ZipFile>(BEDROCK_SERVER_FILE_RAW) };
             std::function<void(double)> extractionProgress{ [&](double progress)
             {
                 m_initializationProgressChanged.invoke({ getName(), progress, log, false, false });
             }};
-            extractionSuccessful = zip->extract(m_serverDirectory, extractionProgress);
+            extractionSuccessful = zip->extract(m_directory, extractionProgress);
             zip.reset();
             std::filesystem::remove(BEDROCK_SERVER_FILE_RAW);
             if(Environment::getOperatingSystem() == OperatingSystem::Windows)
@@ -205,9 +297,9 @@ namespace Nickvision::Miniera::Shared::Models
                 Environment::exec("CheckNetIsolation.exe LoopbackExempt -a -p=S-1-15-2-1958404141-86561845-1752920682-3514627264-368642714-62675701-733520436");
             }
         }
-        else if(m_serverVersion.getEdition() == Edition::Forge)
+        else if(m_version.getEdition() == Edition::Forge)
         {
-            Process proc{ Environment::findDependency("java"), std::vector<std::string>{ "-jar", FORGE_SERVER_FILE_RAW.string(), "--installServer" }, m_serverDirectory };
+            Process proc{ Environment::findDependency("java"), std::vector<std::string>{ "-jar", FORGE_SERVER_FILE_RAW.string(), "--installServer" }, m_directory };
             proc.start();
             proc.waitForExit();
             extractionSuccessful = proc.getExitCode() == 0;
@@ -227,47 +319,18 @@ namespace Nickvision::Miniera::Shared::Models
 
     bool Server::initializeWrite(std::string& log)
     {
-        bool writingSuccessful{ false };
         log += _("[Write] Starting server property files writing...\n");
         m_initializationProgressChanged.invoke({ getName(), 0.0, log, false, false });
-        if(m_serverVersion.getEdition() == Edition::Java || m_serverVersion.getEdition() == Edition::Forge)
-        {
-            std::ofstream eula{ EULA_FILE, std::ios::trunc };
-            std::ofstream properties{ SERVER_PROPERTIES_FILE, std::ios::trunc };
-            if(eula.is_open())
-            {
-                eula << "eula=true" << std::endl;
-                log += _("[Write] Wrote EULA file.\n");
-            }
-            if(properties.is_open())
-            {
-                properties << m_serverProperties.toString() << std::endl;
-                log += _("[Write] Wrote server properties file.\n");
-            }
-            writingSuccessful = eula.is_open() && properties.is_open();
-            eula.close();
-            properties.close();
-        }
-        else if(m_serverVersion.getEdition() == Edition::Bedrock)
-        {
-            std::ofstream properties{ SERVER_PROPERTIES_FILE, std::ios::trunc };
-            if(properties.is_open())
-            {
-                properties << m_serverProperties.toString() << std::endl;
-                log += _("[Write] Wrote server properties file.\n");
-            }
-            writingSuccessful = properties.is_open();
-            properties.close();
-        }
-        if(writingSuccessful)
+        if(wrtieFilesToDisk())
         {
             log += _("[Write] Server propety files writing completed.\n");
+            return true;
         }
         else
         {
             log += _("[Write] Error writing server property files.\n");
             m_initializationProgressChanged.invoke({ getName(), 1.0, log, true, true });
+            return false;
         }
-        return writingSuccessful;
     }
 }

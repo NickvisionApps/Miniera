@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-07 15:03-0500\n"
+"POT-Creation-Date: 2025-03-09 15:36-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,59 +63,51 @@ msgstr ""
 msgid "Server already loaded"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:78
+#: libminiera/src/models/server.cpp:107
 msgid "[Initialization] Server already initialized."
 msgstr ""
 
-#: libminiera/src/models/server.cpp:83
+#: libminiera/src/models/server.cpp:112
 msgid "[Initialization] Starting server initialization process...\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:96
+#: libminiera/src/models/server.cpp:125
 msgid "[Initialization] Server initialization process completed..\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:150
+#: libminiera/src/models/server.cpp:242
 msgid "[Download] Starting server files download...\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:170
+#: libminiera/src/models/server.cpp:262
 msgid "[Download] Server files download completed.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:174
+#: libminiera/src/models/server.cpp:266
 msgid "[Download] Error downloading server files.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:183
+#: libminiera/src/models/server.cpp:275
 msgid "[Extract] Starting server files extraction...\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:218
+#: libminiera/src/models/server.cpp:310
 msgid "[Extract] Server files extraction completed.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:222
+#: libminiera/src/models/server.cpp:314
 msgid "[Extract] Error extracting server files.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:231
+#: libminiera/src/models/server.cpp:322
 msgid "[Write] Starting server property files writing...\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:240
-msgid "[Write] Wrote EULA file.\n"
-msgstr ""
-
-#: libminiera/src/models/server.cpp:245 libminiera/src/models/server.cpp:257
-msgid "[Write] Wrote server properties file.\n"
-msgstr ""
-
-#: libminiera/src/models/server.cpp:264
+#: libminiera/src/models/server.cpp:326
 msgid "[Write] Server propety files writing completed.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:268
+#: libminiera/src/models/server.cpp:331
 msgid "[Write] Error writing server property files.\n"
 msgstr ""
 
@@ -324,7 +316,7 @@ msgstr ""
 
 #. Dialog Settings
 #: org.nickvision.miniera.qt/src/views/mainwindow.cpp:68
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:57
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:58
 #: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:108
 msgid "Settings"
 msgstr ""
@@ -623,15 +615,15 @@ msgstr ""
 msgid "Start"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:41
-msgid "Restart"
-msgstr ""
-
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:55
-msgid "Dashboard"
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:42
+msgid "Broadcast"
 msgstr ""
 
 #: org.nickvision.miniera.qt/src/views/serverpage.cpp:56
+msgid "Dashboard"
+msgstr ""
+
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:57
 msgid "Console"
 msgstr ""
 

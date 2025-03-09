@@ -9,8 +9,7 @@
 #define DEFAULT_MAX_PLAYERS 10u
 #define DEFAULT_ONLINE_MODE true
 #define DEFAULT_PLAYER_IDLE_TIMEOUT 0u
-#define DEFAULT_JAVA_SERVER_PORT 19132u
-#define DEFAULT_BEDROCK_SERVER_PORT 25565u
+#define DEFAULT_SERVER_PORT 19132u
 #define DEFAULT_JAVA_VIEW_DISTANCE 10u
 #define DEFAULT_BEDROCK_VIEW_DISTANCE 32u
 #define DEFAULT_ALLOW_FLIGHT false
@@ -39,7 +38,7 @@ namespace Nickvision::Miniera::Shared::Models
         m_maxPlayers{ DEFAULT_MAX_PLAYERS },
         m_onlineMode{ DEFAULT_ONLINE_MODE },
         m_playerIdleTimeout{ DEFAULT_PLAYER_IDLE_TIMEOUT },
-        m_serverPort{ edition == Edition::Bedrock ? DEFAULT_BEDROCK_SERVER_PORT : DEFAULT_JAVA_SERVER_PORT },
+        m_serverPort{ DEFAULT_SERVER_PORT },
         m_viewDistance{ edition == Edition::Bedrock ? DEFAULT_BEDROCK_VIEW_DISTANCE : DEFAULT_JAVA_VIEW_DISTANCE},
         m_allowFlight{ DEFAULT_ALLOW_FLIGHT },
         m_allowNether{ DEFAULT_ALLOW_NETHER },
@@ -68,7 +67,7 @@ namespace Nickvision::Miniera::Shared::Models
         m_maxPlayers{ json["MaxPlayers"].is_uint64() ? static_cast<unsigned int>(json["MaxPlayers"].as_uint64()) : DEFAULT_MAX_PLAYERS },
         m_onlineMode{ json["OnlineMode"].is_bool() ? json["OnlineMode"].as_bool() : DEFAULT_ONLINE_MODE },
         m_playerIdleTimeout{ json["PlayerIdleTimeout"].is_uint64() ? static_cast<unsigned int>(json["PlayerIdleTimeout"].as_uint64()) : DEFAULT_PLAYER_IDLE_TIMEOUT },
-        m_serverPort{ json["ServerPort"].is_uint64() ? static_cast<unsigned int>(json["ServerPort"].as_uint64()) : DEFAULT_JAVA_SERVER_PORT },
+        m_serverPort{ json["ServerPort"].is_uint64() ? static_cast<unsigned int>(json["ServerPort"].as_uint64()) : DEFAULT_SERVER_PORT },
         m_viewDistance{ json["ViewDistance"].is_uint64() ? static_cast<unsigned int>(json["ViewDistance"].as_uint64()) : DEFAULT_JAVA_VIEW_DISTANCE },
         m_allowFlight{ json["AllowFlight"].is_bool() ? json["AllowFlight"].as_bool() : DEFAULT_ALLOW_FLIGHT },
         m_allowNether{ json["AllowNether"].is_bool() ? json["AllowNether"].as_bool() : DEFAULT_ALLOW_NETHER },

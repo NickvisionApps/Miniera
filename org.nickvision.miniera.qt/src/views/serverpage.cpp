@@ -34,18 +34,19 @@ namespace Ui
             btnStartStop->setMinimumWidth(200);
             btnStartStop->setText(_("Start"));
             btnStartStop->setIcon(QLEMENTINE_ICON(Action_OnOff));
-            btnRestart = new ActionButton(parent);
-            btnRestart->setAutoDefault(false);
-            btnRestart->setDefault(false);
-            btnRestart->setMinimumWidth(200);
-            btnRestart->setText(_("Restart"));
-            btnRestart->setIcon(QLEMENTINE_ICON(Action_Refresh));
+            btnBroadcast = new ActionButton(parent);
+            btnBroadcast->setAutoDefault(false);
+            btnBroadcast->setDefault(false);
+            btnBroadcast->setEnabled(false);
+            btnBroadcast->setMinimumWidth(200);
+            btnBroadcast->setText(_("Broadcast"));
+            btnBroadcast->setIcon(QLEMENTINE_ICON(Misc_Globe));
             QVBoxLayout* layoutInfo{ new QVBoxLayout() };
             layoutInfo->addWidget(lblName);
             layoutInfo->addWidget(lblVersion);
             QVBoxLayout* layoutActions{ new QVBoxLayout() };
             layoutActions->addWidget(btnStartStop);
-            layoutActions->addWidget(btnRestart);
+            layoutActions->addWidget(btnBroadcast);
             QHBoxLayout* layoutHeader{ new QHBoxLayout() };
             layoutHeader->addLayout(layoutInfo);
             layoutHeader->addStretch();
@@ -73,7 +74,7 @@ namespace Ui
         QLabel* lblName;
         QLabel* lblVersion;
         ActionButton* btnStartStop;
-        ActionButton* btnRestart;
+        ActionButton* btnBroadcast;
         SegmentedControl* navBar;
     };
 }
