@@ -3,7 +3,9 @@
 
 #include <filesystem>
 #include <memory>
+#include <mutex>
 #include <string>
+#include <utility>
 #include <boost/json.hpp>
 #include <libnick/events/event.h>
 #include <libnick/system/process.h>
@@ -38,6 +40,12 @@ namespace Nickvision::Miniera::Shared::Models
          */
         ~Server();
         /**
+         * @brief Gets whether or not there is a server running.
+         * @return True if there is a server running
+         * @return False if there is not a server running
+         */
+        static bool isServerRunning();
+        /**
          * @brief Gets the event for when the initialization's progress is changed.
          * @return The initialization progress changed event.
          */
@@ -57,6 +65,17 @@ namespace Nickvision::Miniera::Shared::Models
          * @return The console output of the server
          */
         const std::string& getOutput() const;
+        /**
+         * @brief Gets the url of the server.
+         * @return The url of the server
+         */
+        std::pair<std::string, unsigned int> getUrl() const;
+        /**
+         * @brief Gets whether or not the server is running.
+         * @return True if the server is running
+         * @return False if the server is not running
+         */
+        bool isRunning() const;
         /**
          * @brief Initializes the server.
          * @brief This will download and setup the main server executable and directories.
@@ -144,6 +163,7 @@ namespace Nickvision::Miniera::Shared::Models
          * @return False if writting failed
          */
         bool initializeWrite(std::string& log);
+        mutable std::mutex m_mutex;
         ServerVersion m_version;
         ServerProperties m_properties;
         std::filesystem::path m_directory;

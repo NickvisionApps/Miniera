@@ -4,6 +4,7 @@
 #include <functional>
 #include <thread>
 #include <libnick/helpers/codehelpers.h>
+#include <libnick/helpers/stringhelpers.h>
 #include <libnick/localization/gettext.h>
 #include <libnick/network/web.h>
 #include <libnick/system/environment.h>
@@ -71,12 +72,18 @@ namespace Nickvision::Miniera::Shared::Models
         {
             throw std::invalid_argument("Invalid JSON object");
         }
+        wrtieFilesToDisk();
     }
 
     Server::~Server()
     {
         stop();
         wrtieFilesToDisk();
+    }
+
+    bool Server::isServerRunning()
+    {
+        return s_serverRunning;
     }
 
     Event<ServerInitializationProgressChangedEventArgs>& Server::initializationProgressChanged()
@@ -86,16 +93,19 @@ namespace Nickvision::Miniera::Shared::Models
 
     const std::string& Server::getName() const
     {
+        std::lock_guard<std::mutex> lock{ m_mutex };
         return m_properties.getLevelName();
     }
 
     const ServerVersion& Server::getVersion() const
     {
+        std::lock_guard<std::mutex> lock{ m_mutex };
         return m_version;
     }
 
     const std::string& Server::getOutput() const
     {
+        std::lock_guard<std::mutex> lock{ m_mutex };
         if(!m_proc)
         {
             static std::string empty;
@@ -104,11 +114,27 @@ namespace Nickvision::Miniera::Shared::Models
         return m_proc->getOutput();
     }
 
+    std::pair<std::string, unsigned int> Server::getUrl() const
+    {
+        std::lock_guard<std::mutex> lock{ m_mutex };
+        if(m_proc && m_broadcaster)
+        {
+            std::vector info{ StringHelpers::split(m_broadcaster->getUrl(), ":") };
+            return { info[0], static_cast<unsigned int>(std::stoul(info[1])) };
+        }
+        return { "localhost", m_properties.getServerPort() };
+    }
+
+    bool Server::isRunning() const
+    {
+        std::lock_guard<std::mutex> lock{ m_mutex };
+        return m_proc ? true : false;
+    }
+
     void Server::initialize()
     {
-        if(m_initialized || initializeCheck())
+        if(initializeCheck())
         {
-            m_initialized = true;
             m_initializationProgressChanged.invoke({ getName(), 1.0, _("[Initialization] Server already initialized."), true, false });
             return;
         }
@@ -128,7 +154,9 @@ namespace Nickvision::Miniera::Shared::Models
                 return;
             }
             log += _("[Initialization] Server initialization process completed..\n");
+            std::unique_lock<std::mutex> lock{ m_mutex };
             m_initialized = true;
+            lock.unlock();
             m_initializationProgressChanged.invoke({ getName(), 1.0, log, true, false });
         } };
         worker.detach();
@@ -136,7 +164,12 @@ namespace Nickvision::Miniera::Shared::Models
 
     bool Server::start(unsigned int maxServerRamInGB)
     {
-        if(s_serverRunning || !m_initialized)
+        std::lock_guard<std::mutex> lock{ m_mutex };
+        if(!m_initialized)
+        {
+            return false;
+        }
+        if(s_serverRunning)
         {
             return m_proc ? true : false;
         }
@@ -157,21 +190,28 @@ namespace Nickvision::Miniera::Shared::Models
             s_serverRunning = true;
             return true;
         }
+        m_proc.reset();
         return false;
     }
 
     bool Server::stop()
     {
+        std::lock_guard<std::mutex> lock{ m_mutex };
         if(!m_proc)
         {
             return true;
         }
         m_proc->sendCommand("stop");
         m_proc->waitForExit();
-        m_broadcaster->stop();
+        if(m_broadcaster)
+        {
+            m_broadcaster->stop();
+        }
         if(!m_proc->isRunning())
         {
             s_serverRunning = false;
+            m_proc.reset();
+            m_broadcaster.reset();
             return true;
         }
         return false;
@@ -179,6 +219,7 @@ namespace Nickvision::Miniera::Shared::Models
 
     bool Server::command(const std::string& cmd)
     {
+        std::lock_guard<std::mutex> lock{ m_mutex };
         if(!m_proc)
         {
             return false;
@@ -188,17 +229,28 @@ namespace Nickvision::Miniera::Shared::Models
 
     const std::string& Server::broadcast(const std::string& ngrokToken)
     {
-        if(ngrokToken.empty())
+        std::lock_guard<std::mutex> lock{ m_mutex };
+        static std::string empty;
+        if(!m_proc || ngrokToken.empty())
         {
-            static std::string empty;
             return empty;
         }
+        if(m_broadcaster)
+        {
+            return m_broadcaster->getUrl();
+        }
         m_broadcaster = std::make_shared<Broadcaster>(m_properties.getServerPort(), ngrokToken);
-        return m_broadcaster->start();
+        if(m_broadcaster->start().empty())
+        {
+            m_broadcaster.reset();
+            return empty;
+        }
+        return m_broadcaster->getUrl();
     }
 
     boost::json::object Server::toJson() const
     {
+        std::lock_guard<std::mutex> lock{ m_mutex };
         boost::json::object json;
         json["Version"] = m_version.toJson();
         json["Properties"] = m_properties.toJson();
@@ -210,6 +262,7 @@ namespace Nickvision::Miniera::Shared::Models
     {
         std::ofstream json{ MINIERA_FILE, std::ios::trunc };
         json << toJson() << std::endl;
+        std::lock_guard<std::mutex> lock{ m_mutex };
         std::ofstream prop{ SERVER_PROPERTIES_FILE, std::ios::trunc };
         prop << m_properties.toString() << std::endl;
         if(m_version.getEdition() != Edition::Bedrock)
@@ -223,20 +276,25 @@ namespace Nickvision::Miniera::Shared::Models
 
     bool Server::initializeCheck()
     {
+        std::lock_guard<std::mutex> lock{ m_mutex };
+        if(m_initialized)
+        {
+            return m_initialized;
+        }
         std::filesystem::create_directories(m_directory);
         if(m_version.getEdition() == Edition::Java)
         {
-            return std::filesystem::exists(JAVA_SERVER_FILE_EXTRACTED) && std::filesystem::exists(EULA_FILE) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
+            m_initialized = std::filesystem::exists(JAVA_SERVER_FILE_EXTRACTED) && std::filesystem::exists(EULA_FILE) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
         }
         else if(m_version.getEdition() == Edition::Bedrock)
         {
-            return std::filesystem::exists(BEDROCK_SERVER_FILE_EXTRACTED) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
+            m_initialized = std::filesystem::exists(BEDROCK_SERVER_FILE_EXTRACTED) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
         }
         else if(m_version.getEdition() == Edition::Forge)
         {
-            return std::filesystem::exists(Environment::getOperatingSystem() == OperatingSystem::Windows ? "run.bat" : "run.sh") && std::filesystem::exists(EULA_FILE) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
+            m_initialized = std::filesystem::exists(Environment::getOperatingSystem() == OperatingSystem::Windows ? "run.bat" : "run.sh") && std::filesystem::exists(EULA_FILE) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
         }
-        return false;
+        return m_initialized;
     }
 
     bool Server::initializeDownload(std::string& log)

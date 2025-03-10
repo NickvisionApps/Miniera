@@ -156,7 +156,8 @@ namespace Nickvision::Miniera::Qt::Views
         : QMainWindow{ parent },
         m_ui{ new Ui::MainWindow() },
         m_controller{ controller },
-        m_themeManager{ themeManager }
+        m_themeManager{ themeManager },
+        m_confirmClose{ false }
     {
         //Window Settings
         bool stable{ m_controller->getAppInfo().getVersion().getVersionType() == VersionType::Stable };
@@ -205,9 +206,16 @@ namespace Nickvision::Miniera::Qt::Views
 
     void MainWindow::closeEvent(QCloseEvent* event)
     {
-        if(!m_controller->canShutdown())
+        if(!m_controller->canShutdown() && !m_confirmClose)
         {
-            return event->ignore();
+            event->ignore();
+            QMessageBox msgBox{ QMessageBox::Icon::Warning, QString::fromStdString(m_controller->getAppInfo().getShortName()), _("There is a server running. Closing the app will kill the server. Are you sure you want to exit?"), QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No, this };
+            if(msgBox.exec() == QMessageBox::StandardButton::Yes)
+            {
+                m_confirmClose = true;
+                close();
+            }
+            return;
         }
         m_controller->shutdown({ geometry().width(), geometry().height(), isMaximized() });
         event->accept();

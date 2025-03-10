@@ -10,8 +10,9 @@ using namespace Nickvision::Miniera::Shared::Events;
 
 namespace Nickvision::Miniera::Shared::Models
 {
-    ServerManager::ServerManager(const std::string& appName)
-        : m_serversDirectory{ UserDirectories::get(ApplicationUserDirectory::LocalData, appName) / "Servers" }
+    ServerManager::ServerManager(const std::string& appName, const Configuration& configuration)
+        : m_configuration{ configuration },
+        m_serversDirectory{ UserDirectories::get(ApplicationUserDirectory::LocalData, appName) / "Servers" }
     {
         std::filesystem::create_directories(m_serversDirectory);
         //Load Servers
@@ -79,7 +80,7 @@ namespace Nickvision::Miniera::Shared::Models
             if(args.isFinished() && !args.isError())
             {
                 m_loadedServers[server->getName()] = true;
-                m_serverLoaded.invoke({ server->getName(), std::make_shared<ServerViewController>(server) });
+                m_serverLoaded.invoke({ server->getName(), std::make_shared<ServerViewController>(server, m_configuration) });
             }
         };
         server->initialize();
@@ -99,7 +100,7 @@ namespace Nickvision::Miniera::Shared::Models
             if(args.isFinished() && !args.isError())
             {
                 m_loadedServers[name] = true;
-                m_serverLoaded.invoke({ name, std::make_shared<ServerViewController>(m_servers.at(name)) });
+                m_serverLoaded.invoke({ name, std::make_shared<ServerViewController>(m_servers.at(name), m_configuration) });
             }
         };
         m_servers.at(name)->initialize();

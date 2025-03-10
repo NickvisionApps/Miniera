@@ -108,6 +108,7 @@ namespace Nickvision::Miniera::Qt::Views
         Ui::MainWindow* m_ui;
         std::shared_ptr<Shared::Controllers::MainWindowController> m_controller;
         oclero::qlementine::ThemeManager* m_themeManager;
+        bool m_confirmClose;
     };
 }
 

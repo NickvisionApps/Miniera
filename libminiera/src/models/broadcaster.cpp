@@ -61,7 +61,7 @@ namespace Nickvision::Miniera::Shared::Models
 
     bool Broadcaster::stop()
     {
-        if(!m_proc || !m_proc->isRunning())
+        if(!m_proc->isRunning())
         {
             return false;
         }

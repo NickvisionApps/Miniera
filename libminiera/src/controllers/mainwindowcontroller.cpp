@@ -26,7 +26,7 @@ namespace Nickvision::Miniera::Shared::Controllers
         m_args{ args },
         m_appInfo{ "org.nickvision.miniera", "Nickvision Miniera", "Miniera" },
         m_dataFileManager{ m_appInfo.getName() },
-        m_serverManager{ m_appInfo.getName() }
+        m_serverManager{ m_appInfo.getName(), m_dataFileManager.get<Configuration>("config") }
     {
         m_appInfo.setVersion({ "2025.3.0-next" });
         m_appInfo.setShortName(_("Miniera"));
@@ -118,7 +118,7 @@ namespace Nickvision::Miniera::Shared::Controllers
 
     bool MainWindowController::canShutdown() const
     {
-        return true;
+        return !Server::isServerRunning();
     }
 
     std::shared_ptr<NewServerDialogController> MainWindowController::createNewServerDialogController()

@@ -28,7 +28,26 @@ namespace Nickvision::Miniera::Qt::Views
          */
         ~ServerPage();
 
+    private Q_SLOTS:
+        /**
+         * @brief Starts or stops the server.
+         */
+        void startStop();
+        /**
+         * @brief Broadcasts the server.
+         */
+        void broadcast();
+        /**
+         * @brief Sends a command to the server.
+         */
+        void sendCommand();
+
     private:
+        /**
+         * @brief Handles when the console output is changed.
+         * @param args ParamEventArgs<std::string>
+         */
+        void onConsoleOutputChanged(const Events::ParamEventArgs<std::string>& args);
         Ui::ServerPage* m_ui;
         std::shared_ptr<Shared::Controllers::ServerViewController> m_controller;
     };
