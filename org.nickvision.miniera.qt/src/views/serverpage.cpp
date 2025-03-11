@@ -76,6 +76,7 @@ namespace Ui
             lblOutput = new QLabel(parent);
             lblOutput->setAlignment(::Qt::AlignTop);
             lblOutput->setWordWrap(true);
+            lblOutput->setTextInteractionFlags(::Qt::TextSelectableByMouse);
             lblOutput->setText(_("No console output"));
             txtCommand = new LineEdit(parent);
             txtCommand->setPlaceholderText(_("Enter command here"));

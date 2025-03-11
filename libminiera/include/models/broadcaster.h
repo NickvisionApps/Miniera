@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <libnick/system/process.h>
+#include "serveraddress.h"
 
 namespace Nickvision::Miniera::Shared::Models
 {
@@ -25,16 +26,16 @@ namespace Nickvision::Miniera::Shared::Models
          */
         ~Broadcaster();
         /**
-         * @brief Gets the WWW url of the broadcasted port.
-         * @return The WWW url
+         * @brief Gets the address of the broadcasted server.
+         * @return The ServerAddress
          */
-        const std::string& getUrl() const;
+        const ServerAddress& getAddress() const;
         /**
          * @brief Starts the broadcaster.
-         * @return The WWW url of the broadcasted port
-         * @return Empty string on erorr
+         * @return The ServerAddress
+         * @return Empty address on error
          */
-        const std::string& start();
+        const ServerAddress& start();
         /**
          * @brief Stops the broadcaster.
          * @return True if successful
@@ -44,7 +45,7 @@ namespace Nickvision::Miniera::Shared::Models
 
     private:
         std::shared_ptr<System::Process> m_proc;
-        std::string m_url;
+        ServerAddress m_address;
     };
 }
 

@@ -5,12 +5,12 @@
 #include <memory>
 #include <mutex>
 #include <string>
-#include <utility>
 #include <boost/json.hpp>
 #include <libnick/events/event.h>
 #include <libnick/system/process.h>
 #include "events/serverinitializationprogresschangedeventargs.h"
 #include "broadcaster.h"
+#include "serveraddress.h"
 #include "serverproperties.h"
 #include "serverversion.h"
 
@@ -66,10 +66,10 @@ namespace Nickvision::Miniera::Shared::Models
          */
         const std::string& getOutput() const;
         /**
-         * @brief Gets the url of the server.
-         * @return The url of the server
+         * @brief Gets the address of the server.
+         * @return The address of the server
          */
-        std::pair<std::string, unsigned int> getUrl() const;
+        ServerAddress getAddress() const;
         /**
          * @brief Gets whether or not the server is running.
          * @return True if the server is running
@@ -106,10 +106,10 @@ namespace Nickvision::Miniera::Shared::Models
         /**
          * @brief Broadcasts the server over the WWW.
          * @param ngrokToken The user's api token for the ngrok broadcaster
-         * @return The WWW url of the server
-         * @return Empty string on error
+         * @return The ServerAddress
+         * @return Empty address on error
          */
-        const std::string& broadcast(const std::string& ngrokToken);
+        const ServerAddress& broadcast(const std::string& ngrokToken);
         /**
          * @brief Converts the Server to a JSON object.
          * @return The Server as a JSON object

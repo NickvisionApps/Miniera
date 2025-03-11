@@ -13,6 +13,7 @@ add_library(libminiera
     "src/models/broadcaster.cpp"
     "src/models/configuration.cpp"
     "src/models/server.cpp"
+    "src/models/serveraddress.cpp"
     "src/models/servermanager.cpp"
     "src/models/serverproperties.cpp"
     "src/models/serverversion.cpp"

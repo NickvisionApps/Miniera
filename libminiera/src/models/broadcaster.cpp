@@ -15,6 +15,7 @@ using namespace Nickvision::System;
 namespace Nickvision::Miniera::Shared::Models
 {
     Broadcaster::Broadcaster(unsigned int port, const std::string& ngrokToken)
+        : m_address{ "", 0 }
     {
         if(ngrokToken.empty())
         {
@@ -28,12 +29,12 @@ namespace Nickvision::Miniera::Shared::Models
         stop();
     }
 
-    const std::string& Broadcaster::getUrl() const
+    const ServerAddress& Broadcaster::getAddress() const
     {
-        return m_url;
+        return m_address;
     }
 
-    const std::string& Broadcaster::start()
+    const ServerAddress& Broadcaster::start()
     {
         //Start ngrok
         m_proc->start();
@@ -42,8 +43,8 @@ namespace Nickvision::Miniera::Shared::Models
         std::vector<std::string> jsons{ StringHelpers::split(m_proc->getOutput(), "\n") };
         if(jsons.size() != NGROK_JSONS_SIZE)
         {
-            m_url = "";
-            return m_url;
+            m_address = {};
+            return m_address;
         };
         //Get WWW url
         boost::json::parser parser;
@@ -51,12 +52,13 @@ namespace Nickvision::Miniera::Shared::Models
         boost::json::value value = parser.release();
         if(!value.is_object() || !value.as_object()["url"].is_string())
         {
-            m_url = "";
-            return m_url;
+            m_address = {};
+            return m_address;
         }
         std::string url{ value.as_object()["url"].as_string() };
-        m_url = url.substr(std::string("tcp://").size());
-        return m_url;
+        url = url.substr(std::string("tcp://").size());
+        m_address = { url };
+        return m_address;
     }
 
     bool Broadcaster::stop()

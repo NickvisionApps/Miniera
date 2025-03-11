@@ -4,7 +4,6 @@
 #include <functional>
 #include <thread>
 #include <libnick/helpers/codehelpers.h>
-#include <libnick/helpers/stringhelpers.h>
 #include <libnick/localization/gettext.h>
 #include <libnick/network/web.h>
 #include <libnick/system/environment.h>
@@ -114,13 +113,12 @@ namespace Nickvision::Miniera::Shared::Models
         return m_proc->getOutput();
     }
 
-    std::pair<std::string, unsigned int> Server::getUrl() const
+    ServerAddress Server::getAddress() const
     {
         std::lock_guard<std::mutex> lock{ m_mutex };
         if(m_proc && m_broadcaster)
         {
-            std::vector info{ StringHelpers::split(m_broadcaster->getUrl(), ":") };
-            return { info[0], static_cast<unsigned int>(std::stoul(info[1])) };
+            return m_broadcaster->getAddress();
         }
         return { "localhost", m_properties.getServerPort() };
     }
@@ -227,25 +225,25 @@ namespace Nickvision::Miniera::Shared::Models
         return m_proc->sendCommand(cmd);
     }
 
-    const std::string& Server::broadcast(const std::string& ngrokToken)
+    const ServerAddress& Server::broadcast(const std::string& ngrokToken)
     {
         std::lock_guard<std::mutex> lock{ m_mutex };
-        static std::string empty;
+        static ServerAddress empty;
         if(!m_proc || ngrokToken.empty())
         {
             return empty;
         }
         if(m_broadcaster)
         {
-            return m_broadcaster->getUrl();
+            return m_broadcaster->getAddress();
         }
         m_broadcaster = std::make_shared<Broadcaster>(m_properties.getServerPort(), ngrokToken);
-        if(m_broadcaster->start().empty())
+        if(m_broadcaster->start().isEmpty())
         {
             m_broadcaster.reset();
             return empty;
         }
-        return m_broadcaster->getUrl();
+        return m_broadcaster->getAddress();
     }
 
     boost::json::object Server::toJson() const
