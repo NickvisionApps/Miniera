@@ -71,6 +71,16 @@ namespace Nickvision::Miniera::Shared::Models
          */
         ServerAddress getAddress() const;
         /**
+         * @brief Gets the percent cpu usage of the server.
+         * @return The percent cpu usage of the server
+         */
+        double getCPUUsage() const;
+        /**
+         * @brief Gets the amount of RAM being used by the server in bytes.
+         * @return The amount of RAM used by the server in bytes
+         */
+        unsigned long long getRAMUsage() const;
+        /**
          * @brief Gets whether or not the server is running.
          * @return True if the server is running
          * @return False if the server is not running

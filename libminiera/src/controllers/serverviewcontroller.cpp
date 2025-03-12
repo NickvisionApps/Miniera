@@ -1,13 +1,30 @@
 #include "controllers/serverviewcontroller.h"
 #include <chrono>
+#include <format>
 #include <stdexcept>
 #include <thread>
+#include <libnick/helpers/codehelpers.h>
+#include <libnick/helpers/sizehelpers.h>
+#include <libnick/localization/gettext.h>
 
 using namespace Nickvision::Events;
+using namespace Nickvision::Helpers;
 using namespace Nickvision::Miniera::Shared::Models;
 
 namespace Nickvision::Miniera::Shared::Controllers
 {
+    template<SizeHelpers::Numeric T>
+    static int getDigitCount(T value)
+    {
+        int count = 0;
+        while(value > 0)
+        {
+            count++;
+            value /= 10;
+        }
+        return count;
+    }
+
     ServerViewController::ServerViewController(const std::shared_ptr<Server>& server, const Configuration& configuration)
         : m_server{ server },
         m_configuration{ configuration }
@@ -32,6 +49,11 @@ namespace Nickvision::Miniera::Shared::Controllers
         return m_consoleOutputChanged;
     }
 
+    Event<ParamEventArgs<std::pair<double, unsigned long long>>>& ServerViewController::resourceUsageChanged()
+    {
+        return m_resourceUsageChanged;
+    }
+
     const std::string& ServerViewController::getName() const
     {
         return m_server->getName();
@@ -42,9 +64,39 @@ namespace Nickvision::Miniera::Shared::Controllers
         return m_server->getVersion().str();
     }
 
+    ServerAddress ServerViewController::getAddress() const
+    {
+        return m_server->getAddress();
+    }
+
     bool ServerViewController::supportsMods() const
     {
         return m_server->getVersion().getEdition() == Edition::Forge;
+    }
+
+    std::string ServerViewController::getRAMString(unsigned long long bytes)
+    {
+        unsigned long long converted{ bytes };
+        std::string res{ std::vformat(_("{} B / {} GB"), std::make_format_args(converted, CodeHelpers::unmove(m_configuration.getMaxServerRamInGB()))) };
+        for(int i = 0; getDigitCount(converted) > 4; i++)
+        {
+            if(i == 0)
+            {
+                converted = SizeHelpers::bytesToKilobytes(bytes);
+                res = std::vformat(_("{} KB / {} GB"), std::make_format_args(converted, CodeHelpers::unmove(m_configuration.getMaxServerRamInGB())));
+            }
+            else if(i == 1)
+            {
+                converted = SizeHelpers::bytesToMegabytes(bytes);
+                res = std::vformat(_("{} MB / {} GB"), std::make_format_args(converted, CodeHelpers::unmove(m_configuration.getMaxServerRamInGB())));
+            }
+            else if(i == 2)
+            {
+                converted = SizeHelpers::bytesToGigabytes(bytes);
+                return std::vformat(_("{} GB / {} GB"), std::make_format_args(converted, CodeHelpers::unmove(m_configuration.getMaxServerRamInGB())));
+            }
+        }
+        return res;
     }
 
     PowerStatus ServerViewController::startStop()
@@ -69,6 +121,15 @@ namespace Nickvision::Miniera::Shared::Controllers
         return PowerStatus::ErrorStarting;
     }
 
+    bool ServerViewController::broadcast()
+    {
+        if(m_configuration.getNgrokAuthToken().empty())
+        {
+            return false;
+        }
+        return !m_server->broadcast(m_configuration.getNgrokAuthToken()).isEmpty();
+    }
+
     void ServerViewController::sendCommand(const std::string& cmd)
     {
         m_server->command(cmd);
@@ -79,12 +140,14 @@ namespace Nickvision::Miniera::Shared::Controllers
         size_t consoleOutputSize{ 0 };
         while(m_server->isRunning())
         {
-            //Check console output
+            //Console output
             if(consoleOutputSize != m_server->getOutput().size())
             {
                 consoleOutputSize = m_server->getOutput().size();
                 m_consoleOutputChanged.invoke({ m_server->getOutput() });
             }
+            //Resoures
+            m_resourceUsageChanged.invoke({ std::make_pair(m_server->getCPUUsage(), m_server->getRAMUsage()) });
             //Sleep
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
         }

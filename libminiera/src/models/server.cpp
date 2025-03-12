@@ -123,6 +123,26 @@ namespace Nickvision::Miniera::Shared::Models
         return { "localhost", m_properties.getServerPort() };
     }
 
+    double Server::getCPUUsage() const
+    {
+        std::lock_guard<std::mutex> lock{ m_mutex };
+        if(!m_proc)
+        {
+            return 0.0;
+        }
+        return m_proc->getCPUUsage();
+    }
+
+    unsigned long long Server::getRAMUsage() const
+    {
+        std::lock_guard<std::mutex> lock{ m_mutex };
+        if(!m_proc)
+        {
+            return 0L;
+        }
+        return m_proc->getRAMUsage();
+    }
+
     bool Server::isRunning() const
     {
         std::lock_guard<std::mutex> lock{ m_mutex };

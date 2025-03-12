@@ -137,7 +137,9 @@ namespace Nickvision::Miniera::Qt::Views
     ServerPage::ServerPage(const std::shared_ptr<ServerViewController>& controller, QWidget* parent)
         : QWidget{ parent },
         m_ui{ new Ui::ServerPage() },
-        m_controller{ controller }
+        m_controller{ controller },
+        m_cpuQueue{ 5 },
+        m_memQueue{ 5 }
     {
         //Load Ui
         m_ui->setupUi(this, m_controller->supportsMods());

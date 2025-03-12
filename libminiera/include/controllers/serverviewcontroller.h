@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include <utility>
 #include <libnick/events/event.h>
 #include <libnick/events/parameventargs.h>
 #include "models/configuration.h"
@@ -35,6 +36,11 @@ namespace Nickvision::Miniera::Shared::Controllers
          */
         Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<std::string>>& consoleOutputChanged();
         /**
+         * @brief Gets the event for when the resource usage changes.
+         * @return The resource usage changed event
+         */
+        Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<std::pair<double, unsigned long long>>>& resourceUsageChanged();
+        /**
          * @brief Gets the name of the server.
          * @return The name of the server
          */
@@ -45,16 +51,34 @@ namespace Nickvision::Miniera::Shared::Controllers
          */
         std::string getVersion() const;
         /**
+         * @brief Gets the address of the server.
+         * @return The address of the server
+         */
+        Models::ServerAddress getAddress() const;
+        /**
          * @brief Gets whether or not the server supports mods.
          * @return True if the server supports mods
          * @return False if the server does not support mods
          */
         bool supportsMods() const;
         /**
+         * @brief Gets the ram usage string.
+         * @param bytes The number of bytes being used by the server
+         * @return The ram usage string
+         */
+        std::string getRAMString(unsigned long long bytes);
+        /**
          * @brief Starts a server if it is stopped or stops a server if it is started.
          * @return PowerStatus
          */
         Models::PowerStatus startStop();
+        /**
+         * @brief Broadcasts the server over the WWW.
+         * @brief On success, getAddress() should be called to display the new address.
+         * @return True if successful
+         * @return False if unsuccesful
+         */
+        bool broadcast();
         /**
          * @brief Sends a command to the server.
          * @param cmd The command to send to the server
@@ -70,6 +94,7 @@ namespace Nickvision::Miniera::Shared::Controllers
         const Models::Configuration& m_configuration;
         std::thread m_watcher;
         Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<std::string>> m_consoleOutputChanged;
+        Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<std::pair<double, unsigned long long>>> m_resourceUsageChanged;
     };
 }
 

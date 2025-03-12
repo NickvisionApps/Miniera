@@ -4,6 +4,7 @@
 #include <memory>
 #include <QWidget>
 #include "controllers/serverviewcontroller.h"
+#include "models/boundedqueue.h"
 
 namespace Ui { class ServerPage; }
 
@@ -50,6 +51,8 @@ namespace Nickvision::Miniera::Qt::Views
         void onConsoleOutputChanged(const Events::ParamEventArgs<std::string>& args);
         Ui::ServerPage* m_ui;
         std::shared_ptr<Shared::Controllers::ServerViewController> m_controller;
+        Shared::Models::BoundedQueue<double> m_cpuQueue;
+        Shared::Models::BoundedQueue<unsigned long long> m_memQueue;
     };
 }
 
