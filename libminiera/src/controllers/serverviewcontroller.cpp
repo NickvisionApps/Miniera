@@ -44,6 +44,11 @@ namespace Nickvision::Miniera::Shared::Controllers
         }
     }
 
+    Event<ParamEventArgs<ServerAddress>>& ServerViewController::addressChanged()
+    {
+        return m_addressChanged;
+    }
+
     Event<ParamEventArgs<std::string>>& ServerViewController::consoleOutputChanged()
     {
         return m_consoleOutputChanged;
@@ -109,6 +114,8 @@ namespace Nickvision::Miniera::Shared::Controllers
                 {
                     m_watcher.join();
                 }
+                m_addressChanged.invoke({ m_server->getAddress() });
+                m_resourceUsageChanged.invoke({ std::make_pair(0.0, 0L) });
                 return PowerStatus::Stopped;
             }
             return PowerStatus::ErrorStopping;
@@ -116,6 +123,7 @@ namespace Nickvision::Miniera::Shared::Controllers
         if(m_server->start(m_configuration.getMaxServerRamInGB()))
         {
             m_watcher = std::thread(&ServerViewController::watch, this);
+            m_addressChanged.invoke({ m_server->getAddress() });
             return PowerStatus::Started;
         }
         return PowerStatus::ErrorStarting;
@@ -127,7 +135,13 @@ namespace Nickvision::Miniera::Shared::Controllers
         {
             return false;
         }
-        return !m_server->broadcast(m_configuration.getNgrokAuthToken()).isEmpty();
+        const ServerAddress& address{ m_server->broadcast(m_configuration.getNgrokAuthToken()) };
+        if(!address.isEmpty())
+        {
+            m_addressChanged.invoke({ address });
+            return true;
+        }
+        return false;
     }
 
     void ServerViewController::sendCommand(const std::string& cmd)
@@ -138,6 +152,8 @@ namespace Nickvision::Miniera::Shared::Controllers
     void ServerViewController::watch()
     {
         size_t consoleOutputSize{ 0 };
+        double oldCPU{ 0 };
+        unsigned long long oldRAM{ 0 };
         while(m_server->isRunning())
         {
             //Console output
@@ -147,7 +163,12 @@ namespace Nickvision::Miniera::Shared::Controllers
                 m_consoleOutputChanged.invoke({ m_server->getOutput() });
             }
             //Resoures
-            m_resourceUsageChanged.invoke({ std::make_pair(m_server->getCPUUsage(), m_server->getRAMUsage()) });
+            if(oldCPU != m_server->getCPUUsage() || oldRAM != m_server->getRAMUsage())
+            {
+                oldCPU = m_server->getCPUUsage();
+                oldRAM = m_server->getRAMUsage();
+                m_resourceUsageChanged.invoke({ std::make_pair(oldCPU, oldRAM) });
+            }
             //Sleep
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
         }

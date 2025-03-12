@@ -11,17 +11,26 @@
 #include "models/zipfile.h"
 
 #define MINIERA_FILE (m_directory / "miniera.json")
+
 #define SERVER_PROPERTIES_FILE (m_directory / "server.properties")
 #define EULA_FILE (m_directory / "eula.txt")
+
 #define JAVA_SERVER_FILE_RAW (m_directory / "server.jar")
 #define JAVA_SERVER_FILE_EXTRACTED (m_directory / "server.jar")
+
 #define BEDROCK_SERVER_FILE_RAW (m_directory / "server.zip")
 #ifdef _WIN32
 #define BEDROCK_SERVER_FILE_EXTRACTED (m_directory / "bedrock_server.exe")
 #else
 #define BEDROCK_SERVER_FILE_EXTRACTED (m_directory / "bedrock_server")
 #endif
+
 #define FORGE_SERVER_FILE_RAW (m_directory / "installer.jar")
+#ifdef _WIN32
+#define FORGE_SERVER_FILE_EXTRACTED (m_directory / "run.bat")
+#else
+#define FORGE_SERVER_FILE_EXTRACTED (m_directory / "run.sh")
+#endif
 
 using namespace Nickvision::Events;
 using namespace Nickvision::Helpers;
@@ -310,7 +319,7 @@ namespace Nickvision::Miniera::Shared::Models
         }
         else if(m_version.getEdition() == Edition::Forge)
         {
-            m_initialized = std::filesystem::exists(Environment::getOperatingSystem() == OperatingSystem::Windows ? "run.bat" : "run.sh") && std::filesystem::exists(EULA_FILE) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
+            m_initialized = std::filesystem::exists(FORGE_SERVER_FILE_EXTRACTED) && std::filesystem::exists(EULA_FILE) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
         }
         return m_initialized;
     }

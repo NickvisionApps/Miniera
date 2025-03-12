@@ -1,6 +1,9 @@
 #include "views/serverpage.h"
+#include <format>
 #include <QFont>
+#include <QFormLayout>
 #include <QFrame>
+#include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
@@ -29,10 +32,12 @@ namespace Ui
         {
             QFont boldFont;
             boldFont.setBold(true);
-            boldFont.setPointSize(12);
+            QFont boldFontBig;
+            boldFontBig.setBold(true);
+            boldFontBig.setPointSize(12);
             //Header
             lblName = new QLabel(parent);
-            lblName->setFont(boldFont);
+            lblName->setFont(boldFontBig);
             lblVersion = new QLabel(parent);
             btnStartStop = new ActionButton(parent);
             btnStartStop->setAutoDefault(true);
@@ -71,7 +76,37 @@ namespace Ui
             layoutNavigation->addWidget(navBar);
             layoutNavigation->addStretch();
             //Dashboard Page
+            QLabel* lblUrlTitle{ new QLabel(_("URL:"), parent) };
+            lblUrlTitle->setFont(boldFont);
+            lblUrl = new QLabel(parent);
+            QLabel* lblPortTitle{ new QLabel(_("Port:"), parent) };
+            lblPortTitle->setFont(boldFont);
+            lblPort = new QLabel(parent);
+            QFormLayout* layoutAddress{ new QFormLayout() };
+            layoutAddress->addRow(lblUrlTitle, lblUrl);
+            layoutAddress->addRow(lblPortTitle, lblPort);
+            QGroupBox* groupAddress{ new QGroupBox(_("Address"), parent) };
+            groupAddress->setLayout(layoutAddress);
+            QLabel* lblCPUTitle{ new QLabel(_("CPU:"), parent) };
+            lblCPUTitle->setFont(boldFont);
+            lblCPU = new QLabel(parent);
+            QLabel* lblRAMTitle{ new QLabel(_("RAM:"), parent) };
+            lblRAMTitle->setFont(boldFont);
+            lblRAM = new QLabel(parent);
+            QFormLayout* layoutResources{ new QFormLayout() };
+            layoutResources->addRow(lblCPUTitle, lblCPU);
+            layoutResources->addRow(lblRAMTitle, lblRAM);
+            QGroupBox* groupResources{ new QGroupBox(_("Resources"), parent) };
+            groupResources->setLayout(layoutResources);
+            QHBoxLayout* layoutGroups{ new QHBoxLayout() };
+            layoutGroups->addWidget(groupAddress);
+            layoutGroups->addWidget(groupResources);
+            QVBoxLayout* layoutDashboard{ new QVBoxLayout() };
+            layoutDashboard->setContentsMargins(0, 0, 0, 0);
+            layoutDashboard->addLayout(layoutGroups);
+            layoutDashboard->addStretch();
             QWidget* pageDashboard = new QWidget(parent);
+            pageDashboard->setLayout(layoutDashboard);
             //Console Page
             lblOutput = new QLabel(parent);
             lblOutput->setAlignment(::Qt::AlignTop);
@@ -127,6 +162,10 @@ namespace Ui
         ActionButton* btnBroadcast;
         SegmentedControl* navBar;
         QStackedWidget* viewStack;
+        QLabel* lblUrl;
+        QLabel* lblPort;
+        QLabel* lblCPU;
+        QLabel* lblRAM;
         QLabel* lblOutput;
         LineEdit* txtCommand;
     };
@@ -139,14 +178,21 @@ namespace Nickvision::Miniera::Qt::Views
         m_ui{ new Ui::ServerPage() },
         m_controller{ controller },
         m_cpuQueue{ 5 },
-        m_memQueue{ 5 }
+        m_ramQueue{ 5 }
     {
         //Load Ui
+        ServerAddress address{ m_controller->getAddress() };
         m_ui->setupUi(this, m_controller->supportsMods());
         m_ui->lblName->setText(QString::fromStdString(m_controller->getName()));
         m_ui->lblVersion->setText(QString::fromStdString(m_controller->getVersion()));
+        m_ui->lblUrl->setText(QString::fromStdString(address.getUrl()));
+        m_ui->lblPort->setText(QString::number(address.getPort()));
+        m_ui->lblCPU->setText("0%");
+        m_ui->lblRAM->setText(QString::fromStdString(m_controller->getRAMString(0L)));
         //Signals
+        m_controller->addressChanged() += [&](const ParamEventArgs<ServerAddress>& args) { QtHelpers::dispatchToMainThread([this, args]() { onAddressChanged(args); }); };
         m_controller->consoleOutputChanged() += [&](const ParamEventArgs<std::string>& args) { QtHelpers::dispatchToMainThread([this, args]() { onConsoleOutputChanged(args); }); };
+        m_controller->resourceUsageChanged() += [&](const ParamEventArgs<std::pair<double, unsigned long long>>& args) { QtHelpers::dispatchToMainThread([this, args]() { onResourceUsageChanged(args); }); };
         connect(m_ui->btnStartStop, &QPushButton::clicked, this, &ServerPage::startStop);
         connect(m_ui->btnBroadcast, &QPushButton::clicked, this, &ServerPage::broadcast);
         connect(m_ui->txtCommand, &QLineEdit::returnPressed, this, &ServerPage::sendCommand);
@@ -183,7 +229,10 @@ namespace Nickvision::Miniera::Qt::Views
 
     void ServerPage::broadcast()
     {
-
+        if(!m_controller->broadcast())
+        {
+            QMessageBox::critical(this, _("Error"), _("Unable to broadcast the server. Please ensure your ngrok token is configured in the app's settings and try again"));
+        }
     }
 
     void ServerPage::sendCommand()
@@ -192,8 +241,22 @@ namespace Nickvision::Miniera::Qt::Views
         m_ui->txtCommand->setText("");
     }
 
+    void ServerPage::onAddressChanged(const ParamEventArgs<ServerAddress>& args)
+    {
+        m_ui->lblUrl->setText(QString::fromStdString(args.getParam().getUrl()));
+        m_ui->lblPort->setText(QString::number(args.getParam().getPort()));
+    }
+
     void ServerPage::onConsoleOutputChanged(const ParamEventArgs<std::string>& args)
     {
         m_ui->lblOutput->setText(QString::fromStdString(args.getParam()));
+    }
+
+    void ServerPage::onResourceUsageChanged(const ParamEventArgs<std::pair<double, unsigned long long>>& args)
+    {
+        m_cpuQueue.push(args.getParam().first);
+        m_ramQueue.push(args.getParam().second);
+        m_ui->lblCPU->setText(QString::fromStdString(std::format("{}%", args.getParam().first)));
+        m_ui->lblRAM->setText(QString::fromStdString(m_controller->getRAMString(args.getParam().second)));
     }
 }

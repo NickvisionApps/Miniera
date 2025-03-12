@@ -45,14 +45,24 @@ namespace Nickvision::Miniera::Qt::Views
 
     private:
         /**
+         * @brief Handles when the address is changed.
+         * @param args ParamEventArgs<ServerAddress>
+         */
+        void onAddressChanged(const Events::ParamEventArgs<Shared::Models::ServerAddress>& args);
+        /**
          * @brief Handles when the console output is changed.
          * @param args ParamEventArgs<std::string>
          */
         void onConsoleOutputChanged(const Events::ParamEventArgs<std::string>& args);
+        /**
+         * @brief Handles when the resource usagae is changed.
+         * @param args ParamEventArgs<std::pair<double, unsigned long long>>
+         */
+        void onResourceUsageChanged(const Events::ParamEventArgs<std::pair<double, unsigned long long>>& args);
         Ui::ServerPage* m_ui;
         std::shared_ptr<Shared::Controllers::ServerViewController> m_controller;
         Shared::Models::BoundedQueue<double> m_cpuQueue;
-        Shared::Models::BoundedQueue<unsigned long long> m_memQueue;
+        Shared::Models::BoundedQueue<unsigned long long> m_ramQueue;
     };
 }
 

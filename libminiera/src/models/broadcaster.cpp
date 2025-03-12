@@ -38,9 +38,9 @@ namespace Nickvision::Miniera::Shared::Models
     {
         //Start ngrok
         m_proc->start();
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::seconds(3));
         //Check for valid initalization
-        std::vector<std::string> jsons{ StringHelpers::split(m_proc->getOutput(), "\n") };
+        std::vector<std::string> jsons{ StringHelpers::split(m_proc->getOutput(), '\n', false) };
         if(jsons.size() != NGROK_JSONS_SIZE)
         {
             m_address = {};

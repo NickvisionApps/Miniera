@@ -31,6 +31,11 @@ namespace Nickvision::Miniera::Shared::Controllers
          */
         ~ServerViewController();
         /**
+         * @brief Gets the event for when the server's address changes.
+         * @return The address changed event
+         */
+        Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<Models::ServerAddress>>& addressChanged();
+        /**
          * @brief Gets the event for when the console output changes.
          * @return The console output changed event
          */
@@ -93,6 +98,7 @@ namespace Nickvision::Miniera::Shared::Controllers
         std::shared_ptr<Models::Server> m_server;
         const Models::Configuration& m_configuration;
         std::thread m_watcher;
+        Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<Models::ServerAddress>> m_addressChanged;
         Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<std::string>> m_consoleOutputChanged;
         Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<std::pair<double, unsigned long long>>> m_resourceUsageChanged;
     };
