@@ -15,9 +15,11 @@
 #include <oclero/qlementine/widgets/ActionButton.hpp>
 #include <oclero/qlementine/widgets/LineEdit.hpp>
 #include <oclero/qlementine/widgets/SegmentedControl.hpp>
+#include "controls/statuspage.h"
 #include "helpers/qthelpers.h"
 
 using namespace Nickvision::Events;
+using namespace Nickvision::Miniera::Qt::Controls;
 using namespace Nickvision::Miniera::Qt::Helpers;
 using namespace Nickvision::Miniera::Shared::Controllers;
 using namespace Nickvision::Miniera::Shared::Models;
@@ -131,9 +133,15 @@ namespace Ui
             QWidget* pageConsole{ new QWidget(parent) };
             pageConsole->setLayout(layoutConsole);
             //Settings Page
-            QWidget* pageSettings{ new QWidget(parent) };
+            Nickvision::Miniera::Qt::Controls::StatusPage* pageSettings{ new Nickvision::Miniera::Qt::Controls::StatusPage(parent) };
+            pageSettings->setIcon(QLEMENTINE_ICON(Action_Build));
+            pageSettings->setTitle(_("Coming Soon!"));
+            pageSettings->setDescription("We are working hard to bring this feature to you soon");
             //Mods Page
-            QWidget* pageMods{ new QWidget(parent) };
+            Nickvision::Miniera::Qt::Controls::StatusPage* pageMods{ new Nickvision::Miniera::Qt::Controls::StatusPage(parent) };
+            pageMods->setIcon(QLEMENTINE_ICON(Action_Build));
+            pageMods->setTitle(_("Coming Soon!"));
+            pageMods->setDescription("We are working hard to bring this feature to you soon");
             //View Stack
             viewStack = new QStackedWidget(parent);
             viewStack->addWidget(pageDashboard);
