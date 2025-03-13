@@ -67,11 +67,16 @@ namespace Nickvision::Miniera::Shared::Controllers
          */
         bool supportsMods() const;
         /**
+         * @brief Gets the maximum amount of RAM a server can use in MB.
+         * @return The maximum amount of RAM a server can use
+         */
+        unsigned long getMaxServerRamInMB() const;
+        /**
          * @brief Gets the ram usage string.
          * @param bytes The number of bytes being used by the server
          * @return The ram usage string
          */
-        std::string getRAMString(unsigned long long bytes);
+        std::string getRAMString(unsigned long long bytes) const;
         /**
          * @brief Starts a server if it is stopped or stops a server if it is started.
          * @return PowerStatus

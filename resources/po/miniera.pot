@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-11 23:38-0400\n"
+"POT-Creation-Date: 2025-03-12 22:52-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,71 +63,67 @@ msgstr ""
 msgid "Server already loaded"
 msgstr ""
 
-#: libminiera/src/controllers/serverviewcontroller.cpp:85
-#, c++-format
+#: libminiera/src/controllers/serverviewcontroller.cpp:90
 msgid "{} B / {} GB"
 msgstr ""
 
-#: libminiera/src/controllers/serverviewcontroller.cpp:91
-#, c++-format
+#: libminiera/src/controllers/serverviewcontroller.cpp:96
 msgid "{} KB / {} GB"
 msgstr ""
 
-#: libminiera/src/controllers/serverviewcontroller.cpp:96
-#, c++-format
+#: libminiera/src/controllers/serverviewcontroller.cpp:101
 msgid "{} MB / {} GB"
 msgstr ""
 
-#: libminiera/src/controllers/serverviewcontroller.cpp:101
-#, c++-format
+#: libminiera/src/controllers/serverviewcontroller.cpp:106
 msgid "{} GB / {} GB"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:165
+#: libminiera/src/models/server.cpp:175
 msgid "[Initialization] Server already initialized."
 msgstr ""
 
-#: libminiera/src/models/server.cpp:170
+#: libminiera/src/models/server.cpp:180
 msgid "[Initialization] Starting server initialization process...\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:183
+#: libminiera/src/models/server.cpp:193
 msgid "[Initialization] Server initialization process completed..\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:342
+#: libminiera/src/models/server.cpp:352
 msgid "[Download] Starting server files download...\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:362
+#: libminiera/src/models/server.cpp:372
 msgid "[Download] Server files download completed.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:366
+#: libminiera/src/models/server.cpp:376
 msgid "[Download] Error downloading server files.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:375
+#: libminiera/src/models/server.cpp:385
 msgid "[Extract] Starting server files extraction...\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:410
+#: libminiera/src/models/server.cpp:420
 msgid "[Extract] Server files extraction completed.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:414
+#: libminiera/src/models/server.cpp:424
 msgid "[Extract] Error extracting server files.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:422
+#: libminiera/src/models/server.cpp:432
 msgid "[Write] Starting server property files writing...\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:426
+#: libminiera/src/models/server.cpp:436
 msgid "[Write] Server propety files writing completed.\n"
 msgstr ""
 
-#: libminiera/src/models/server.cpp:431
+#: libminiera/src/models/server.cpp:441
 msgid "[Write] Error writing server property files.\n"
 msgstr ""
 
@@ -312,17 +308,14 @@ msgid "Server Initialization"
 msgstr ""
 
 #: org.nickvision.miniera.qt/src/controls/serverinitializationdialog.cpp:99
-#, c++-format
 msgid "({}) Failed to initialize server."
 msgstr ""
 
 #: org.nickvision.miniera.qt/src/controls/serverinitializationdialog.cpp:104
-#, c++-format
 msgid "({}) Initialized server."
 msgstr ""
 
 #: org.nickvision.miniera.qt/src/controls/serverinitializationdialog.cpp:115
-#, c++-format
 msgid "({}) Initializing server..."
 msgstr ""
 
@@ -339,7 +332,7 @@ msgstr ""
 
 #. Dialog Settings
 #: org.nickvision.miniera.qt/src/views/mainwindow.cpp:68
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:71
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:78
 #: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:108
 msgid "Settings"
 msgstr ""
@@ -625,9 +618,9 @@ msgstr ""
 #: org.nickvision.miniera.qt/src/views/newserverdialog.cpp:346
 #: org.nickvision.miniera.qt/src/views/newserverdialog.cpp:350
 #: org.nickvision.miniera.qt/src/views/newserverdialog.cpp:354
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:219
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:223
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:242
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:261
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:265
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:284
 msgid "Error"
 msgstr ""
 
@@ -643,81 +636,89 @@ msgstr ""
 msgid "An error occurred while creating the server."
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:48
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:232
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:55
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:274
 msgid "Start"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:55
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:62
 msgid "Broadcast"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:69
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:76
 msgid "Dashboard"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:70
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:77
 msgid "Console"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:74
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:81
 msgid "Mods"
 msgstr ""
 
 #. Dashboard Page
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:81
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:88
 msgid "URL:"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:84
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:91
 msgid "Port:"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:90
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:97
 msgid "Address"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:92
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:99
 msgid "CPU:"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:95
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:102
 msgid "RAM:"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:101
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:108
 msgid "Resources"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:117
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:234
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:120
+msgid "CPU Usage (%)"
+msgstr ""
+
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:135
+msgid "RAM Usage (MB)"
+msgstr ""
+
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:157
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:276
 msgid "No console output"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:119
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:159
 msgid "Enter command here"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:138
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:143
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:178
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:183
 msgid "Coming Soon!"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:219
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:261
 msgid ""
 "Unable to start the server. Please ensure another server is not already "
 "running"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:223
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:265
 msgid "Unable to stop the server"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:227
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:269
 msgid "Stop"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:242
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:284
 msgid ""
 "Unable to broadcast the server. Please ensure your ngrok token is configured "
 "in the app's settings and try again"

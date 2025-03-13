@@ -1,16 +1,22 @@
 #include "views/serverpage.h"
 #include <format>
+#include <QChartView>
 #include <QFont>
 #include <QFormLayout>
 #include <QFrame>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLineSeries>
 #include <QMessageBox>
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QStackedWidget>
+#include <QtCharts>
+#include <QtCharts/QChart>
+#include <QtCharts/QValueAxis>
 #include <QVBoxLayout>
+#include <libnick/helpers/sizehelpers.h>
 #include <libnick/localization/gettext.h>
 #include <oclero/qlementine/widgets/ActionButton.hpp>
 #include <oclero/qlementine/widgets/LineEdit.hpp>
@@ -19,6 +25,7 @@
 #include "helpers/qthelpers.h"
 
 using namespace Nickvision::Events;
+using namespace Nickvision::Helpers;
 using namespace Nickvision::Miniera::Qt::Controls;
 using namespace Nickvision::Miniera::Qt::Helpers;
 using namespace Nickvision::Miniera::Shared::Controllers;
@@ -30,7 +37,7 @@ namespace Ui
     class ServerPage
     {
     public:
-        void setupUi(Nickvision::Miniera::Qt::Views::ServerPage* parent, bool supportsMods)
+        void setupUi(Nickvision::Miniera::Qt::Views::ServerPage* parent, bool supportsMods, double maxRamInMB)
         {
             QFont boldFont;
             boldFont.setBold(true);
@@ -103,10 +110,43 @@ namespace Ui
             QHBoxLayout* layoutGroups{ new QHBoxLayout() };
             layoutGroups->addWidget(groupAddress);
             layoutGroups->addWidget(groupResources);
+            lineCPU = new QLineSeries();
+            QValueAxis* chartCPUX{ new QValueAxis() };
+            chartCPUX->setRange(0.0, 4.0);
+            chartCPUX->setTitleVisible(false);
+            chartCPUX->setLabelsVisible(false);
+            QValueAxis* chartCPUY{ new QValueAxis() };
+            chartCPUY->setRange(0.0, 100.0);
+            chartCPUY->setTitleText(_("CPU Usage (%)"));
+            QChart* chartCPU{ new QChart() };
+            chartCPU->legend()->hide();
+            chartCPU->addAxis(chartCPUX, ::Qt::AlignBottom);
+            chartCPU->addAxis(chartCPUY, ::Qt::AlignLeft);
+            chartCPU->addSeries(lineCPU);
+            QChartView* viewCPU{ new QChartView(chartCPU) };
+            viewCPU->setRenderHint(QPainter::Antialiasing);
+            lineRAM = new QLineSeries();
+            QValueAxis* chartRAMX{ new QValueAxis() };
+            chartRAMX->setRange(0.0, 4.0);
+            chartRAMX->setTitleVisible(false);
+            chartRAMX->setLabelsVisible(false);
+            QValueAxis* chartRAMY{ new QValueAxis() };
+            chartRAMY->setRange(0.0, maxRamInMB);
+            chartRAMY->setTitleText(_("RAM Usage (MB)"));
+            QChart* chartRAM{ new QChart() };
+            chartRAM->legend()->hide();
+            chartRAM->addAxis(chartRAMX, ::Qt::AlignBottom);
+            chartRAM->addAxis(chartRAMY, ::Qt::AlignLeft);
+            chartRAM->addSeries(lineRAM);
+            QChartView* viewRAM{ new QChartView(chartRAM) };
+            viewRAM->setRenderHint(QPainter::Antialiasing);
+            QHBoxLayout* layoutCharts = new QHBoxLayout();
+            layoutCharts->addWidget(viewCPU);
+            layoutCharts->addWidget(viewRAM);
             QVBoxLayout* layoutDashboard{ new QVBoxLayout() };
             layoutDashboard->setContentsMargins(0, 0, 0, 0);
             layoutDashboard->addLayout(layoutGroups);
-            layoutDashboard->addStretch();
+            layoutDashboard->addLayout(layoutCharts);
             QWidget* pageDashboard = new QWidget(parent);
             pageDashboard->setLayout(layoutDashboard);
             //Console Page
@@ -174,6 +214,8 @@ namespace Ui
         QLabel* lblPort;
         QLabel* lblCPU;
         QLabel* lblRAM;
+        QLineSeries* lineCPU;
+        QLineSeries* lineRAM;
         QLabel* lblOutput;
         LineEdit* txtCommand;
     };
@@ -190,7 +232,7 @@ namespace Nickvision::Miniera::Qt::Views
     {
         //Load Ui
         ServerAddress address{ m_controller->getAddress() };
-        m_ui->setupUi(this, m_controller->supportsMods());
+        m_ui->setupUi(this, m_controller->supportsMods(), static_cast<double>(m_controller->getMaxServerRamInMB()));
         m_ui->lblName->setText(QString::fromStdString(m_controller->getName()));
         m_ui->lblVersion->setText(QString::fromStdString(m_controller->getVersion()));
         m_ui->lblUrl->setText(QString::fromStdString(address.getUrl()));
@@ -264,7 +306,19 @@ namespace Nickvision::Miniera::Qt::Views
     {
         m_cpuQueue.push(args.getParam().first);
         m_ramQueue.push(args.getParam().second);
+        //Update labels
         m_ui->lblCPU->setText(QString::fromStdString(std::format("{}%", args.getParam().first)));
         m_ui->lblRAM->setText(QString::fromStdString(m_controller->getRAMString(args.getParam().second)));
+        //Update charts
+        m_ui->lineCPU->clear();
+        for(size_t i = 0; i < m_cpuQueue.size(); i++)
+        {
+            m_ui->lineCPU->append(static_cast<double>(i), m_cpuQueue[i]);
+        }
+        m_ui->lineRAM->clear();
+        for(size_t i = 0; i < m_ramQueue.size(); i++)
+        {
+            m_ui->lineRAM->append(static_cast<double>(i), static_cast<double>(SizeHelpers::bytesToMegabytes(m_ramQueue[i])));
+        }
     }
 }

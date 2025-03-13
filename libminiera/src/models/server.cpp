@@ -135,21 +135,31 @@ namespace Nickvision::Miniera::Shared::Models
     double Server::getCPUUsage() const
     {
         std::lock_guard<std::mutex> lock{ m_mutex };
-        if(!m_proc)
+        double cpu{ 0.0 };
+        if(m_proc)
         {
-            return 0.0;
+            cpu += m_proc->getCPUUsage();
         }
-        return m_proc->getCPUUsage();
+        if(m_broadcaster)
+        {
+            cpu += m_broadcaster->getCPUUsage();
+        }
+        return cpu;
     }
 
     unsigned long long Server::getRAMUsage() const
     {
         std::lock_guard<std::mutex> lock{ m_mutex };
-        if(!m_proc)
+        unsigned long long ram{ 0L };
+        if(m_proc)
         {
-            return 0L;
+            return m_proc->getRAMUsage();
         }
-        return m_proc->getRAMUsage();
+        if(m_broadcaster)
+        {
+            return m_broadcaster->getRAMUsage();
+        }
+        return ram;
     }
 
     bool Server::isRunning() const

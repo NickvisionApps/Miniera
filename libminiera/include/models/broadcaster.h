@@ -31,6 +31,16 @@ namespace Nickvision::Miniera::Shared::Models
          */
         const ServerAddress& getAddress() const;
         /**
+         * @brief Gets the percent cpu usage of the broadcaster.
+         * @return The percent cpu usage of the broadcaster
+         */
+        double getCPUUsage() const;
+        /**
+         * @brief Gets the amount of RAM being used by the broadcaster in bytes.
+         * @return The amount of RAM used by the broadcaster in bytes
+         */
+        unsigned long long getRAMUsage() const;
+        /**
          * @brief Starts the broadcaster.
          * @return The ServerAddress
          * @return Empty address on error

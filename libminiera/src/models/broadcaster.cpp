@@ -34,6 +34,16 @@ namespace Nickvision::Miniera::Shared::Models
         return m_address;
     }
 
+    double Broadcaster::getCPUUsage() const
+    {
+        return m_proc->getCPUUsage();
+    }
+
+    unsigned long long Broadcaster::getRAMUsage() const
+    {
+        return m_proc->getRAMUsage();
+    }
+
     const ServerAddress& Broadcaster::start()
     {
         //Start ngrok

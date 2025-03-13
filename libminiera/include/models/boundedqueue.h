@@ -48,6 +48,16 @@ namespace Nickvision::Miniera::Shared::Models
             return this->c.emplace_back(std::forward<Args>(args)...);
         }
 
+        T& operator[](size_t i)
+        {
+            return this->c[i];
+        }
+
+        const T& operator[](size_t i) const
+        {
+            return this->c[i];
+        }
+
     private:
         size_t m_maxSize;
     };

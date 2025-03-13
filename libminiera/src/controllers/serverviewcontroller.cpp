@@ -79,7 +79,12 @@ namespace Nickvision::Miniera::Shared::Controllers
         return m_server->getVersion().getEdition() == Edition::Forge;
     }
 
-    std::string ServerViewController::getRAMString(unsigned long long bytes)
+    unsigned long ServerViewController::getMaxServerRamInMB() const
+    {
+        return static_cast<unsigned long>(SizeHelpers::bytesToMegabytes(SizeHelpers::gigabytesToBytes<unsigned long long>(m_configuration.getMaxServerRamInGB())));
+    }
+
+    std::string ServerViewController::getRAMString(unsigned long long bytes) const
     {
         unsigned long long converted{ bytes };
         std::string res{ std::vformat(_("{} B / {} GB"), std::make_format_args(converted, CodeHelpers::unmove(m_configuration.getMaxServerRamInGB()))) };
