@@ -8,6 +8,7 @@
 #include <libnick/system/environment.h>
 
 #define NGROK_JSONS_SIZE 6
+#define MAX_TRIES 20
 
 using namespace Nickvision::Helpers;
 using namespace Nickvision::System;
@@ -48,17 +49,23 @@ namespace Nickvision::Miniera::Shared::Models
     {
         //Start ngrok
         m_proc->start();
-        std::this_thread::sleep_for(std::chrono::seconds(3));
         //Check for valid initalization
-        std::vector<std::string> jsons{ StringHelpers::split(m_proc->getOutput(), '\n', false) };
-        if(jsons.size() != NGROK_JSONS_SIZE)
+        std::vector<std::string> jsons;
+        int tries{ 0 };
+        do
+        {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            jsons = StringHelpers::split(m_proc->getOutput(), '\n', false);
+            tries++;
+        } while(jsons.size() < NGROK_JSONS_SIZE && tries < MAX_TRIES);
+        if(jsons.size() < NGROK_JSONS_SIZE)
         {
             m_address = {};
             return m_address;
-        };
+        }
         //Get WWW url
         boost::json::parser parser;
-        parser.write(jsons[NGROK_JSONS_SIZE - 1]);
+        parser.write(jsons[jsons.size() - 1]);
         boost::json::value value = parser.release();
         if(!value.is_object() || !value.as_object()["url"].is_string())
         {

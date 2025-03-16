@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-16 16:48-0400\n"
+"POT-Creation-Date: 2025-03-16 17:22-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -618,9 +618,9 @@ msgstr ""
 #: org.nickvision.miniera.qt/src/views/newserverdialog.cpp:346
 #: org.nickvision.miniera.qt/src/views/newserverdialog.cpp:350
 #: org.nickvision.miniera.qt/src/views/newserverdialog.cpp:354
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:216
 #: org.nickvision.miniera.qt/src/views/serverpage.cpp:220
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:224
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:248
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:239
 msgid "Error"
 msgstr ""
 
@@ -637,7 +637,7 @@ msgid "An error occurred while creating the server."
 msgstr ""
 
 #: org.nickvision.miniera.qt/src/views/serverpage.cpp:50
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:233
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:229
 msgid "Start"
 msgstr ""
 
@@ -679,7 +679,7 @@ msgid "Resources"
 msgstr ""
 
 #: org.nickvision.miniera.qt/src/views/serverpage.cpp:111
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:235
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:231
 msgid "No console output"
 msgstr ""
 
@@ -696,21 +696,21 @@ msgstr ""
 msgid "Coming Soon!"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:220
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:216
 msgid ""
 "Unable to start the server. Please ensure another server is not already "
 "running"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:224
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:220
 msgid "Unable to stop the server"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:228
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:224
 msgid "Stop"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:248
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:239
 msgid ""
 "Unable to broadcast the server. Please ensure your ngrok token is configured "
 "in the app's settings and try again"
