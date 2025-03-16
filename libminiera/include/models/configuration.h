@@ -61,6 +61,16 @@ namespace Nickvision::Miniera::Shared::Models
          */
         void setMaxServerRamInGB(unsigned int ram);
         /**
+         * @brief Gets whether or not to broadcast the server on start.
+         * @return True to broadcast on server start, else false
+         */
+        bool getBroadcastOnStart() const;
+        /**
+         * @brief Sets whether or not to broadcast the server on start.
+         * @param broadcast Whether or not to broadcast the server on start
+         */
+        void setBroadcastOnStart(bool broadcast);
+        /**
          * @brief Gets the auth token for ngrok.
          * @return The auth token for ngrok
          */

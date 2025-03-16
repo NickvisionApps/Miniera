@@ -35,7 +35,7 @@ jobs:
         uses: johnwason/vcpkg-action@v6
         id: vcpkg
         with:
-          pkgs: libnick libzip qtbase qtcharts qtsvg qttools qlementine qlementine-icons
+          pkgs: libnick libzip qtbase qtsvg qttools qlementine qlementine-icons
           triplet: x64-windows
           revision: 93826033cb3797c7203c35027084bdb75258de08
           token: ${{ secrets.GITHUB_TOKEN }}

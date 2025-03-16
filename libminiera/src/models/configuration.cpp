@@ -77,6 +77,16 @@ namespace Nickvision::Miniera::Shared::Models
         m_json["MaxServerRamInGB"] = ram;
     }
 
+    bool Configuration::getBroadcastOnStart() const
+    {
+        return m_json["BroadcastOnStart"].is_bool() ? m_json["BroadcastOnStart"].as_bool() : false;
+    }
+
+    void Configuration::setBroadcastOnStart(bool broadcast)
+    {
+        m_json["BroadcastOnStart"] = broadcast;
+    }
+
     std::string Configuration::getNgrokAuthToken() const
     {
         return m_json["NgrokAuthToken"].is_string() ? m_json["NgrokAuthToken"].as_string().c_str() : "";

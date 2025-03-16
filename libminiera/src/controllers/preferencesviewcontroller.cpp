@@ -54,6 +54,16 @@ namespace Nickvision::Miniera::Shared::Controllers
         return static_cast<unsigned int>(SizeHelpers::bytesToGigabytes(HardwareInfo::getTotalRamSize()));
     }
 
+    bool PreferencesViewController::getBroadcastOnStart() const
+    {
+        return m_configuration.getBroadcastOnStart();
+    }
+
+    void PreferencesViewController::setBroadcastOnStart(bool broadcast)
+    {
+        m_configuration.setBroadcastOnStart(broadcast);
+    }
+
     void PreferencesViewController::setNgrokAuthToken(const std::string& token)
     {
         m_configuration.setNgrokAuthToken(token);

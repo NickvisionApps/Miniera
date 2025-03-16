@@ -6,7 +6,6 @@
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QLineSeries>
 #include <QMessageBox>
 #include <QScrollArea>
 #include <QScrollBar>

@@ -47,8 +47,12 @@ namespace Ui
             lblServerRam->setText(_("Maximum Server RAM (GB)"));
             spnServerRam = new QSpinBox(parent);
             spnServerRam->setMinimum(1);
+            QLabel* lblBroadcastOnStart{ new QLabel(parent) };
+            lblBroadcastOnStart->setText(_("Broadcast on Start"));
+            chkBroadcastOnStart = new Switch(parent);
             QFormLayout* layoutServer{ new QFormLayout() };
             layoutServer->addRow(lblServerRam, spnServerRam);
+            layoutServer->addRow(lblBroadcastOnStart, chkBroadcastOnStart);
             QWidget* serverPage{ new QWidget(parent) };
             serverPage->setLayout(layoutServer);
             viewStack->addWidget(serverPage);
@@ -91,6 +95,7 @@ namespace Ui
         QComboBox* cmbTheme;
         Switch* chkUpdates;
         QSpinBox* spnServerRam;
+        Switch* chkBroadcastOnStart;
         LineEdit* txtNgrokAuthToken;
         QPushButton* btnNgrokAuthToken;
     };
@@ -114,6 +119,7 @@ namespace Nickvision::Miniera::Qt::Views
         m_ui->chkUpdates->setChecked(m_controller->getAutomaticallyCheckForUpdates());
         m_ui->spnServerRam->setMaximum(static_cast<int>(m_controller->getSystemRamInGB()));
         m_ui->spnServerRam->setValue(static_cast<int>(m_controller->getMaxServerRamInGB()));
+        m_ui->chkBroadcastOnStart->setChecked(m_controller->getBroadcastOnStart());
         m_ui->txtNgrokAuthToken->setText(QString::fromStdString(m_controller->getNgrokAuthToken()));
         m_ui->listNavigation->setCurrentRow(0);
         //Signals
@@ -131,6 +137,7 @@ namespace Nickvision::Miniera::Qt::Views
         m_controller->setTheme(static_cast<Shared::Models::Theme>(m_ui->cmbTheme->currentIndex()));
         m_controller->setAutomaticallyCheckForUpdates(m_ui->chkUpdates->isChecked());
         m_controller->setMaxServerRamInGB(static_cast<unsigned int>(m_ui->spnServerRam->value()));
+        m_controller->setBroadcastOnStart(m_ui->chkBroadcastOnStart->isChecked());
         m_controller->setNgrokAuthToken(m_ui->txtNgrokAuthToken->text().toStdString());
         m_controller->saveConfiguration();
         event->accept();

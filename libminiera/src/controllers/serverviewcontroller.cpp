@@ -127,6 +127,10 @@ namespace Nickvision::Miniera::Shared::Controllers
         }
         if(m_server->start(m_configuration.getMaxServerRamInGB()))
         {
+            if(m_configuration.getBroadcastOnStart())
+            {
+                broadcast();
+            }
             m_watcher = std::thread(&ServerViewController::watch, this);
             m_addressChanged.invoke({ m_server->getAddress() });
             return PowerStatus::Started;
