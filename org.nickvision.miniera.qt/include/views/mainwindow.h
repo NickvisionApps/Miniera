@@ -58,6 +58,14 @@ namespace Nickvision::Miniera::Qt::Views
          */
         void settings();
         /**
+         * @brief Starts or stops the current selected server.
+         */
+        void startStop();
+        /**
+         * @brief Broadcasts the current selected server.
+         */
+        void broadcast();
+        /**
          * @brief Checks for application updates.
          */
         void checkForUpdates();

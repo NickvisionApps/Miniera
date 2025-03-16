@@ -64,6 +64,14 @@ namespace Ui
             actionExit->setText(_("Exit"));
             actionExit->setIcon(QLEMENTINE_ICON(Action_Close));
             actionExit->setShortcut(Qt::CTRL | Qt::Key_Q);
+            actionStartStop = new QAction(parent);
+            actionStartStop->setText(_("Start/Stop"));
+            actionStartStop->setIcon(QLEMENTINE_ICON(Action_OnOff));
+            actionStartStop->setShortcut(Qt::Key_F5);
+            actionBroadcast = new QAction(parent);
+            actionBroadcast->setText(_("Broadcast"));
+            actionBroadcast->setIcon(QLEMENTINE_ICON(Misc_Globe));
+            actionBroadcast->setShortcut(Qt::CTRL | Qt::Key_B);
             actionSettings = new QAction(parent);
             actionSettings->setText(_("Settings"));
             actionSettings->setIcon(QLEMENTINE_ICON(Navigation_Settings));
@@ -99,6 +107,10 @@ namespace Ui
             QMenu* menuEdit{ new QMenu(parent) };
             menuEdit->setTitle(_("Edit"));
             menuEdit->addAction(actionSettings);
+            QMenu* menuServer{ new QMenu(parent) };
+            menuServer->setTitle(_("Server"));
+            menuServer->addAction(actionStartStop);
+            menuServer->addAction(actionBroadcast);
             QMenu* menuHelp{ new QMenu(parent) };
             menuHelp->setTitle(_("Help"));
             menuHelp->addAction(actionCheckForUpdates);
@@ -110,6 +122,7 @@ namespace Ui
             menuHelp->addAction(actionAbout);
             parent->menuBar()->addMenu(menuFile);
             parent->menuBar()->addMenu(menuEdit);
+            parent->menuBar()->addMenu(menuServer);
             parent->menuBar()->addMenu(menuHelp);
             //Home Page
             Nickvision::Miniera::Qt::Controls::StatusPage* pageHome{ new Nickvision::Miniera::Qt::Controls::StatusPage(parent) };
@@ -139,6 +152,8 @@ namespace Ui
         QAction* actionLoadServer;
         QAction* actionExit;
         QAction* actionSettings;
+        QAction* actionStartStop;
+        QAction* actionBroadcast;
         QAction* actionCheckForUpdates;
         QAction* actionGitHubRepo;
         QAction* actionReportABug;
@@ -171,6 +186,8 @@ namespace Nickvision::Miniera::Qt::Views
         connect(m_ui->actionLoadServer, &QAction::triggered, this, &MainWindow::loadServer);
         connect(m_ui->actionExit, &QAction::triggered, this, &MainWindow::close);
         connect(m_ui->actionSettings, &QAction::triggered, this, &MainWindow::settings);
+        connect(m_ui->actionStartStop, &QAction::triggered, this, &MainWindow::startStop);
+        connect(m_ui->actionBroadcast, &QAction::triggered, this, &MainWindow::broadcast);
         connect(m_ui->actionCheckForUpdates, &QAction::triggered, this, &MainWindow::checkForUpdates);
         connect(m_ui->actionGitHubRepo, &QAction::triggered, this, &MainWindow::gitHubRepo);
         connect(m_ui->actionReportABug, &QAction::triggered, this, &MainWindow::reportABug);
@@ -252,6 +269,32 @@ namespace Nickvision::Miniera::Qt::Views
     {
         SettingsDialog dialog{ m_controller->createPreferencesViewController(), m_themeManager, this };
         dialog.exec();
+    }
+
+    void MainWindow::startStop()
+    {
+        if(m_ui->tabs->currentIndex() < 1)
+        {
+            return;
+        }
+        ServerPage* serverPage{ dynamic_cast<ServerPage*>(m_ui->tabs->currentWidget()) };
+        if(serverPage)
+        {
+            serverPage->startStop();
+        }
+    }
+
+    void MainWindow::broadcast()
+    {
+        if(m_ui->tabs->currentIndex() < 1)
+        {
+            return;
+        }
+        ServerPage* serverPage{ dynamic_cast<ServerPage*>(m_ui->tabs->currentWidget()) };
+        if(serverPage)
+        {
+            serverPage->broadcast();
+        }
     }
 
     void MainWindow::checkForUpdates()

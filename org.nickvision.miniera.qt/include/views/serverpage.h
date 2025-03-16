@@ -28,7 +28,7 @@ namespace Nickvision::Miniera::Qt::Views
          */
         ~ServerPage();
 
-    private Q_SLOTS:
+    public Q_SLOTS:
         /**
          * @brief Starts or stops the server.
          */
@@ -37,6 +37,8 @@ namespace Nickvision::Miniera::Qt::Views
          * @brief Broadcasts the server.
          */
         void broadcast();
+
+    private Q_SLOTS:
         /**
          * @brief Sends a command to the server.
          */
