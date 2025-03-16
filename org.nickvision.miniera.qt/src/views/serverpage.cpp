@@ -1,6 +1,5 @@
 #include "views/serverpage.h"
 #include <format>
-#include <QChartView>
 #include <QFont>
 #include <QFormLayout>
 #include <QFrame>
@@ -12,9 +11,6 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QStackedWidget>
-#include <QtCharts>
-#include <QtCharts/QChart>
-#include <QtCharts/QValueAxis>
 #include <QVBoxLayout>
 #include <libnick/helpers/sizehelpers.h>
 #include <libnick/localization/gettext.h>
@@ -74,7 +70,6 @@ namespace Ui
             //Navigation
             navBar = new SegmentedControl(parent);
             navBar->addItem(_("Dashboard"), QLEMENTINE_ICON(Navigation_UiPanelTop));
-            navBar->addItem(_("Console"), QLEMENTINE_ICON(Software_CommandLine));
             navBar->addItem(_("Settings"), QLEMENTINE_ICON(Navigation_Settings));
             if(supportsMods)
             {
@@ -110,46 +105,6 @@ namespace Ui
             QHBoxLayout* layoutGroups{ new QHBoxLayout() };
             layoutGroups->addWidget(groupAddress);
             layoutGroups->addWidget(groupResources);
-            lineCPU = new QLineSeries();
-            QValueAxis* chartCPUX{ new QValueAxis() };
-            chartCPUX->setRange(0.0, 4.0);
-            chartCPUX->setTitleVisible(false);
-            chartCPUX->setLabelsVisible(false);
-            QValueAxis* chartCPUY{ new QValueAxis() };
-            chartCPUY->setRange(0.0, 100.0);
-            chartCPUY->setTitleText(_("CPU Usage (%)"));
-            QChart* chartCPU{ new QChart() };
-            chartCPU->legend()->hide();
-            chartCPU->addAxis(chartCPUX, ::Qt::AlignBottom);
-            chartCPU->addAxis(chartCPUY, ::Qt::AlignLeft);
-            chartCPU->addSeries(lineCPU);
-            QChartView* viewCPU{ new QChartView(chartCPU) };
-            viewCPU->setRenderHint(QPainter::Antialiasing);
-            lineRAM = new QLineSeries();
-            QValueAxis* chartRAMX{ new QValueAxis() };
-            chartRAMX->setRange(0.0, 4.0);
-            chartRAMX->setTitleVisible(false);
-            chartRAMX->setLabelsVisible(false);
-            QValueAxis* chartRAMY{ new QValueAxis() };
-            chartRAMY->setRange(0.0, maxRamInMB);
-            chartRAMY->setTitleText(_("RAM Usage (MB)"));
-            QChart* chartRAM{ new QChart() };
-            chartRAM->legend()->hide();
-            chartRAM->addAxis(chartRAMX, ::Qt::AlignBottom);
-            chartRAM->addAxis(chartRAMY, ::Qt::AlignLeft);
-            chartRAM->addSeries(lineRAM);
-            QChartView* viewRAM{ new QChartView(chartRAM) };
-            viewRAM->setRenderHint(QPainter::Antialiasing);
-            QHBoxLayout* layoutCharts = new QHBoxLayout();
-            layoutCharts->addWidget(viewCPU);
-            layoutCharts->addWidget(viewRAM);
-            QVBoxLayout* layoutDashboard{ new QVBoxLayout() };
-            layoutDashboard->setContentsMargins(0, 0, 0, 0);
-            layoutDashboard->addLayout(layoutGroups);
-            layoutDashboard->addLayout(layoutCharts);
-            QWidget* pageDashboard = new QWidget(parent);
-            pageDashboard->setLayout(layoutDashboard);
-            //Console Page
             lblOutput = new QLabel(parent);
             lblOutput->setAlignment(::Qt::AlignTop);
             lblOutput->setWordWrap(true);
@@ -160,6 +115,7 @@ namespace Ui
             QScrollArea* scrollConsole = new QScrollArea(parent);
             scrollConsole->setVerticalScrollBarPolicy(::Qt::ScrollBarAsNeeded);
             scrollConsole->setHorizontalScrollBarPolicy(::Qt::ScrollBarAlwaysOff);
+            scrollConsole->setFrameShape(QFrame::Shape::NoFrame);
             scrollConsole->setWidgetResizable(true);
             scrollConsole->setWidget(lblOutput);
             QObject::connect(scrollConsole->verticalScrollBar(), &QScrollBar::rangeChanged, [this, scrollConsole](int, int max)
@@ -167,11 +123,16 @@ namespace Ui
                 scrollConsole->verticalScrollBar()->setValue(max);
             });
             QVBoxLayout* layoutConsole{ new QVBoxLayout() };
-            layoutConsole->setContentsMargins(0, 0, 0, 0);
             layoutConsole->addWidget(scrollConsole);
             layoutConsole->addWidget(txtCommand);
-            QWidget* pageConsole{ new QWidget(parent) };
-            pageConsole->setLayout(layoutConsole);
+            QGroupBox* groupConsole{ new QGroupBox(_("Console"), parent) };
+            groupConsole->setLayout(layoutConsole);
+            QVBoxLayout* layoutDashboard{ new QVBoxLayout() };
+            layoutDashboard->setContentsMargins(0, 0, 0, 0);
+            layoutDashboard->addLayout(layoutGroups);
+            layoutDashboard->addWidget(groupConsole);
+            QWidget* pageDashboard = new QWidget(parent);
+            pageDashboard->setLayout(layoutDashboard);
             //Settings Page
             Nickvision::Miniera::Qt::Controls::StatusPage* pageSettings{ new Nickvision::Miniera::Qt::Controls::StatusPage(parent) };
             pageSettings->setIcon(QLEMENTINE_ICON(Action_Build));
@@ -185,7 +146,6 @@ namespace Ui
             //View Stack
             viewStack = new QStackedWidget(parent);
             viewStack->addWidget(pageDashboard);
-            viewStack->addWidget(pageConsole);
             viewStack->addWidget(pageSettings);
             viewStack->addWidget(pageMods);
             QObject::connect(navBar, &SegmentedControl::currentIndexChanged, [this]()
@@ -214,8 +174,6 @@ namespace Ui
         QLabel* lblPort;
         QLabel* lblCPU;
         QLabel* lblRAM;
-        QLineSeries* lineCPU;
-        QLineSeries* lineRAM;
         QLabel* lblOutput;
         LineEdit* txtCommand;
     };
@@ -226,9 +184,7 @@ namespace Nickvision::Miniera::Qt::Views
     ServerPage::ServerPage(const std::shared_ptr<ServerViewController>& controller, QWidget* parent)
         : QWidget{ parent },
         m_ui{ new Ui::ServerPage() },
-        m_controller{ controller },
-        m_cpuQueue{ 5 },
-        m_ramQueue{ 5 }
+        m_controller{ controller }
     {
         //Load Ui
         ServerAddress address{ m_controller->getAddress() };
@@ -304,21 +260,8 @@ namespace Nickvision::Miniera::Qt::Views
 
     void ServerPage::onResourceUsageChanged(const ParamEventArgs<std::pair<double, unsigned long long>>& args)
     {
-        m_cpuQueue.push(args.getParam().first);
-        m_ramQueue.push(args.getParam().second);
         //Update labels
         m_ui->lblCPU->setText(QString::fromStdString(std::format("{}%", args.getParam().first)));
         m_ui->lblRAM->setText(QString::fromStdString(m_controller->getRAMString(args.getParam().second)));
-        //Update charts
-        m_ui->lineCPU->clear();
-        for(size_t i = 0; i < m_cpuQueue.size(); i++)
-        {
-            m_ui->lineCPU->append(static_cast<double>(i), m_cpuQueue[i]);
-        }
-        m_ui->lineRAM->clear();
-        for(size_t i = 0; i < m_ramQueue.size(); i++)
-        {
-            m_ui->lineRAM->append(static_cast<double>(i), static_cast<double>(SizeHelpers::bytesToMegabytes(m_ramQueue[i])));
-        }
     }
 }
