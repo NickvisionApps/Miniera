@@ -44,6 +44,11 @@ namespace Nickvision::Miniera::Shared::Controllers
         }
     }
 
+    Event<ParamEventArgs<PowerStatus>>& ServerViewController::powerChanged()
+    {
+        return m_powerChanged;
+    }
+
     Event<ParamEventArgs<ServerAddress>>& ServerViewController::addressChanged()
     {
         return m_addressChanged;
@@ -109,33 +114,43 @@ namespace Nickvision::Miniera::Shared::Controllers
         return res;
     }
 
-    PowerStatus ServerViewController::startStop()
+    void ServerViewController::startStop()
     {
-        if(m_server->isRunning())
+        std::thread worker{ [this]()
         {
-            if(m_server->stop())
+            if(m_server->isRunning())
             {
-                if(m_watcher.joinable())
+                if(m_server->stop())
                 {
-                    m_watcher.join();
+                    if(m_watcher.joinable())
+                    {
+                        m_watcher.join();
+                    }
+                    m_powerChanged.invoke({ PowerStatus::Stopped });
+                    m_addressChanged.invoke({ m_server->getAddress() });
+                    m_resourceUsageChanged.invoke({ std::make_pair(0.0, 0L) });
                 }
-                m_addressChanged.invoke({ m_server->getAddress() });
-                m_resourceUsageChanged.invoke({ std::make_pair(0.0, 0L) });
-                return PowerStatus::Stopped;
+                else
+                {
+                    m_powerChanged.invoke({ PowerStatus::ErrorStopping });
+                }
             }
-            return PowerStatus::ErrorStopping;
-        }
-        if(m_server->start(m_configuration.getMaxServerRamInGB()))
-        {
-            if(m_configuration.getBroadcastOnStart())
+            else if(m_server->start(m_configuration.getMaxServerRamInGB()))
             {
-                broadcast();
+                if(m_configuration.getBroadcastOnStart())
+                {
+                    broadcast();
+                }
+                m_powerChanged.invoke({ PowerStatus::Started });
+                m_watcher = std::thread(&ServerViewController::watch, this);
+                m_addressChanged.invoke({ m_server->getAddress() });
             }
-            m_watcher = std::thread(&ServerViewController::watch, this);
-            m_addressChanged.invoke({ m_server->getAddress() });
-            return PowerStatus::Started;
-        }
-        return PowerStatus::ErrorStarting;
+            else
+            {
+                m_powerChanged.invoke({ PowerStatus::ErrorStarting });
+            }
+        } };
+        worker.detach();
     }
 
     bool ServerViewController::broadcast()
@@ -181,5 +196,6 @@ namespace Nickvision::Miniera::Shared::Controllers
             //Sleep
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
         }
+        m_powerChanged.invoke({ PowerStatus::Stopped });
     }
 }

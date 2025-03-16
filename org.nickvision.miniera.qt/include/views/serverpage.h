@@ -46,6 +46,11 @@ namespace Nickvision::Miniera::Qt::Views
 
     private:
         /**
+         * @brief Handles when the power is changed.
+         * @param args ParamEventArgs<PowerStatus>
+         */
+        void onPowerChanged(const Events::ParamEventArgs<Shared::Models::PowerStatus>& args);
+        /**
          * @brief Handles when the address is changed.
          * @param args ParamEventArgs<ServerAddress>
          */

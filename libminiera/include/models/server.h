@@ -81,6 +81,12 @@ namespace Nickvision::Miniera::Shared::Models
          */
         unsigned long long getRAMUsage() const;
         /**
+         * @brief Gets the list of all mods in the server (by name).
+         * @brief This method only works on Forge edition servers.
+         * @return The list of mod names
+         */
+        std::vector<std::string> getModNames() const;
+        /**
          * @brief Gets whether or not the server is running.
          * @return True if the server is running
          * @return False if the server is not running
@@ -120,6 +126,23 @@ namespace Nickvision::Miniera::Shared::Models
          * @return Empty address on error
          */
         const ServerAddress& broadcast(const std::string& ngrokToken);
+        /**
+         * @brief Uploads a mod to the server.
+         * @brief This method only works on Forge edition servers.
+         * @param source The path to the jar mod file
+         * @param deleteSource Whether or not to delete the source file after successful upload
+         * @return True if upload successful
+         * @return False if upload not successful
+         */
+        bool uploadMod(const std::filesystem::path& source, bool deleteSource = false);
+        /**
+         * @brief Deletes the mod from the server.
+         * @brief This method only works on Forge edition servers.
+         * @param mod The name of the mod to delete
+         * @return True if the mod was deleted
+         * @return False if the mod was not deleted
+         */
+        bool deleteMod(const std::string& mod);
         /**
          * @brief Converts the Server to a JSON object.
          * @return The Server as a JSON object

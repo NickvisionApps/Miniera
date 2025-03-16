@@ -31,6 +31,7 @@
 #else
 #define FORGE_SERVER_FILE_EXTRACTED (m_directory / "run.sh")
 #endif
+#define FORGE_SERVER_MOD_DIR (m_directory / "mods")
 
 using namespace Nickvision::Events;
 using namespace Nickvision::Helpers;
@@ -162,6 +163,22 @@ namespace Nickvision::Miniera::Shared::Models
         return ram;
     }
 
+    std::vector<std::string> Server::getModNames() const
+    {
+        std::vector<std::string> mods;
+        if(m_version.getEdition() == Edition::Forge)
+        {
+            for(const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(FORGE_SERVER_MOD_DIR))
+            {
+                if(entry.is_regular_file() && (entry.path().extension() == ".jar" || entry.path().extension() == ".JAR"))
+                {
+                    mods.push_back(entry.path().stem().string());
+                }
+            }
+        }
+        return mods;
+    }
+
     bool Server::isRunning() const
     {
         std::lock_guard<std::mutex> lock{ m_mutex };
@@ -285,6 +302,56 @@ namespace Nickvision::Miniera::Shared::Models
         return m_broadcaster->getAddress();
     }
 
+    bool Server::uploadMod(const std::filesystem::path& source, bool deleteSource)
+    {
+        if(m_version.getEdition() != Edition::Forge)
+        {
+            return false;
+        }
+        if(source.extension() != ".jar" || source.extension() != ".JAR")
+        {
+            return false;
+        }
+        std::filesystem::path uploadPath{ FORGE_SERVER_MOD_DIR / source.filename() };
+        if(deleteSource)
+        {
+            try
+            {
+                std::filesystem::rename(source, uploadPath);
+            }
+            catch(...)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            try
+            {
+                std::filesystem::copy(source, uploadPath);
+            }
+            catch(...)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool Server::deleteMod(const std::string& mod)
+    {
+        if(m_version.getEdition() != Edition::Forge)
+        {
+            return false;
+        }
+        std::filesystem::path modPath{ FORGE_SERVER_MOD_DIR / (mod + ".jar") };
+        if(!std::filesystem::exists(modPath))
+        {
+            return false;
+        }
+        return std::filesystem::remove(modPath);
+    }
+
     boost::json::object Server::toJson() const
     {
         std::lock_guard<std::mutex> lock{ m_mutex };
@@ -329,6 +396,7 @@ namespace Nickvision::Miniera::Shared::Models
         }
         else if(m_version.getEdition() == Edition::Forge)
         {
+            std::filesystem::create_directories(FORGE_SERVER_MOD_DIR);
             m_initialized = std::filesystem::exists(FORGE_SERVER_FILE_EXTRACTED) && std::filesystem::exists(EULA_FILE) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
         }
         return m_initialized;

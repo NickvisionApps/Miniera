@@ -31,6 +31,11 @@ namespace Nickvision::Miniera::Shared::Controllers
          */
         ~ServerViewController();
         /**
+         * @brief Gets the event from when the server's power status changes.
+         * @return The power changed event
+         */
+        Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<Models::PowerStatus>>& powerChanged();
+        /**
          * @brief Gets the event for when the server's address changes.
          * @return The address changed event
          */
@@ -79,9 +84,9 @@ namespace Nickvision::Miniera::Shared::Controllers
         std::string getRAMString(unsigned long long bytes) const;
         /**
          * @brief Starts a server if it is stopped or stops a server if it is started.
-         * @return PowerStatus
+         * @brief This method will trigger the powerChanged event as the status changes.
          */
-        Models::PowerStatus startStop();
+        void startStop();
         /**
          * @brief Broadcasts the server over the WWW.
          * @brief On success, getAddress() should be called to display the new address.
@@ -103,6 +108,7 @@ namespace Nickvision::Miniera::Shared::Controllers
         std::shared_ptr<Models::Server> m_server;
         const Models::Configuration& m_configuration;
         std::thread m_watcher;
+        Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<Models::PowerStatus>> m_powerChanged;
         Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<Models::ServerAddress>> m_addressChanged;
         Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<std::string>> m_consoleOutputChanged;
         Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<std::pair<double, unsigned long long>>> m_resourceUsageChanged;

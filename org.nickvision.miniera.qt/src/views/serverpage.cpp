@@ -195,9 +195,10 @@ namespace Nickvision::Miniera::Qt::Views
         m_ui->lblCPU->setText("0%");
         m_ui->lblRAM->setText(QString::fromStdString(m_controller->getRAMString(0L)));
         //Signals
-        m_controller->addressChanged() += [&](const ParamEventArgs<ServerAddress>& args) { QtHelpers::dispatchToMainThread([this, args]() { onAddressChanged(args); }); };
-        m_controller->consoleOutputChanged() += [&](const ParamEventArgs<std::string>& args) { QtHelpers::dispatchToMainThread([this, args]() { onConsoleOutputChanged(args); }); };
-        m_controller->resourceUsageChanged() += [&](const ParamEventArgs<std::pair<double, unsigned long long>>& args) { QtHelpers::dispatchToMainThread([this, args]() { onResourceUsageChanged(args); }); };
+        m_controller->powerChanged() += [this](const ParamEventArgs<PowerStatus>& args) { QtHelpers::dispatchToMainThread([this, args]() { onPowerChanged(args); }); };
+        m_controller->addressChanged() += [this](const ParamEventArgs<ServerAddress>& args) { QtHelpers::dispatchToMainThread([this, args]() { onAddressChanged(args); }); };
+        m_controller->consoleOutputChanged() += [this](const ParamEventArgs<std::string>& args) { QtHelpers::dispatchToMainThread([this, args]() { onConsoleOutputChanged(args); }); };
+        m_controller->resourceUsageChanged() += [this](const ParamEventArgs<std::pair<double, unsigned long long>>& args) { QtHelpers::dispatchToMainThread([this, args]() { onResourceUsageChanged(args); }); };
         connect(m_ui->btnStartStop, &QPushButton::clicked, this, &ServerPage::startStop);
         connect(m_ui->btnBroadcast, &QPushButton::clicked, this, &ServerPage::broadcast);
         connect(m_ui->txtCommand, &QLineEdit::returnPressed, this, &ServerPage::sendCommand);
@@ -210,26 +211,8 @@ namespace Nickvision::Miniera::Qt::Views
 
     void ServerPage::startStop()
     {
-        PowerStatus status{ m_controller->startStop() };
-        if(status == PowerStatus::ErrorStarting)
-        {
-            QMessageBox::critical(this, _("Error"), _("Unable to start the server. Please ensure another server is not already running"));
-        }
-        else if(status == PowerStatus::ErrorStopping)
-        {
-            QMessageBox::critical(this, _("Error"), _("Unable to stop the server"));
-        }
-        else if(status == PowerStatus::Started)
-        {
-            m_ui->btnStartStop->setText(_("Stop"));
-            m_ui->btnBroadcast->setEnabled(true);
-        }
-        else if(status == PowerStatus::Stopped)
-        {
-            m_ui->btnStartStop->setText(_("Start"));
-            m_ui->btnBroadcast->setEnabled(false);
-            m_ui->lblOutput->setText(_("No console output"));
-        }
+        m_ui->btnStartStop->setEnabled(false);
+        m_controller->startStop();
     }
 
     void ServerPage::broadcast()
@@ -246,6 +229,29 @@ namespace Nickvision::Miniera::Qt::Views
         m_ui->txtCommand->setText("");
     }
 
+    void ServerPage::onPowerChanged(const ParamEventArgs<PowerStatus>& args)
+    {
+        m_ui->btnStartStop->setEnabled(true);
+        switch(args.getParam())
+        {
+        case PowerStatus::ErrorStarting:
+            QMessageBox::critical(this, _("Error"), _("Unable to start the server. Please ensure another server is not already running"));
+            break;
+        case PowerStatus::ErrorStopping:
+            QMessageBox::critical(this, _("Error"), _("Unable to stop the server"));
+            break;
+        case PowerStatus::Started:
+            m_ui->btnStartStop->setText(_("Stop"));
+            m_ui->btnBroadcast->setEnabled(true);
+            break;
+        case PowerStatus::Stopped:
+            m_ui->btnStartStop->setText(_("Start"));
+            m_ui->btnBroadcast->setEnabled(false);
+            m_ui->lblOutput->setText(_("No console output"));
+            break;
+        }
+    }
+
     void ServerPage::onAddressChanged(const ParamEventArgs<ServerAddress>& args)
     {
         m_ui->lblUrl->setText(QString::fromStdString(args.getParam().getUrl()));
@@ -259,7 +265,6 @@ namespace Nickvision::Miniera::Qt::Views
 
     void ServerPage::onResourceUsageChanged(const ParamEventArgs<std::pair<double, unsigned long long>>& args)
     {
-        //Update labels
         m_ui->lblCPU->setText(QString::fromStdString(std::format("{}%", args.getParam().first)));
         m_ui->lblRAM->setText(QString::fromStdString(m_controller->getRAMString(args.getParam().second)));
     }

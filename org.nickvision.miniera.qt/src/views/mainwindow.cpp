@@ -193,10 +193,10 @@ namespace Nickvision::Miniera::Qt::Views
         connect(m_ui->actionReportABug, &QAction::triggered, this, &MainWindow::reportABug);
         connect(m_ui->actionDiscussions, &QAction::triggered, this, &MainWindow::discussions);
         connect(m_ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
-        m_controller->notificationSent() += [&](const NotificationSentEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onNotificationSent(args); }); };
-        m_controller->shellNotificationSent() += [&](const ShellNotificationSentEventArgs& args) { onShellNotificationSent(args); };
-        m_controller->serverLoaded() += [&](const ServerLoadedEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onServerLoaded(args); }); };
-        m_controller->serverInitializationProgressChanged() += [&](const ServerInitializationProgressChangedEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onServerInitializationProgressChanged(args); }); };
+        m_controller->notificationSent() += [this](const NotificationSentEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onNotificationSent(args); }); };
+        m_controller->shellNotificationSent() += [this](const ShellNotificationSentEventArgs& args) { onShellNotificationSent(args); };
+        m_controller->serverLoaded() += [this](const ServerLoadedEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onServerLoaded(args); }); };
+        m_controller->serverInitializationProgressChanged() += [this](const ServerInitializationProgressChangedEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onServerInitializationProgressChanged(args); }); };
     }
 
     MainWindow::~MainWindow()
@@ -273,10 +273,6 @@ namespace Nickvision::Miniera::Qt::Views
 
     void MainWindow::startStop()
     {
-        if(m_ui->tabs->currentIndex() < 1)
-        {
-            return;
-        }
         ServerPage* serverPage{ dynamic_cast<ServerPage*>(m_ui->tabs->currentWidget()) };
         if(serverPage)
         {
@@ -286,10 +282,6 @@ namespace Nickvision::Miniera::Qt::Views
 
     void MainWindow::broadcast()
     {
-        if(m_ui->tabs->currentIndex() < 1)
-        {
-            return;
-        }
         ServerPage* serverPage{ dynamic_cast<ServerPage*>(m_ui->tabs->currentWidget()) };
         if(serverPage)
         {
