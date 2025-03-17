@@ -32,6 +32,7 @@
 #else
 #define FORGE_SERVER_FILE_EXTRACTED (m_directory / "run.sh")
 #endif
+#define FORGE_SERVER_ARGS_FILE (m_directory / "user_jvm_args.txt")
 #define FORGE_SERVER_MOD_DIR (m_directory / "mods")
 
 using namespace Nickvision::Events;
@@ -48,18 +49,6 @@ namespace Nickvision::Miniera::Shared::Models
     static std::string getJavaRamString(unsigned int ramInGB)
     {
         return "-Xmx" + std::to_string(ramInGB) + "G";
-    }
-
-    static std::filesystem::path getForgeShimFile(const std::filesystem::path& dir)
-    {
-        for(const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(dir))
-        {
-            if(entry.is_regular_file() && entry.path().stem().string().find("shim") != std::string::npos)
-            {
-                return entry.path();
-            }
-        }
-        return {};
     }
 
     Server::Server(const ServerVersion& version, const ServerProperties& properties, const std::filesystem::path& directory)
@@ -226,7 +215,11 @@ namespace Nickvision::Miniera::Shared::Models
             m_proc = std::make_shared<Process>(BEDROCK_SERVER_FILE_EXTRACTED);
             break;
         case Edition::Forge:
-            m_proc = std::make_shared<Process>(Environment::findDependency("java"), std::vector<std::string>{ getJavaRamString(maxServerRamInGB), "-jar", getForgeShimFile(m_directory).string(), "nogui" }, m_directory);
+            //Set java arguments before running Forge edition
+            std::ofstream args{ FORGE_SERVER_ARGS_FILE, std::ios::trunc };
+            args << getJavaRamString(maxServerRamInGB) << std::endl;
+            args.close();
+            m_proc = std::make_shared<Process>(FORGE_SERVER_FILE_EXTRACTED, std::vector<std::string>{ "nogui" }, m_directory);
             break;
         }
         //Handle stop cleanup here in case server crashes
@@ -496,6 +489,31 @@ namespace Nickvision::Miniera::Shared::Models
             proc.waitForExit();
             extractionSuccessful = proc.getExitCode() == 0;
             std::filesystem::remove(FORGE_SERVER_FILE_RAW);
+            if(extractionSuccessful && Environment::getOperatingSystem() == OperatingSystem::Windows)
+            {
+                //Get ride of "pause" command from bat file on Forge edition
+                log += _("[Extract] Patching bat file");
+                std::string batWithoutPause;
+                std::fstream batFile{ FORGE_SERVER_FILE_EXTRACTED, std::ios::in };
+                if(!batFile.is_open())
+                {
+                    extractionSuccessful = false;
+                }
+                else
+                {
+                    std::string line;
+                    while(std::getline(batFile, line))
+                    {
+                        if(line != "pause" && !line.empty())
+                        {
+                            batWithoutPause += line + "\n";
+                        }
+                    }
+                    batFile.close();
+                    batFile = std::fstream(FORGE_SERVER_FILE_EXTRACTED, std::ios::out | std::ios::trunc);
+                    batFile << batWithoutPause << std::endl;
+                }
+            }
         }
         if(extractionSuccessful)
         {

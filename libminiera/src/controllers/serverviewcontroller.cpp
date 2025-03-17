@@ -103,7 +103,7 @@ namespace Nickvision::Miniera::Shared::Controllers
     {
         unsigned long long converted{ bytes };
         std::string res{ std::vformat(_("{} B / {} GB"), std::make_format_args(converted, CodeHelpers::unmove(m_configuration.getMaxServerRamInGB()))) };
-        for(int i = 0; getDigitCount(converted) > 4; i++)
+        for(int i = 0; getDigitCount(converted) >= 4; i++)
         {
             if(i == 0)
             {
