@@ -104,7 +104,7 @@
                 {
                     "type": "archive",
                     "url": "https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz",
-                    "sha256": "30055be48805088e017d264812bc437803ebee482a205d34201997a154798d56",
+                    "sha256": "ceaddf9549d228891ecd20dda25f668b65f1852157df557773a8517d2e61deef",
                     "strip-components": 0
                 }
             ]

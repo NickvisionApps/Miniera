@@ -492,7 +492,7 @@ namespace Nickvision::Miniera::Shared::Models
             if(extractionSuccessful && Environment::getOperatingSystem() == OperatingSystem::Windows)
             {
                 //Get ride of "pause" command from bat file on Forge edition
-                log += _("[Extract] Patching bat file");
+                log += _("[Extract] Patching bat file...");
                 std::string batWithoutPause;
                 std::fstream batFile{ FORGE_SERVER_FILE_EXTRACTED, std::ios::in };
                 if(!batFile.is_open())
