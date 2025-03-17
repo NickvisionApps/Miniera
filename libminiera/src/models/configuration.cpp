@@ -77,14 +77,14 @@ namespace Nickvision::Miniera::Shared::Models
         m_json["MaxServerRamInGB"] = ram;
     }
 
-    bool Configuration::getBroadcastOnStart() const
+    bool Configuration::getDeleteModAfterUpload() const
     {
-        return m_json["BroadcastOnStart"].is_bool() ? m_json["BroadcastOnStart"].as_bool() : false;
+        return m_json["DeleteModAfterUpload"].is_bool() ? m_json["DeleteModAfterUpload"].as_bool() : false;
     }
 
-    void Configuration::setBroadcastOnStart(bool broadcast)
+    void Configuration::setDeleteModAfterUpload(bool deleteMod)
     {
-        m_json["BroadcastOnStart"] = broadcast;
+        m_json["DeleteModAfterUpload"] = deleteMod;
     }
 
     std::string Configuration::getNgrokAuthToken() const

@@ -54,14 +54,14 @@ namespace Nickvision::Miniera::Shared::Controllers
         return static_cast<unsigned int>(SizeHelpers::bytesToGigabytes(HardwareInfo::getTotalRamSize()));
     }
 
-    bool PreferencesViewController::getBroadcastOnStart() const
+    bool PreferencesViewController::getDeleteModAfterUpload() const
     {
-        return m_configuration.getBroadcastOnStart();
+        return m_configuration.getDeleteModAfterUpload();
     }
 
-    void PreferencesViewController::setBroadcastOnStart(bool broadcast)
+    void PreferencesViewController::setDeleteModAfterUpload(bool deleteMod)
     {
-        m_configuration.setBroadcastOnStart(broadcast);
+        return m_configuration.setDeleteModAfterUpload(deleteMod);
     }
 
     void PreferencesViewController::setNgrokAuthToken(const std::string& token)

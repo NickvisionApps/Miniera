@@ -61,15 +61,15 @@ namespace Nickvision::Miniera::Shared::Models
          */
         void setMaxServerRamInGB(unsigned int ram);
         /**
-         * @brief Gets whether or not to broadcast the server on start.
-         * @return True to broadcast on server start, else false
+         * @brief Gets whether or not to delete the source mod file after upload.
+         * @return True to delete source mod file, else false
          */
-        bool getBroadcastOnStart() const;
+        bool getDeleteModAfterUpload() const;
         /**
-         * @brief Sets whether or not to broadcast the server on start.
-         * @param broadcast Whether or not to broadcast the server on start
+         * @brief Sets whether or not to delete the source mod file after upload.
+         * @param deleteMod Whether or not to delete the source mod file after upload
          */
-        void setBroadcastOnStart(bool broadcast);
+        void setDeleteModAfterUpload(bool deleteMod);
         /**
          * @brief Gets the auth token for ngrok.
          * @return The auth token for ngrok

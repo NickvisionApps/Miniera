@@ -65,7 +65,15 @@ namespace Nickvision::Miniera::Shared::Models
         }
         //Get WWW url
         boost::json::parser parser;
-        parser.write(jsons[jsons.size() - 1]);
+        try
+        {
+            parser.write(jsons[jsons.size() - 1]);
+        }
+        catch(...)
+        {
+            m_address = {};
+            return m_address;
+        }
         boost::json::value value = parser.release();
         if(!value.is_object() || !value.as_object()["url"].is_string())
         {

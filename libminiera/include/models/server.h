@@ -81,11 +81,11 @@ namespace Nickvision::Miniera::Shared::Models
          */
         unsigned long long getRAMUsage() const;
         /**
-         * @brief Gets the list of all mods in the server (by name).
-         * @brief This method only works on Forge edition servers.
-         * @return The list of mod names
+         * @brief Gets the list of all mods in the server.
+         * @brief This method will return an empty list on non Forge editions.
+         * @return The list of server mods
          */
-        std::vector<std::string> getModNames() const;
+        const std::vector<std::string>& getMods() const;
         /**
          * @brief Gets whether or not the server is running.
          * @return True if the server is running
@@ -136,13 +136,13 @@ namespace Nickvision::Miniera::Shared::Models
          */
         bool uploadMod(const std::filesystem::path& source, bool deleteSource = false);
         /**
-         * @brief Deletes the mod from the server.
+         * @brief Removes a mod from the server.
          * @brief This method only works on Forge edition servers.
-         * @param mod The name of the mod to delete
-         * @return True if the mod was deleted
-         * @return False if the mod was not deleted
+         * @param mod The mod to remove
+         * @return True if the mod was removed
+         * @return False if the mod was not removed
          */
-        bool deleteMod(const std::string& mod);
+        bool removeMod(const std::string& mod);
         /**
          * @brief Converts the Server to a JSON object.
          * @return The Server as a JSON object
@@ -200,6 +200,7 @@ namespace Nickvision::Miniera::Shared::Models
         ServerVersion m_version;
         ServerProperties m_properties;
         std::filesystem::path m_directory;
+        std::vector<std::string> m_mods;
         bool m_initialized;
         std::shared_ptr<System::Process> m_proc;
         std::shared_ptr<Broadcaster> m_broadcaster;

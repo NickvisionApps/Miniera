@@ -66,11 +66,21 @@ namespace Nickvision::Miniera::Shared::Controllers
          */
         Models::ServerAddress getAddress() const;
         /**
+         * @brief Gets whether or not the server is running.
+         * @return True if the server is running, else false
+         */
+        bool isRunning() const;
+        /**
          * @brief Gets whether or not the server supports mods.
          * @return True if the server supports mods
          * @return False if the server does not support mods
          */
         bool supportsMods() const;
+        /**
+         * @brief Gets the list of all mods in the server.
+         * @return The list of server mods
+         */
+        const std::vector<std::string>& getMods() const;
         /**
          * @brief Gets the maximum amount of RAM a server can use in MB.
          * @return The maximum amount of RAM a server can use
@@ -89,16 +99,28 @@ namespace Nickvision::Miniera::Shared::Controllers
         void startStop();
         /**
          * @brief Broadcasts the server over the WWW.
-         * @brief On success, getAddress() should be called to display the new address.
-         * @return True if successful
-         * @return False if unsuccesful
+         * @brief This method will trigger the addressChanged event as the address changes.
          */
-        bool broadcast();
+        void broadcast();
         /**
          * @brief Sends a command to the server.
          * @param cmd The command to send to the server
          */
         void sendCommand(const std::string& cmd);
+        /**
+         * @brief Uploads a mod to the server.
+         * @param file The path to the mod's jar file
+         * @return True if the mod was added
+         * @return False if the mod was not added
+         */
+        bool uploadMod(const std::filesystem::path& file);
+        /**
+         * @brief Removes a mod from the server.
+         * @param mod The mod to delete
+         * @return True if the mod was removed
+         * @return False if the mod was not removed
+         */
+        bool removeMod(const std::string& mod);
 
     private:
         /**

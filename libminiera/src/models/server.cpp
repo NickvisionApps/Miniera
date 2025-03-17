@@ -1,4 +1,5 @@
 #include "models/server.h"
+#include <algorithm>
 #include <fstream>
 #include <stdexcept>
 #include <functional>
@@ -126,7 +127,7 @@ namespace Nickvision::Miniera::Shared::Models
     ServerAddress Server::getAddress() const
     {
         std::lock_guard<std::mutex> lock{ m_mutex };
-        if(m_proc && m_broadcaster)
+        if(m_proc && m_broadcaster && m_proc->isRunning())
         {
             return m_broadcaster->getAddress();
         }
@@ -154,35 +155,24 @@ namespace Nickvision::Miniera::Shared::Models
         unsigned long long ram{ 0L };
         if(m_proc)
         {
-            return m_proc->getRAMUsage();
+            ram += m_proc->getRAMUsage();
         }
         if(m_broadcaster)
         {
-            return m_broadcaster->getRAMUsage();
+            ram += m_broadcaster->getRAMUsage();
         }
         return ram;
     }
 
-    std::vector<std::string> Server::getModNames() const
+    const std::vector<std::string>& Server::getMods() const
     {
-        std::vector<std::string> mods;
-        if(m_version.getEdition() == Edition::Forge)
-        {
-            for(const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(FORGE_SERVER_MOD_DIR))
-            {
-                if(entry.is_regular_file() && (entry.path().extension() == ".jar" || entry.path().extension() == ".JAR"))
-                {
-                    mods.push_back(entry.path().stem().string());
-                }
-            }
-        }
-        return mods;
+        return m_mods;
     }
 
     bool Server::isRunning() const
     {
         std::lock_guard<std::mutex> lock{ m_mutex };
-        return m_proc ? true : false;
+        return m_proc ? m_proc->isRunning() : false;
     }
 
     void Server::initialize()
@@ -239,6 +229,16 @@ namespace Nickvision::Miniera::Shared::Models
             m_proc = std::make_shared<Process>(Environment::findDependency("java"), std::vector<std::string>{ getJavaRamString(maxServerRamInGB), "-jar", getForgeShimFile(m_directory).string(), "nogui" }, m_directory);
             break;
         }
+        //Handle stop cleanup here in case server crashes
+        m_proc->exited() += [this](const ProcessExitedEventArgs&)
+        {
+            if(m_broadcaster)
+            {
+                m_broadcaster->stop();
+                m_broadcaster.reset();
+            }
+            s_serverRunning = false;
+        };
         if(m_proc->start())
         {
             s_serverRunning = true;
@@ -251,21 +251,15 @@ namespace Nickvision::Miniera::Shared::Models
     bool Server::stop()
     {
         std::lock_guard<std::mutex> lock{ m_mutex };
-        if(!m_proc)
+        if(!m_proc || !m_proc->isRunning())
         {
             return true;
         }
         m_proc->sendCommand("stop");
         m_proc->waitForExit();
-        if(m_broadcaster)
-        {
-            m_broadcaster->stop();
-        }
         if(!m_proc->isRunning())
         {
-            s_serverRunning = false;
             m_proc.reset();
-            m_broadcaster.reset();
             return true;
         }
         return false;
@@ -308,12 +302,16 @@ namespace Nickvision::Miniera::Shared::Models
         {
             return false;
         }
-        if(source.extension() != ".jar" || source.extension() != ".JAR")
+        if(source.extension() != ".jar" && source.extension() != ".JAR")
         {
             return false;
         }
         std::filesystem::path uploadPath{ FORGE_SERVER_MOD_DIR / source.filename() };
-        if(deleteSource)
+        if(std::filesystem::exists(uploadPath))
+        {
+            return true;
+        }
+        else if(deleteSource)
         {
             try
             {
@@ -335,10 +333,12 @@ namespace Nickvision::Miniera::Shared::Models
                 return false;
             }
         }
+        m_mods.push_back(source.stem().string());
+        std::sort(m_mods.begin(), m_mods.end());
         return true;
     }
 
-    bool Server::deleteMod(const std::string& mod)
+    bool Server::removeMod(const std::string& mod)
     {
         if(m_version.getEdition() != Edition::Forge)
         {
@@ -349,7 +349,12 @@ namespace Nickvision::Miniera::Shared::Models
         {
             return false;
         }
-        return std::filesystem::remove(modPath);
+        if(std::filesystem::remove(modPath))
+        {
+            m_mods.erase(std::find(m_mods.begin(), m_mods.end(), mod));
+            return true;
+        }
+        return false;
     }
 
     boost::json::object Server::toJson() const
@@ -397,6 +402,15 @@ namespace Nickvision::Miniera::Shared::Models
         else if(m_version.getEdition() == Edition::Forge)
         {
             std::filesystem::create_directories(FORGE_SERVER_MOD_DIR);
+            for(const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(FORGE_SERVER_MOD_DIR))
+            {
+                if(entry.path().extension() != ".jar" && entry.path().extension() != ".JAR")
+                {
+                    continue;
+                }
+                m_mods.push_back(entry.path().stem().string());
+            }
+            std::sort(m_mods.begin(), m_mods.end());
             m_initialized = std::filesystem::exists(FORGE_SERVER_FILE_EXTRACTED) && std::filesystem::exists(EULA_FILE) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
         }
         return m_initialized;

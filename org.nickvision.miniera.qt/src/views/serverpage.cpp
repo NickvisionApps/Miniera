@@ -1,11 +1,13 @@
 #include "views/serverpage.h"
 #include <format>
+#include <QFileDialog>
 #include <QFont>
 #include <QFormLayout>
 #include <QFrame>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QListWidget>
 #include <QMessageBox>
 #include <QScrollArea>
 #include <QScrollBar>
@@ -138,10 +140,35 @@ namespace Ui
             pageSettings->setTitle(_("Coming Soon!"));
             pageSettings->setDescription("We are working hard to bring this feature to you soon");
             //Mods Page
-            Nickvision::Miniera::Qt::Controls::StatusPage* pageMods{ new Nickvision::Miniera::Qt::Controls::StatusPage(parent) };
-            pageMods->setIcon(QLEMENTINE_ICON(Action_Build));
-            pageMods->setTitle(_("Coming Soon!"));
-            pageMods->setDescription("We are working hard to bring this feature to you soon");
+            btnUploadMod = new ActionButton(parent);
+            btnUploadMod->setAutoDefault(false);
+            btnUploadMod->setDefault(false);
+            btnUploadMod->setMinimumWidth(140);
+            btnUploadMod->setText(_("Upload"));
+            btnUploadMod->setIcon(QLEMENTINE_ICON(Misc_CloudUp));
+            btnRemoveMod = new ActionButton(parent);
+            btnRemoveMod->setAutoDefault(false);
+            btnRemoveMod->setDefault(false);
+            btnRemoveMod->setMinimumWidth(140);
+            btnRemoveMod->setText(_("Remove"));
+            btnRemoveMod->setIcon(QLEMENTINE_ICON(Action_Trash));
+            listMods = new QListWidget(parent);
+            listMods->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
+            listMods->setEditTriggers(QAbstractItemView::EditTrigger::NoEditTriggers);
+            listMods->setDropIndicatorShown(false);
+            QLabel* lblNewMods{ new QLabel(parent) };
+            lblNewMods->setText(_("A restart is required for mods added after the server has been started."));
+            QHBoxLayout* layoutModActions{ new QHBoxLayout() };
+            layoutModActions->addWidget(btnUploadMod);
+            layoutModActions->addWidget(btnRemoveMod);
+            layoutModActions->addWidget(lblNewMods);
+            layoutModActions->addStretch();
+            QVBoxLayout* layoutMods{ new QVBoxLayout() };
+            layoutMods->setContentsMargins(0, 0, 0, 0);
+            layoutMods->addLayout(layoutModActions);
+            layoutMods->addWidget(listMods);
+            QWidget* pageMods = new QWidget(parent);
+            pageMods->setLayout(layoutMods);
             //View Stack
             viewStack = new QStackedWidget(parent);
             viewStack->addWidget(pageDashboard);
@@ -175,6 +202,9 @@ namespace Ui
         QLabel* lblRAM;
         QLabel* lblOutput;
         LineEdit* txtCommand;
+        ActionButton* btnUploadMod;
+        ActionButton* btnRemoveMod;
+        QListWidget* listMods;
     };
 }
 
@@ -194,6 +224,7 @@ namespace Nickvision::Miniera::Qt::Views
         m_ui->lblPort->setText(QString::number(address.getPort()));
         m_ui->lblCPU->setText("0%");
         m_ui->lblRAM->setText(QString::fromStdString(m_controller->getRAMString(0L)));
+        reloadMods();
         //Signals
         m_controller->powerChanged() += [this](const ParamEventArgs<PowerStatus>& args) { QtHelpers::dispatchToMainThread([this, args]() { onPowerChanged(args); }); };
         m_controller->addressChanged() += [this](const ParamEventArgs<ServerAddress>& args) { QtHelpers::dispatchToMainThread([this, args]() { onAddressChanged(args); }); };
@@ -202,6 +233,8 @@ namespace Nickvision::Miniera::Qt::Views
         connect(m_ui->btnStartStop, &QPushButton::clicked, this, &ServerPage::startStop);
         connect(m_ui->btnBroadcast, &QPushButton::clicked, this, &ServerPage::broadcast);
         connect(m_ui->txtCommand, &QLineEdit::returnPressed, this, &ServerPage::sendCommand);
+        connect(m_ui->btnUploadMod, &QPushButton::clicked, this, &ServerPage::uploadMod);
+        connect(m_ui->btnRemoveMod, &QPushButton::clicked, this, &ServerPage::removeMod);
     }
 
     ServerPage::~ServerPage()
@@ -211,16 +244,16 @@ namespace Nickvision::Miniera::Qt::Views
 
     void ServerPage::startStop()
     {
+        m_ui->btnStartStop->setText(_("Loading..."));
         m_ui->btnStartStop->setEnabled(false);
         m_controller->startStop();
     }
 
     void ServerPage::broadcast()
     {
-        if(!m_controller->broadcast())
-        {
-            QMessageBox::critical(this, _("Error"), _("Unable to broadcast the server. Please ensure your ngrok token is configured in the app's settings and try again"));
-        }
+        m_ui->btnBroadcast->setText(_("Loading..."));
+        m_ui->btnBroadcast->setEnabled(false);
+        m_controller->broadcast();
     }
 
     void ServerPage::sendCommand()
@@ -229,15 +262,43 @@ namespace Nickvision::Miniera::Qt::Views
         m_ui->txtCommand->setText("");
     }
 
+    void ServerPage::uploadMod()
+    {
+        QStringList files{ QFileDialog::getOpenFileNames(this, _("Select Mod Files"), {}, _("Jar Files (*.jar)")) };
+        for(const QString& file : files)
+        {
+            m_controller->uploadMod(file.toStdString());
+        }
+        reloadMods();
+    }
+
+    void ServerPage::removeMod()
+    {
+        if(!m_ui->listMods->selectedItems().empty())
+        {
+            QMessageBox msgBox{ QMessageBox::Icon::Warning, _("Remove Mods?"), _("Are you sure you want to remove the selected mods from the server? This action is irreversible."), QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No, this };
+            if(msgBox.exec() == QMessageBox::StandardButton::Yes)
+            {
+                for(QListWidgetItem* item : m_ui->listMods->selectedItems())
+                {
+                    m_controller->removeMod(item->text().toStdString());
+                }
+                reloadMods();
+            }
+        }
+    }
+
     void ServerPage::onPowerChanged(const ParamEventArgs<PowerStatus>& args)
     {
         m_ui->btnStartStop->setEnabled(true);
         switch(args.getParam())
         {
         case PowerStatus::ErrorStarting:
+            m_ui->btnStartStop->setText(_("Start"));
             QMessageBox::critical(this, _("Error"), _("Unable to start the server. Please ensure another server is not already running"));
             break;
         case PowerStatus::ErrorStopping:
+            m_ui->btnStartStop->setText(_("Stop"));
             QMessageBox::critical(this, _("Error"), _("Unable to stop the server"));
             break;
         case PowerStatus::Started:
@@ -247,15 +308,23 @@ namespace Nickvision::Miniera::Qt::Views
         case PowerStatus::Stopped:
             m_ui->btnStartStop->setText(_("Start"));
             m_ui->btnBroadcast->setEnabled(false);
-            m_ui->lblOutput->setText(_("No console output"));
             break;
         }
     }
 
     void ServerPage::onAddressChanged(const ParamEventArgs<ServerAddress>& args)
     {
-        m_ui->lblUrl->setText(QString::fromStdString(args.getParam().getUrl()));
-        m_ui->lblPort->setText(QString::number(args.getParam().getPort()));
+        m_ui->btnBroadcast->setText(_("Broadcast"));
+        m_ui->btnBroadcast->setEnabled(m_controller->isRunning());
+        if(args.getParam().isEmpty())
+        {
+            QMessageBox::critical(this, _("Error"), _("Unable to broadcast the server. Please ensure your ngrok token is configured in the app's settings and try again"));
+        }
+        else
+        {
+            m_ui->lblUrl->setText(QString::fromStdString(args.getParam().getUrl()));
+            m_ui->lblPort->setText(QString::number(args.getParam().getPort()));
+        }
     }
 
     void ServerPage::onConsoleOutputChanged(const ParamEventArgs<std::string>& args)
@@ -267,5 +336,14 @@ namespace Nickvision::Miniera::Qt::Views
     {
         m_ui->lblCPU->setText(QString::fromStdString(std::format("{}%", args.getParam().first)));
         m_ui->lblRAM->setText(QString::fromStdString(m_controller->getRAMString(args.getParam().second)));
+    }
+
+    void ServerPage::reloadMods()
+    {
+        m_ui->listMods->clear();
+        for(const std::string& mod : m_controller->getMods())
+        {
+            m_ui->listMods->addItem(new QListWidgetItem(QLEMENTINE_ICON(Misc_Blocks), QString::fromStdString(mod), m_ui->listMods));
+        }
     }
 }

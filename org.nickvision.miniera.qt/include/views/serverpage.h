@@ -43,6 +43,14 @@ namespace Nickvision::Miniera::Qt::Views
          * @brief Sends a command to the server.
          */
         void sendCommand();
+        /**
+         * @brief Prompts the user to upload mods to the server.
+         */
+        void uploadMod();
+        /**
+         * @brief Removes a mod from the server.
+         */
+        void removeMod();
 
     private:
         /**
@@ -65,6 +73,10 @@ namespace Nickvision::Miniera::Qt::Views
          * @param args ParamEventArgs<std::pair<double, unsigned long long>>
          */
         void onResourceUsageChanged(const Events::ParamEventArgs<std::pair<double, unsigned long long>>& args);
+        /**
+         * @brief Reloads the mods displayed on the page.
+         */
+        void reloadMods();
         Ui::ServerPage* m_ui;
         std::shared_ptr<Shared::Controllers::ServerViewController> m_controller;
     };

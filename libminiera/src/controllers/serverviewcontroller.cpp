@@ -79,9 +79,19 @@ namespace Nickvision::Miniera::Shared::Controllers
         return m_server->getAddress();
     }
 
+    bool ServerViewController::isRunning() const
+    {
+        return m_server->isRunning();
+    }
+
     bool ServerViewController::supportsMods() const
     {
         return m_server->getVersion().getEdition() == Edition::Forge;
+    }
+
+    const std::vector<std::string>& ServerViewController::getMods() const
+    {
+        return m_server->getMods();
     }
 
     unsigned long ServerViewController::getMaxServerRamInMB() const
@@ -126,9 +136,6 @@ namespace Nickvision::Miniera::Shared::Controllers
                     {
                         m_watcher.join();
                     }
-                    m_powerChanged.invoke({ PowerStatus::Stopped });
-                    m_addressChanged.invoke({ m_server->getAddress() });
-                    m_resourceUsageChanged.invoke({ std::make_pair(0.0, 0L) });
                 }
                 else
                 {
@@ -137,13 +144,11 @@ namespace Nickvision::Miniera::Shared::Controllers
             }
             else if(m_server->start(m_configuration.getMaxServerRamInGB()))
             {
-                if(m_configuration.getBroadcastOnStart())
+                if(m_watcher.joinable())
                 {
-                    broadcast();
+                    m_watcher.join();
                 }
-                m_powerChanged.invoke({ PowerStatus::Started });
                 m_watcher = std::thread(&ServerViewController::watch, this);
-                m_addressChanged.invoke({ m_server->getAddress() });
             }
             else
             {
@@ -153,19 +158,17 @@ namespace Nickvision::Miniera::Shared::Controllers
         worker.detach();
     }
 
-    bool ServerViewController::broadcast()
+    void ServerViewController::broadcast()
     {
         if(m_configuration.getNgrokAuthToken().empty())
         {
-            return false;
+            m_addressChanged.invoke({{}});
         }
-        const ServerAddress& address{ m_server->broadcast(m_configuration.getNgrokAuthToken()) };
-        if(!address.isEmpty())
+        std::thread worker{ [this]()
         {
-            m_addressChanged.invoke({ address });
-            return true;
-        }
-        return false;
+            m_addressChanged.invoke({ m_server->broadcast(m_configuration.getNgrokAuthToken()) });
+        } };
+        worker.detach();
     }
 
     void ServerViewController::sendCommand(const std::string& cmd)
@@ -173,11 +176,23 @@ namespace Nickvision::Miniera::Shared::Controllers
         m_server->command(cmd);
     }
 
+    bool ServerViewController::uploadMod(const std::filesystem::path& file)
+    {
+        return m_server->uploadMod(file, m_configuration.getDeleteModAfterUpload());
+    }
+
+    bool ServerViewController::removeMod(const std::string& mod)
+    {
+        return m_server->removeMod(mod);
+    }
+
     void ServerViewController::watch()
     {
         size_t consoleOutputSize{ 0 };
         double oldCPU{ 0 };
         unsigned long long oldRAM{ 0 };
+        m_powerChanged.invoke({ PowerStatus::Started });
+        m_addressChanged.invoke({ m_server->getAddress() });
         while(m_server->isRunning())
         {
             //Console output
@@ -197,5 +212,7 @@ namespace Nickvision::Miniera::Shared::Controllers
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
         }
         m_powerChanged.invoke({ PowerStatus::Stopped });
+        m_addressChanged.invoke({ m_server->getAddress() });
+        m_resourceUsageChanged.invoke({ std::make_pair(0.0, 0L) });
     }
 }
