@@ -6,7 +6,6 @@
 #include <libnick/helpers/stringhelpers.h>
 #include <libnick/localization/gettext.h>
 #include <libnick/system/environment.h>
-#include "controllers/serverviewcontroller.h"
 #include "models/configuration.h"
 
 using namespace Nickvision::App;
@@ -67,6 +66,11 @@ namespace Nickvision::Miniera::Shared::Controllers
     Event<ServerLoadedEventArgs>& MainWindowController::serverLoaded()
     {
         return m_serverManager.serverLoaded();
+    }
+
+    Event<ParamEventArgs<std::string>>& MainWindowController::serverDeleted()
+    {
+        return m_serverManager.serverDeleted();
     }
 
     Event<ServerInitializationProgressChangedEventArgs>& MainWindowController::serverInitializationProgressChanged()
@@ -219,13 +223,11 @@ namespace Nickvision::Miniera::Shared::Controllers
         }
     }
 
-    bool MainWindowController::deleteServer(const std::string& serverName)
+    void MainWindowController::deleteServer(const std::string& serverName)
     {
-        bool res{ m_serverManager.deleteServer(serverName) };
-        if(!res)
+        if(!m_serverManager.deleteServer(serverName))
         {
-            m_notificationSent.invoke({ _("Unable to delete the server"), NotificationSeverity::Error });
+            m_notificationSent.invoke({ _("Unable to delete the server as it is running"), NotificationSeverity::Error });
         }
-        return res;
     }
 }

@@ -63,6 +63,11 @@ namespace Nickvision::Miniera::Shared::Controllers
          */
         Nickvision::Events::Event<Events::ServerLoadedEventArgs>& serverLoaded();
         /**
+         * @brief Gets the event for when a server is deleted.
+         * @return The server deleted event
+         */
+        Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<std::string>>& serverDeleted();
+        /**
          * @brief Gets the AppInfo object for the application
          * @return The current AppInfo object
          */
@@ -135,10 +140,8 @@ namespace Nickvision::Miniera::Shared::Controllers
         /**
          * @brief Deletes a server.
          * @param serverName The name of the server to delete
-         * @return True if deleted
-         * @return False is not deleted
          */
-        bool deleteServer(const std::string& serverName);
+        void deleteServer(const std::string& serverName);
 
     private:
         bool m_started;

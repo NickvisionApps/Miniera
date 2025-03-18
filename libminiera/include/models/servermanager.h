@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <vector>
 #include <libnick/events/event.h>
+#include <libnick/events/parameventargs.h>
 #include "events/serverinitializationprogresschangedeventargs.h"
 #include "events/serverloadedeventargs.h"
 #include "configuration.h"
@@ -39,6 +40,11 @@ namespace Nickvision::Miniera::Shared::Models
          */
         Nickvision::Events::Event<Shared::Events::ServerLoadedEventArgs>& serverLoaded();
         /**
+         * @brief Gets the event for when a server is deleted.
+         * @return The server deleted event
+         */
+        Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<std::string>>& serverDeleted();
+        /**
          * @brief Gets the names of the available servers.
          * @return The list of available server names
          */
@@ -55,7 +61,7 @@ namespace Nickvision::Miniera::Shared::Models
          * @brief This function will call the server loaded event when creation is complete.
          * @param version The version of the server
          * @param properties The properties of the server
-         * @return True if successful
+         * @return True if initialization started
          * @return False if the server creation failed.
          */
         bool createServer(const ServerVersion& version, const ServerProperties& properties);
@@ -63,15 +69,16 @@ namespace Nickvision::Miniera::Shared::Models
          * @brief Loads a server.
          * @brief This function will call the server loaded event when loading is complete.
          * @param name The name of the server to load
-         * @return True if successful
+         * @return True if initialization started
          * @return False if the server is already loaded
          */
         bool loadServer(const std::string& name);
         /**
          * @brief Deletes a server.
          * @brief The server must not be running to be deleted.
+         * @brief This function will call the server deleted event when deletion is complete.
          * @param name The name of the server to delete
-         * @return True if deleted
+         * @return True if deletion started
          * @return False is not deleted
          */
         bool deleteServer(const std::string& name);
@@ -83,7 +90,7 @@ namespace Nickvision::Miniera::Shared::Models
         std::unordered_map<std::string, bool> m_loadedServers;
         Nickvision::Events::Event<Shared::Events::ServerInitializationProgressChangedEventArgs> m_serverInitializationProgressChanged;
         Nickvision::Events::Event<Shared::Events::ServerLoadedEventArgs> m_serverLoaded;
-        Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<std::string>> serverDeleted;
+        Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<std::string>> m_serverDeleted;
     };
 }
 

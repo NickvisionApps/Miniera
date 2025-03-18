@@ -50,6 +50,11 @@ namespace Nickvision::Miniera::Shared::Models
         return m_serverLoaded;
     }
 
+    Event<ParamEventArgs<std::string>>& ServerManager::serverDeleted()
+    {
+        return m_serverDeleted;
+    }
+
     std::vector<std::string> ServerManager::getAvailableServersNames()
     {
         std::vector<std::string> names;
@@ -115,7 +120,12 @@ namespace Nickvision::Miniera::Shared::Models
         }
         m_servers.erase(name);
         m_loadedServers.erase(name);
-        std::filesystem::remove_all(m_serversDirectory / name);
+        std::thread worker{ [this, name]()
+        {
+            std::filesystem::remove_all(m_serversDirectory / name);
+            m_serverDeleted.invoke({ name });
+        } };
+        worker.detach();
         return true;
     }
 }

@@ -70,16 +70,22 @@ namespace Ui
             layoutHeader->addLayout(layoutActions);
             //Navigation
             navBar = new SegmentedControl(parent);
+            navBar->addItem(_("Settings"), QLEMENTINE_ICON(Navigation_Settings));
             navBar->addItem(_("Dashboard"), QLEMENTINE_ICON(Navigation_UiPanelTop));
+            navBar->addItem(_("Console"), QLEMENTINE_ICON(Software_CommandLine));
             if(supportsMods)
             {
                 navBar->addItem(_("Mods"), QLEMENTINE_ICON(Misc_Blocks));
             }
-            navBar->addItem(_("Settings"), QLEMENTINE_ICON(Navigation_Settings));
             QHBoxLayout* layoutNavigation{ new QHBoxLayout() };
             layoutNavigation->addStretch();
             layoutNavigation->addWidget(navBar);
             layoutNavigation->addStretch();
+            //Settings Page
+            Nickvision::Miniera::Qt::Controls::StatusPage* pageSettings{ new Nickvision::Miniera::Qt::Controls::StatusPage(parent) };
+            pageSettings->setIcon(QLEMENTINE_ICON(Action_Build));
+            pageSettings->setTitle(_("Coming Soon!"));
+            pageSettings->setDescription("We are working hard to bring this feature to you soon");
             //Dashboard Page
             QLabel* lblUrlTitle{ new QLabel(_("URL:"), parent) };
             lblUrlTitle->setFont(boldFont);
@@ -106,6 +112,13 @@ namespace Ui
             QHBoxLayout* layoutGroups{ new QHBoxLayout() };
             layoutGroups->addWidget(groupAddress);
             layoutGroups->addWidget(groupResources);
+            QVBoxLayout* layoutDashboard{ new QVBoxLayout() };
+            layoutDashboard->setContentsMargins(0, 0, 0, 0);
+            layoutDashboard->addLayout(layoutGroups);
+            layoutDashboard->addStretch();
+            QWidget* pageDashboard = new QWidget(parent);
+            pageDashboard->setLayout(layoutDashboard);
+            //Console Page
             lblOutput = new QLabel(parent);
             lblOutput->setAlignment(::Qt::AlignTop);
             lblOutput->setWordWrap(true);
@@ -116,7 +129,6 @@ namespace Ui
             QScrollArea* scrollConsole = new QScrollArea(parent);
             scrollConsole->setVerticalScrollBarPolicy(::Qt::ScrollBarAsNeeded);
             scrollConsole->setHorizontalScrollBarPolicy(::Qt::ScrollBarAlwaysOff);
-            scrollConsole->setFrameShape(QFrame::Shape::NoFrame);
             scrollConsole->setWidgetResizable(true);
             scrollConsole->setWidget(lblOutput);
             QObject::connect(scrollConsole->verticalScrollBar(), &QScrollBar::rangeChanged, [this, scrollConsole](int, int max)
@@ -124,16 +136,11 @@ namespace Ui
                 scrollConsole->verticalScrollBar()->setValue(max);
             });
             QVBoxLayout* layoutConsole{ new QVBoxLayout() };
+            layoutConsole->setContentsMargins(0, 0, 0, 0);
             layoutConsole->addWidget(scrollConsole);
             layoutConsole->addWidget(txtCommand);
-            QGroupBox* groupConsole{ new QGroupBox(_("Console"), parent) };
-            groupConsole->setLayout(layoutConsole);
-            QVBoxLayout* layoutDashboard{ new QVBoxLayout() };
-            layoutDashboard->setContentsMargins(0, 0, 0, 0);
-            layoutDashboard->addLayout(layoutGroups);
-            layoutDashboard->addWidget(groupConsole);
-            QWidget* pageDashboard = new QWidget(parent);
-            pageDashboard->setLayout(layoutDashboard);
+            QWidget* pageConsole = new QWidget(parent);
+            pageConsole->setLayout(layoutConsole);
             //Mods Page
             btnUploadMod = new ActionButton(parent);
             btnUploadMod->setAutoDefault(false);
@@ -164,20 +171,17 @@ namespace Ui
             layoutMods->addWidget(listMods);
             QWidget* pageMods = new QWidget(parent);
             pageMods->setLayout(layoutMods);
-            //Settings Page
-            Nickvision::Miniera::Qt::Controls::StatusPage* pageSettings{ new Nickvision::Miniera::Qt::Controls::StatusPage(parent) };
-            pageSettings->setIcon(QLEMENTINE_ICON(Action_Build));
-            pageSettings->setTitle(_("Coming Soon!"));
-            pageSettings->setDescription("We are working hard to bring this feature to you soon");
             //View Stack
             viewStack = new QStackedWidget(parent);
-            viewStack->addWidget(pageDashboard);
-            viewStack->addWidget(pageMods);
             viewStack->addWidget(pageSettings);
+            viewStack->addWidget(pageDashboard);
+            viewStack->addWidget(pageConsole);
+            viewStack->addWidget(pageMods);
             QObject::connect(navBar, &SegmentedControl::currentIndexChanged, [this]()
             {
                 viewStack->setCurrentIndex(navBar->currentIndex());
             });
+            navBar->setCurrentIndex(1);
             //Main Layout
             QFrame* line{ new QFrame(parent) };
             line->setFrameShape(QFrame::Shape::HLine);
@@ -318,7 +322,7 @@ namespace Nickvision::Miniera::Qt::Views
         m_ui->btnBroadcast->setEnabled(m_controller->isRunning());
         if(args.getParam().isEmpty())
         {
-            QMessageBox::critical(this, _("Error"), _("Unable to broadcast the server. Please ensure your ngrok token is configured in the app's settings and try again"));
+            QMessageBox::critical(this, _("Error"), _("Unable to broadcast the server. Please ensure the server is running and that your ngrok token is configured in the app's settings"));
         }
         else
         {

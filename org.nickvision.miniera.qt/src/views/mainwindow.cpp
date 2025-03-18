@@ -60,6 +60,11 @@ namespace Ui
             actionLoadServer->setText(_("Load Server"));
             actionLoadServer->setIcon(QLEMENTINE_ICON(Document_Open));
             actionLoadServer->setShortcut(Qt::CTRL | Qt::Key_O);
+            actionDeleteServer = new QAction(parent);
+            actionDeleteServer->setText(_("Delete Server"));
+            actionDeleteServer->setIcon(QLEMENTINE_ICON(Action_Trash));
+            actionDeleteServer->setShortcut(Qt::CTRL | Qt::Key_Delete);
+            actionDeleteServer->setEnabled(false);
             actionExit = new QAction(parent);
             actionExit->setText(_("Exit"));
             actionExit->setIcon(QLEMENTINE_ICON(Action_Close));
@@ -68,13 +73,12 @@ namespace Ui
             actionStartStop->setText(_("Start/Stop"));
             actionStartStop->setIcon(QLEMENTINE_ICON(Action_OnOff));
             actionStartStop->setShortcut(Qt::Key_F5);
+            actionStartStop->setEnabled(false);
             actionBroadcast = new QAction(parent);
             actionBroadcast->setText(_("Broadcast"));
             actionBroadcast->setIcon(QLEMENTINE_ICON(Misc_Globe));
             actionBroadcast->setShortcut(Qt::CTRL | Qt::Key_B);
-            actionDeleteServer = new QAction(parent);
-            actionDeleteServer->setText(_("Delete Server"));
-            actionDeleteServer->setIcon(QLEMENTINE_ICON(Action_Trash));
+            actionBroadcast->setEnabled(false);
             actionSettings = new QAction(parent);
             actionSettings->setText(_("Settings"));
             actionSettings->setIcon(QLEMENTINE_ICON(Navigation_Settings));
@@ -106,6 +110,8 @@ namespace Ui
             menuFile->addAction(actionNewServer);
             menuFile->addAction(actionLoadServer);
             menuFile->addSeparator();
+            menuFile->addAction(actionDeleteServer);
+            menuFile->addSeparator();
             menuFile->addAction(actionExit);
             QMenu* menuEdit{ new QMenu(parent) };
             menuEdit->setTitle(_("Edit"));
@@ -114,8 +120,6 @@ namespace Ui
             menuServer->setTitle(_("Server"));
             menuServer->addAction(actionStartStop);
             menuServer->addAction(actionBroadcast);
-            menuServer->addSeparator();
-            menuServer->addAction(actionDeleteServer);
             QMenu* menuHelp{ new QMenu(parent) };
             menuHelp->setTitle(_("Help"));
             menuHelp->addAction(actionCheckForUpdates);
@@ -150,16 +154,22 @@ namespace Ui
             pageHome->addWidget(btnLoadServer);
             tabs->addTab(pageHome, QLEMENTINE_ICON(Navigation_Home), _("Home"));
             //Main Layout
+            QObject::connect(tabs, &QTabWidget::currentChanged, [this](int current)
+            {
+                actionDeleteServer->setEnabled(current != 0);
+                actionStartStop->setEnabled(current != 0);
+                actionBroadcast->setEnabled(current != 0);
+            });
             parent->setCentralWidget(tabs);
         }
 
         QAction* actionNewServer;
         QAction* actionLoadServer;
+        QAction* actionDeleteServer;
         QAction* actionExit;
         QAction* actionSettings;
         QAction* actionStartStop;
         QAction* actionBroadcast;
-        QAction* actionDeleteServer;
         QAction* actionCheckForUpdates;
         QAction* actionGitHubRepo;
         QAction* actionReportABug;
@@ -304,10 +314,8 @@ namespace Nickvision::Miniera::Qt::Views
             QMessageBox msgBox{ QMessageBox::Icon::Warning, _("Delete Server?"), _("Are you sure you want to delete this server? This action is irreversible."), QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No, this };
             if(msgBox.exec() == QMessageBox::StandardButton::Yes)
             {
-                if(m_controller->deleteServer(m_ui->tabs->tabText(m_ui->tabs->currentIndex()).toStdString()))
-                {
-                    m_ui->tabs->removeTab(m_ui->tabs->currentIndex());
-                }
+                m_controller->deleteServer(m_ui->tabs->tabText(m_ui->tabs->currentIndex()).toStdString());
+                m_ui->tabs->removeTab(m_ui->tabs->currentIndex());
             }
         }
     }
