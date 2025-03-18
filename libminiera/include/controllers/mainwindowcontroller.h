@@ -132,6 +132,13 @@ namespace Nickvision::Miniera::Shared::Controllers
          * @param serverName The name of the server to load
          */
         void loadServer(const std::string& serverName);
+        /**
+         * @brief Deletes a server.
+         * @param serverName The name of the server to delete
+         * @return True if deleted
+         * @return False is not deleted
+         */
+        bool deleteServer(const std::string& serverName);
 
     private:
         bool m_started;

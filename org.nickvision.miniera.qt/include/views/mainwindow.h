@@ -66,6 +66,10 @@ namespace Nickvision::Miniera::Qt::Views
          */
         void broadcast();
         /**
+         * @brief Prompts the user to delete the current server.
+         */
+        void deleteServer();
+        /**
          * @brief Checks for application updates.
          */
         void checkForUpdates();

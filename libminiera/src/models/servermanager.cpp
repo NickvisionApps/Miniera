@@ -106,4 +106,16 @@ namespace Nickvision::Miniera::Shared::Models
         m_servers.at(name)->initialize();
         return true;
     }
+
+    bool ServerManager::deleteServer(const std::string& name)
+    {
+        if(!m_servers.contains(name) || m_servers.at(name)->isRunning())
+        {
+            return false;
+        }
+        m_servers.erase(name);
+        m_loadedServers.erase(name);
+        std::filesystem::remove_all(m_serversDirectory / name);
+        return true;
+    }
 }

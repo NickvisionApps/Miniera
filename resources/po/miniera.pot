@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-16 21:57-0400\n"
+"POT-Creation-Date: 2025-03-17 20:21-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: libminiera/src/controllers/mainwindowcontroller.cpp:32
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:179
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:185
 msgid "Miniera"
 msgstr ""
 
@@ -61,6 +61,10 @@ msgstr ""
 
 #: libminiera/src/controllers/mainwindowcontroller.cpp:218
 msgid "Server already loaded"
+msgstr ""
+
+#: libminiera/src/controllers/mainwindowcontroller.cpp:227
+msgid "Unable to delete the server"
 msgstr ""
 
 #: libminiera/src/controllers/serverviewcontroller.cpp:105
@@ -113,7 +117,7 @@ msgstr ""
 
 #. Get ride of "pause" command from bat file on Forge edition
 #: libminiera/src/models/server.cpp:495
-msgid "[Extract] Patching bat file"
+msgid "[Extract] Patching bat file..."
 msgstr ""
 
 #: libminiera/src/models/server.cpp:520
@@ -169,7 +173,7 @@ msgstr ""
 #: org.nickvision.miniera.gnome/blueprints/main_window.blp:7
 #: org.nickvision.miniera.gnome/blueprints/shortcuts_dialog.blp:39
 #: org.nickvision.miniera.qt/src/controls/aboutdialog.cpp:148
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:92
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:95
 msgid "About Miniera"
 msgstr ""
 
@@ -178,7 +182,7 @@ msgid "Main Menu"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/blueprints/main_window.blp:47
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:130
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:135
 msgid "Manage a Server"
 msgstr ""
 
@@ -189,7 +193,7 @@ msgstr ""
 #. Window Settings
 #: org.nickvision.miniera.gnome/blueprints/main_window.blp:61
 #: org.nickvision.miniera.qt/src/views/mainwindow.cpp:56
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:136
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:141
 #: org.nickvision.miniera.qt/src/views/newserverdialog.cpp:230
 msgid "New Server"
 msgstr ""
@@ -256,12 +260,12 @@ msgid "Quit"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/src/views/mainwindow.cpp:105
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:346
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:369
 msgid "Open"
 msgstr ""
 
 #: org.nickvision.miniera.gnome/src/views/mainwindow.cpp:152
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:83
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:86
 msgid "GitHub Repo"
 msgstr ""
 
@@ -332,9 +336,9 @@ msgid "({}) Initializing server..."
 msgstr ""
 
 #: org.nickvision.miniera.qt/src/views/mainwindow.cpp:60
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:142
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:252
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:261
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:147
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:259
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:268
 msgid "Load Server"
 msgstr ""
 
@@ -352,69 +356,82 @@ msgstr ""
 msgid "Broadcast"
 msgstr ""
 
-#. Dialog Settings
 #: org.nickvision.miniera.qt/src/views/mainwindow.cpp:76
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:74
+msgid "Delete Server"
+msgstr ""
+
+#. Dialog Settings
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:79
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:78
 #: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:113
 msgid "Settings"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:80
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:83
 msgid "Check for Updates"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:86
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:89
 msgid "Report a Bug"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:89
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:92
 msgid "Discussions"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:102
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:105
 msgid "File"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:108
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:111
 msgid "Edit"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:111
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:114
 #: org.nickvision.miniera.qt/src/views/settingsdialog.cpp:80
 msgid "Server"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:115
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:120
 msgid "Help"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:131
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:136
 msgid "Load or create a new server to get started"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:146
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:151
 msgid "Home"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:179
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:185
 msgid "Miniera (Preview)"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:229
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:236
 msgid ""
 "There is a server running. Closing the app will kill the server. Are you sure "
 "you want to exit?"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:252
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:259
 msgid "No servers available to load. Please create a new server"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:261
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:268
 msgid "Select a server:"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:334
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:304
+msgid "Delete Server?"
+msgstr ""
+
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:304
+msgid ""
+"Are you sure you want to delete this server? This action is irreversible."
+msgstr ""
+
+#: org.nickvision.miniera.qt/src/views/mainwindow.cpp:357
 msgid "Update"
 msgstr ""
 
@@ -673,7 +690,7 @@ msgstr ""
 msgid "Dashboard"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:77
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:76
 msgid "Mods"
 msgstr ""
 
@@ -714,20 +731,20 @@ msgstr ""
 msgid "Console"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:140
-msgid "Coming Soon!"
-msgstr ""
-
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:147
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:142
 msgid "Upload"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:153
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:148
 msgid "Remove"
 msgstr ""
 
-#: org.nickvision.miniera.qt/src/views/serverpage.cpp:160
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:155
 msgid "A restart is required for mods added after the server has been started."
+msgstr ""
+
+#: org.nickvision.miniera.qt/src/views/serverpage.cpp:170
+msgid "Coming Soon!"
 msgstr ""
 
 #: org.nickvision.miniera.qt/src/views/serverpage.cpp:247

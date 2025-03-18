@@ -67,6 +67,14 @@ namespace Nickvision::Miniera::Shared::Models
          * @return False if the server is already loaded
          */
         bool loadServer(const std::string& name);
+        /**
+         * @brief Deletes a server.
+         * @brief The server must not be running to be deleted.
+         * @param name The name of the server to delete
+         * @return True if deleted
+         * @return False is not deleted
+         */
+        bool deleteServer(const std::string& name);
 
     private:
         const Configuration& m_configuration;
@@ -75,6 +83,7 @@ namespace Nickvision::Miniera::Shared::Models
         std::unordered_map<std::string, bool> m_loadedServers;
         Nickvision::Events::Event<Shared::Events::ServerInitializationProgressChangedEventArgs> m_serverInitializationProgressChanged;
         Nickvision::Events::Event<Shared::Events::ServerLoadedEventArgs> m_serverLoaded;
+        Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<std::string>> serverDeleted;
     };
 }
 

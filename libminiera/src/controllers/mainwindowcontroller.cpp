@@ -218,4 +218,14 @@ namespace Nickvision::Miniera::Shared::Controllers
             m_notificationSent.invoke({ _("Server already loaded"), NotificationSeverity::Warning });
         }
     }
+
+    bool MainWindowController::deleteServer(const std::string& serverName)
+    {
+        bool res{ m_serverManager.deleteServer(serverName) };
+        if(!res)
+        {
+            m_notificationSent.invoke({ _("Unable to delete the server"), NotificationSeverity::Error });
+        }
+        return res;
+    }
 }

@@ -72,6 +72,9 @@ namespace Ui
             actionBroadcast->setText(_("Broadcast"));
             actionBroadcast->setIcon(QLEMENTINE_ICON(Misc_Globe));
             actionBroadcast->setShortcut(Qt::CTRL | Qt::Key_B);
+            actionDeleteServer = new QAction(parent);
+            actionDeleteServer->setText(_("Delete Server"));
+            actionDeleteServer->setIcon(QLEMENTINE_ICON(Action_Trash));
             actionSettings = new QAction(parent);
             actionSettings->setText(_("Settings"));
             actionSettings->setIcon(QLEMENTINE_ICON(Navigation_Settings));
@@ -111,6 +114,8 @@ namespace Ui
             menuServer->setTitle(_("Server"));
             menuServer->addAction(actionStartStop);
             menuServer->addAction(actionBroadcast);
+            menuServer->addSeparator();
+            menuServer->addAction(actionDeleteServer);
             QMenu* menuHelp{ new QMenu(parent) };
             menuHelp->setTitle(_("Help"));
             menuHelp->addAction(actionCheckForUpdates);
@@ -154,6 +159,7 @@ namespace Ui
         QAction* actionSettings;
         QAction* actionStartStop;
         QAction* actionBroadcast;
+        QAction* actionDeleteServer;
         QAction* actionCheckForUpdates;
         QAction* actionGitHubRepo;
         QAction* actionReportABug;
@@ -188,6 +194,7 @@ namespace Nickvision::Miniera::Qt::Views
         connect(m_ui->actionSettings, &QAction::triggered, this, &MainWindow::settings);
         connect(m_ui->actionStartStop, &QAction::triggered, this, &MainWindow::startStop);
         connect(m_ui->actionBroadcast, &QAction::triggered, this, &MainWindow::broadcast);
+        connect(m_ui->actionDeleteServer, &QAction::triggered, this, &MainWindow::deleteServer);
         connect(m_ui->actionCheckForUpdates, &QAction::triggered, this, &MainWindow::checkForUpdates);
         connect(m_ui->actionGitHubRepo, &QAction::triggered, this, &MainWindow::gitHubRepo);
         connect(m_ui->actionReportABug, &QAction::triggered, this, &MainWindow::reportABug);
@@ -286,6 +293,22 @@ namespace Nickvision::Miniera::Qt::Views
         if(serverPage)
         {
             serverPage->broadcast();
+        }
+    }
+
+    void MainWindow::deleteServer()
+    {
+        ServerPage* serverPage{ dynamic_cast<ServerPage*>(m_ui->tabs->currentWidget()) };
+        if(serverPage)
+        {
+            QMessageBox msgBox{ QMessageBox::Icon::Warning, _("Delete Server?"), _("Are you sure you want to delete this server? This action is irreversible."), QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No, this };
+            if(msgBox.exec() == QMessageBox::StandardButton::Yes)
+            {
+                if(m_controller->deleteServer(m_ui->tabs->tabText(m_ui->tabs->currentIndex()).toStdString()))
+                {
+                    m_ui->tabs->removeTab(m_ui->tabs->currentIndex());
+                }
+            }
         }
     }
 

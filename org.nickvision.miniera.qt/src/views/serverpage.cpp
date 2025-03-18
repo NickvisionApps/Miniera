@@ -71,11 +71,11 @@ namespace Ui
             //Navigation
             navBar = new SegmentedControl(parent);
             navBar->addItem(_("Dashboard"), QLEMENTINE_ICON(Navigation_UiPanelTop));
-            navBar->addItem(_("Settings"), QLEMENTINE_ICON(Navigation_Settings));
             if(supportsMods)
             {
                 navBar->addItem(_("Mods"), QLEMENTINE_ICON(Misc_Blocks));
             }
+            navBar->addItem(_("Settings"), QLEMENTINE_ICON(Navigation_Settings));
             QHBoxLayout* layoutNavigation{ new QHBoxLayout() };
             layoutNavigation->addStretch();
             layoutNavigation->addWidget(navBar);
@@ -134,11 +134,6 @@ namespace Ui
             layoutDashboard->addWidget(groupConsole);
             QWidget* pageDashboard = new QWidget(parent);
             pageDashboard->setLayout(layoutDashboard);
-            //Settings Page
-            Nickvision::Miniera::Qt::Controls::StatusPage* pageSettings{ new Nickvision::Miniera::Qt::Controls::StatusPage(parent) };
-            pageSettings->setIcon(QLEMENTINE_ICON(Action_Build));
-            pageSettings->setTitle(_("Coming Soon!"));
-            pageSettings->setDescription("We are working hard to bring this feature to you soon");
             //Mods Page
             btnUploadMod = new ActionButton(parent);
             btnUploadMod->setAutoDefault(false);
@@ -169,11 +164,16 @@ namespace Ui
             layoutMods->addWidget(listMods);
             QWidget* pageMods = new QWidget(parent);
             pageMods->setLayout(layoutMods);
+            //Settings Page
+            Nickvision::Miniera::Qt::Controls::StatusPage* pageSettings{ new Nickvision::Miniera::Qt::Controls::StatusPage(parent) };
+            pageSettings->setIcon(QLEMENTINE_ICON(Action_Build));
+            pageSettings->setTitle(_("Coming Soon!"));
+            pageSettings->setDescription("We are working hard to bring this feature to you soon");
             //View Stack
             viewStack = new QStackedWidget(parent);
             viewStack->addWidget(pageDashboard);
-            viewStack->addWidget(pageSettings);
             viewStack->addWidget(pageMods);
+            viewStack->addWidget(pageSettings);
             QObject::connect(navBar, &SegmentedControl::currentIndexChanged, [this]()
             {
                 viewStack->setCurrentIndex(navBar->currentIndex());
