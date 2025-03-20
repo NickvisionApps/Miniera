@@ -66,6 +66,18 @@ namespace Nickvision::Miniera::Shared::Models
          * @return The ServerVersion as a JSON object
          */
         boost::json::object toJson() const;
+        /**
+         * @brief Compares this ServerVersion with other via ==.
+         * @param other The ServerVersion to compare to
+         * @return True if this == other, else false
+         */
+        bool operator==(const ServerVersion& other) const;
+        /**
+         * @brief Compares this ServerVersion with other via !=.
+         * @param other The ServerVersion to compare to
+         * @return True if this != other, else false
+         */
+        bool operator!=(const ServerVersion& other) const;
 
     private:
         Edition m_edition;

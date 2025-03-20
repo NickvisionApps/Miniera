@@ -191,4 +191,14 @@ namespace Nickvision::Miniera::Shared::Models
         json["ReleaseUrl"] = m_releaseUrl;
         return json;
     }
+
+    bool ServerVersion::operator==(const ServerVersion& other) const
+    {
+        return m_edition == other.m_edition && m_version == other.m_version && m_releaseUrl == other.m_releaseUrl;
+    }
+
+    bool ServerVersion::operator!=(const ServerVersion& other) const
+    {
+        return !(operator==(other));
+    }
 }

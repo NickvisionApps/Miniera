@@ -404,7 +404,8 @@ namespace Nickvision::Miniera::Shared::Models
                 m_mods.push_back(entry.path().stem().string());
             }
             std::sort(m_mods.begin(), m_mods.end());
-            m_initialized = std::filesystem::exists(FORGE_SERVER_FILE_EXTRACTED) && std::filesystem::exists(EULA_FILE) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
+            //Bedrock servers MUST be up to date, therefore check if this version matches the latest that Miniera supports.
+            m_initialized = std::filesystem::exists(FORGE_SERVER_FILE_EXTRACTED) && std::filesystem::exists(EULA_FILE) && std::filesystem::exists(SERVER_PROPERTIES_FILE) && m_version == ServerVersion::fetch(Edition::Bedrock)[0];
         }
         return m_initialized;
     }
