@@ -3,7 +3,6 @@
 #include <format>
 #include <libnick/app/appinfo.h>
 #include <libnick/helpers/codehelpers.h>
-#include <libnick/notifications/shellnotification.h>
 #include <libnick/localization/gettext.h>
 #include "helpers/dialogptr.h"
 #include "helpers/gtkhelpers.h"
@@ -37,7 +36,6 @@ namespace Nickvision::Miniera::GNOME::Views
         //Register Events
         g_signal_connect(m_window, "close_request", G_CALLBACK(+[](GtkWindow*, gpointer data) -> bool { return reinterpret_cast<MainWindow*>(data)->onCloseRequested(); }), this);
         m_controller->notificationSent() += [&](const NotificationSentEventArgs& args) { GtkHelpers::dispatchToMainThread([this, args]() { onNotificationSent(args); }); };
-        m_controller->shellNotificationSent() += [&](const ShellNotificationSentEventArgs& args) { onShellNotificationSent(args); };
         //Quit Action
         GSimpleAction* actQuit{ g_simple_action_new("quit", nullptr) };
         g_signal_connect(actQuit, "activate", G_CALLBACK(+[](GSimpleAction*, GVariant*, gpointer data){ reinterpret_cast<MainWindow*>(data)->quit(); }), this);
@@ -97,15 +95,6 @@ namespace Nickvision::Miniera::GNOME::Views
     {
         AdwToast* toast{ adw_toast_new(args.getMessage().c_str()) };
         adw_toast_overlay_add_toast(m_builder.get<AdwToastOverlay>("toastOverlay"), toast);
-    }
-
-    void MainWindow::onShellNotificationSent(const ShellNotificationSentEventArgs& args)
-    {
-#ifdef __linux__
-        ShellNotification::send(args, m_controller->getAppInfo().getId(), _("Open"));
-#else
-        ShellNotification::send(args);
-#endif
     }
 
     void MainWindow::quit()

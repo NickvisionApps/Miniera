@@ -1,9 +1,12 @@
 #include "controllers/newserverdialogcontroller.h"
 #include <thread>
+#include <libnick/localization/gettext.h>
+#include <libnick/notifications/appnotification.h>
 
 using namespace Nickvision::Events;
 using namespace Nickvision::Miniera::Shared::Events;
 using namespace Nickvision::Miniera::Shared::Models;
+using namespace Nickvision::Notifications;
 
 namespace Nickvision::Miniera::Shared::Controllers
 {
@@ -61,20 +64,23 @@ namespace Nickvision::Miniera::Shared::Controllers
         worker.detach();
     }
 
-    ServerCheckStatus NewServerDialogController::createServer()
+    bool NewServerDialogController::createServer()
     {
         if(m_serverProperties.getLevelName().empty())
         {
-            return ServerCheckStatus::EmptyName;
+            AppNotification::send({ _("The server name cannot be empty"), NotificationSeverity::Error });
+            return false;
         }
         else if(m_serverManager.getServerExists(m_serverProperties.getLevelName()))
         {
-            return ServerCheckStatus::ExistingName;
+            AppNotification::send({ _("A server with this name exists"), NotificationSeverity::Error });
+            return false;
         }
         else if(!m_serverManager.createServer(m_serverVersions.at(m_selectedServerVersionIndex), m_serverProperties))
         {
-            return ServerCheckStatus::CreateError;
+            AppNotification::send({ _("An unknown error occurred"), NotificationSeverity::Error });
+            return false;
         }
-        return ServerCheckStatus::Valid;
+        return true;
     }
 }

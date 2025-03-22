@@ -5,7 +5,6 @@
 #include <libnick/events/event.h>
 #include "events/serverversionsloadedeventargs.h"
 #include "models/edition.h"
-#include "models/servercheckstatus.h"
 #include "models/servermanager.h"
 #include "models/serverproperties.h"
 #include "models/serverversion.h"
@@ -61,9 +60,11 @@ namespace Nickvision::Miniera::Shared::Controllers
         void loadServerVersions(Models::Edition edition);
         /**
          * @brief Creates the new server.
-         * @return The ServerCheckStatus
+         * @brief AppNotification::sent() will be invokes with an errors
+         * @return True if the server was created
+         * @return False if the server was not created
          */
-        Models::ServerCheckStatus createServer();
+        bool createServer();
     
     private:
         Models::ServerManager& m_serverManager;

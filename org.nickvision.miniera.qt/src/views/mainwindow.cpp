@@ -19,7 +19,6 @@
 #include <QVBoxLayout>
 #include <libnick/helpers/codehelpers.h>
 #include <libnick/localization/gettext.h>
-#include <libnick/notifications/shellnotification.h>
 #include <oclero/qlementine/widgets/ActionButton.hpp>
 #include "controls/aboutdialog.h"
 #include "controls/infobar.h"
@@ -211,7 +210,6 @@ namespace Nickvision::Miniera::Qt::Views
         connect(m_ui->actionDiscussions, &QAction::triggered, this, &MainWindow::discussions);
         connect(m_ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
         m_controller->notificationSent() += [this](const NotificationSentEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onNotificationSent(args); }); };
-        m_controller->shellNotificationSent() += [this](const ShellNotificationSentEventArgs& args) { onShellNotificationSent(args); };
         m_controller->serverLoaded() += [this](const ServerLoadedEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onServerLoaded(args); }); };
         m_controller->serverInitializationProgressChanged() += [this](const ServerInitializationProgressChangedEventArgs& args) { QtHelpers::dispatchToMainThread([this, args]() { onServerInitializationProgressChanged(args); }); };
     }
@@ -266,7 +264,6 @@ namespace Nickvision::Miniera::Qt::Views
         std::vector<std::string> serverNames{ m_controller->getAvailableServerNames() };
         if(serverNames.empty())
         {
-            QMessageBox::critical(this, _("Load Server"), _("No servers available to load. Please create a new server"));
             return;
         }
         QStringList serverStrings;
@@ -367,17 +364,6 @@ namespace Nickvision::Miniera::Qt::Views
         }
 #endif
         m_ui->infoBar->show(args, actionText, actionCallback);
-    }
-
-    void MainWindow::onShellNotificationSent(const ShellNotificationSentEventArgs& args)
-    {
-#ifdef _WIN32
-        ShellNotification::send(args, reinterpret_cast<HWND>(winId()));
-#elif defined(__linux__)
-        ShellNotification::send(args, m_controller->getAppInfo().getId(), _("Open"));
-#else
-        ShellNotification::send(args);
-#endif
     }
 
     void MainWindow::onServerInitializationProgressChanged(const ServerInitializationProgressChangedEventArgs& args)

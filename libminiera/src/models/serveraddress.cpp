@@ -54,6 +54,16 @@ namespace Nickvision::Miniera::Shared::Models
         return builder.str();
     }
 
+    bool ServerAddress::operator==(const ServerAddress& other) const
+    {
+        return m_url == other.m_url && m_port == other.m_port;
+    }
+
+    bool ServerAddress::operator!=(const ServerAddress& other) const
+    {
+        return !(operator==(other));
+    }
+
     ServerAddress::operator bool() const
     {
         return !isEmpty();

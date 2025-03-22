@@ -14,7 +14,6 @@
 #include <libnick/app/windowgeometry.h>
 #include <libnick/events/event.h>
 #include <libnick/notifications/notificationsenteventargs.h>
-#include <libnick/notifications/shellnotificationsenteventargs.h>
 #include <libnick/taskbar/taskbaritem.h>
 #include <libnick/update/updater.h>
 #include "controllers/newserverdialogcontroller.h"
@@ -47,11 +46,6 @@ namespace Nickvision::Miniera::Shared::Controllers
          * @return The notification sent event
          */
         Nickvision::Events::Event<Nickvision::Notifications::NotificationSentEventArgs>& notificationSent();
-        /**
-         * @brief Gets the event for when a shell notification is sent.
-         * @return The shell notification sent event
-         */
-        Nickvision::Events::Event<Nickvision::Notifications::ShellNotificationSentEventArgs>& shellNotificationSent();
         /**
          * @brief Gets the event for when a server's initialization's progress is changed.
          * @return The server's initialization's progress changed event
@@ -151,8 +145,6 @@ namespace Nickvision::Miniera::Shared::Controllers
         std::shared_ptr<Nickvision::Update::Updater> m_updater;
         Nickvision::Taskbar::TaskbarItem m_taskbar;
         Models::ServerManager m_serverManager;
-        Nickvision::Events::Event<Nickvision::Notifications::NotificationSentEventArgs> m_notificationSent;
-        Nickvision::Events::Event<Nickvision::Notifications::ShellNotificationSentEventArgs> m_shellNotificationSent;
     };
 }
 

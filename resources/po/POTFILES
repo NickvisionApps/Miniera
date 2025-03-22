@@ -1,4 +1,5 @@
 libminiera/src/controllers/mainwindowcontroller.cpp
+libminiera/src/controllers/newserverdialogcontroller.cpp
 libminiera/src/controllers/serverviewcontroller.cpp
 libminiera/src/models/server.cpp
 libminiera/src/models/serverversion.cpp

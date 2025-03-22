@@ -3,7 +3,6 @@
 #include <QDesktopServices>
 #include <QFormLayout>
 #include <QLabel>
-#include <QMessageBox>
 #include <QRadioButton>
 #include <QSpinBox>
 #include <QStyleFactory>
@@ -338,22 +337,7 @@ namespace Nickvision::Miniera::Qt::Views
         properties.setTickDistance(m_ui->spnTickDistance->value());
         m_controller->setServerProperties(properties);
         m_controller->setSelectedServerVersionIndex(m_ui->cmbVersion->currentIndex());
-        ServerCheckStatus status{ m_controller->createServer() };
-        if(status != ServerCheckStatus::Valid)
-        {
-            if(status == ServerCheckStatus::EmptyName)
-            {
-                QMessageBox::critical(this, _("Error"), _("The server name cannot be empty."), QMessageBox::StandardButton::Ok);
-            }
-            else if(status == ServerCheckStatus::ExistingName)
-            {
-                QMessageBox::critical(this, _("Error"), _("A server with the provided name already exists."), QMessageBox::StandardButton::Ok);
-            }
-            else if(status == ServerCheckStatus::CreateError)
-            {
-                QMessageBox::critical(this, _("Error"), _("An error occurred while creating the server."), QMessageBox::StandardButton::Ok);
-            }
-        }
+        m_controller->createServer();
     }
 
     void NewServerDialog::onServerVersionsLoaded(const ServerVersionsLoadedEventArgs& args)

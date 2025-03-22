@@ -390,7 +390,8 @@ namespace Nickvision::Miniera::Shared::Models
         }
         else if(m_version.getEdition() == Edition::Bedrock)
         {
-            m_initialized = std::filesystem::exists(BEDROCK_SERVER_FILE_EXTRACTED) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
+            //Bedrock servers MUST be up to date, therefore check if this version matches the latest that Miniera supports.
+            m_initialized = std::filesystem::exists(BEDROCK_SERVER_FILE_EXTRACTED) && std::filesystem::exists(SERVER_PROPERTIES_FILE) && m_version == ServerVersion::fetch(Edition::Bedrock)[0];
         }
         else if(m_version.getEdition() == Edition::Forge)
         {
@@ -404,8 +405,7 @@ namespace Nickvision::Miniera::Shared::Models
                 m_mods.push_back(entry.path().stem().string());
             }
             std::sort(m_mods.begin(), m_mods.end());
-            //Bedrock servers MUST be up to date, therefore check if this version matches the latest that Miniera supports.
-            m_initialized = std::filesystem::exists(FORGE_SERVER_FILE_EXTRACTED) && std::filesystem::exists(EULA_FILE) && std::filesystem::exists(SERVER_PROPERTIES_FILE) && m_version == ServerVersion::fetch(Edition::Bedrock)[0];
+            m_initialized = std::filesystem::exists(FORGE_SERVER_FILE_EXTRACTED) && std::filesystem::exists(EULA_FILE) && std::filesystem::exists(SERVER_PROPERTIES_FILE);
         }
         return m_initialized;
     }

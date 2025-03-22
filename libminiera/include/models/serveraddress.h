@@ -50,6 +50,18 @@ namespace Nickvision::Miniera::Shared::Models
          */
         std::string str() const;
         /**
+         * @brief Compares this ServerAddress with other via ==.
+         * @param other The ServerAddress to compare to
+         * @return True if this == other, else false
+         */
+        bool operator==(const ServerAddress& other) const;
+        /**
+         * @brief Compares this ServerAddress with other via !=.
+         * @param other The ServerAddress to compare to
+         * @return True if this != other, else false
+         */
+        bool operator!=(const ServerAddress& other) const;
+        /**
          * @brief Gets whether or not the address is valid.
          * @return True if valid
          * @return False if not valid

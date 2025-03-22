@@ -5,6 +5,7 @@
 #include <libnick/helpers/codehelpers.h>
 #include <libnick/helpers/stringhelpers.h>
 #include <libnick/localization/gettext.h>
+#include <libnick/notifications/appnotification.h>
 #include <libnick/system/environment.h>
 #include "models/configuration.h"
 
@@ -55,12 +56,7 @@ namespace Nickvision::Miniera::Shared::Controllers
 
     Event<NotificationSentEventArgs>& MainWindowController::notificationSent()
     {
-        return m_notificationSent;
-    }
-
-    Event<ShellNotificationSentEventArgs>& MainWindowController::shellNotificationSent()
-    {
-        return m_shellNotificationSent;
+        return AppNotification::sent();
     }
 
     Event<ServerLoadedEventArgs>& MainWindowController::serverLoaded()
@@ -184,7 +180,7 @@ namespace Nickvision::Miniera::Shared::Controllers
             {
                 if(latest > m_appInfo.getVersion())
                 {
-                    m_notificationSent.invoke({ _("New update available"), NotificationSeverity::Success, "update" });
+                    AppNotification::send({ _("New update available"), NotificationSeverity::Success, "update" });
                 }
             }
         } };
@@ -198,12 +194,12 @@ namespace Nickvision::Miniera::Shared::Controllers
         {
             return;
         }
-        m_notificationSent.invoke({ _("The update is downloading in the background and will start once it finishes"), NotificationSeverity::Informational });
+        AppNotification::send({ _("The update is downloading in the background and will start once it finishes"), NotificationSeverity::Informational });
         std::thread worker{ [this]()
         {
             if(!m_updater->windowsUpdate(VersionType::Stable))
             {
-                m_notificationSent.invoke({ _("Unable to download and install update"), NotificationSeverity::Error });
+                AppNotification::send({ _("Unable to download and install update"), NotificationSeverity::Error });
             }
         } };
         worker.detach();
@@ -219,7 +215,7 @@ namespace Nickvision::Miniera::Shared::Controllers
     {
         if(!m_serverManager.loadServer(serverName))
         {
-            m_notificationSent.invoke({ _("Server already loaded"), NotificationSeverity::Warning });
+            AppNotification::send({ _("Server already loaded"), NotificationSeverity::Warning });
         }
     }
 
@@ -227,7 +223,7 @@ namespace Nickvision::Miniera::Shared::Controllers
     {
         if(!m_serverManager.deleteServer(serverName))
         {
-            m_notificationSent.invoke({ _("Unable to delete the server as it is running"), NotificationSeverity::Error });
+            AppNotification::send({ _("Unable to delete the server as it is running"), NotificationSeverity::Error });
         }
     }
 }
