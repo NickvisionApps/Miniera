@@ -1,7 +1,7 @@
 {
     "app-id" : "org.nickvision.miniera",
     "runtime" : "org.gnome.Platform",
-    "runtime-version" : "47",
+    "runtime-version" : "48",
     "sdk" : "org.gnome.Sdk",
     "sdk-extensions" : [
         "org.freedesktop.Sdk.Extension.openjdk21"
@@ -67,7 +67,7 @@
                 {
                     "type": "git",
                     "url": "https://github.com/nickvisionapps/libnick",
-                    "tag": "2025.3.5"
+                    "tag": "2025.3.6"
                 }
             ]
         },
@@ -104,7 +104,7 @@
                 {
                     "type": "archive",
                     "url": "https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz",
-                    "sha256": "ceaddf9549d228891ecd20dda25f668b65f1852157df557773a8517d2e61deef",
+                    "sha256": "73cd52eaf48f5cc751faf7ffb8585a1b56e54ff1c6a7d2f0908a9414a16abbd2",
                     "strip-components": 0
                 }
             ]
