@@ -46,9 +46,29 @@ namespace Nickvision::Miniera::Qt::Views
 
     private Q_SLOTS:
         /**
+         * @brief Opens the new server dialog.
+         */
+        void newServer();
+        /**
+         * @brief Opens the load server dialog.
+         */
+        void loadServer();
+        /**
          * @brief Opens the application's settings dialog.
          */
         void settings();
+        /**
+         * @brief Starts or stops the current selected server.
+         */
+        void startStop();
+        /**
+         * @brief Broadcasts the current selected server.
+         */
+        void broadcast();
+        /**
+         * @brief Prompts the user to delete the current server.
+         */
+        void deleteServer();
         /**
          * @brief Checks for application updates.
          */
@@ -83,13 +103,19 @@ namespace Nickvision::Miniera::Qt::Views
          */
         void onNotificationSent(const Notifications::NotificationSentEventArgs& args);
         /**
-         * @brief Handles when a shell notification is sent.
-         * @param args The ShellNotificationSentEventArgs
+         * @brief Handles when a server's initialization progress changes.
+         * @param args The ServerInitializationProgressChangedEventArgs
          */
-        void onShellNotificationSent(const Notifications::ShellNotificationSentEventArgs& args);
+        void onServerInitializationProgressChanged(const Shared::Events::ServerInitializationProgressChangedEventArgs& args);
+        /**
+         * @brief Handles when the server is loaded.
+         * @param args The ServerLoadedEventArgs
+         */
+        void onServerLoaded(const Shared::Events::ServerLoadedEventArgs& args);
         Ui::MainWindow* m_ui;
         std::shared_ptr<Shared::Controllers::MainWindowController> m_controller;
         oclero::qlementine::ThemeManager* m_themeManager;
+        bool m_confirmClose;
     };
 }
 

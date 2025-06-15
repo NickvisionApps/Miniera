@@ -38,6 +38,31 @@ namespace Nickvision::Miniera::Shared::Controllers
          */
         void setAutomaticallyCheckForUpdates(bool check);
         /**
+         * @brief Gets the maximum amount of RAM a server can use in GB.
+         * @return The maximum amount of RAM a server can use
+         */
+        unsigned int getMaxServerRamInGB() const;
+        /**
+         * @brief Sets the maximum amount of RAM a server can use in GB.
+         * @param ram The new maximum amount of RAM a server can use
+         */
+        void setMaxServerRamInGB(unsigned int ram);
+        /**
+         * @brief Gets the maximum amount of available system RAM in GB.
+         * @return The maximum amount of system RAM
+         */
+        unsigned int getSystemRamInGB() const;
+        /**
+         * @brief Gets whether or not to delete the source mod file after upload.
+         * @return True to delete source mod file, else false
+         */
+        bool getDeleteModAfterUpload() const;
+        /**
+         * @brief Sets whether or not to delete the source mod file after upload.
+         * @param deleteMod Whether or not to delete the source mod file after upload
+         */
+        void setDeleteModAfterUpload(bool deleteMod);
+        /**
          * @brief Gets the auth token for ngrok.
          * @return The auth token for ngrok
          */

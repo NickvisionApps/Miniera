@@ -3,12 +3,17 @@
     "runtime" : "org.kde.Platform",
     "runtime-version" : "6.8",
     "sdk" : "org.kde.Sdk",
+    "sdk-extensions" : [
+        "org.freedesktop.Sdk.Extension.openjdk21"
+    ],
     "command" : "org.nickvision.miniera",
     "finish-args":[
+        "--env=PATH=/app/jre/bin:/app/bin:/usr/bin",
         "--socket=fallback-x11",
         "--socket=wayland",
         "--device=dri",
         "--share=ipc",
+        "--share=network",
         "--talk-name=com.canonical.Unity",
         "--talk-name=org.freedesktop.Notifications"
     ],
@@ -48,7 +53,7 @@
                 {
                     "type": "git",
                     "url": "https://gitlab.gnome.org/GNOME/libsecret",
-                    "tag": "0.21.4"
+                    "tag": "0.21.7"
                 }
             ]
         },
@@ -79,21 +84,44 @@
                 {
                     "type": "git",
                     "url": "https://github.com/nickvisionapps/libnick",
-                    "tag": "2025.1.0"
+                    "tag": "2025.3.6"
                 }
+            ]
+        },
+        {
+            "name": "libzip",
+            "buildsystem": "cmake-ninja",
+            "builddir": true,
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE=Release"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/nih-at/libzip",
+                    "tag": "v1.11.3"
+                }
+            ]
+        },
+        {
+            "name" : "openjdk",
+            "buildsystem" : "simple",
+            "build-commands" : [
+                "/usr/lib/sdk/openjdk21/install.sh"
             ]
         },
         {
             "name": "ngrok",
             "buildsystem": "simple",
             "build-commands": [
+                "mkdir -p /app/bin",
                 "mv ngrok /app/bin/"
             ],
             "sources": [
                 {
                     "type": "archive",
                     "url": "https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz",
-                    "sha256": "30055be48805088e017d264812bc437803ebee482a205d34201997a154798d56",
+                    "sha256": "73cd52eaf48f5cc751faf7ffb8585a1b56e54ff1c6a7d2f0908a9414a16abbd2",
                     "strip-components": 0
                 }
             ]
@@ -110,7 +138,7 @@
                 {
                     "type": "git",
                     "url": "https://github.com/oclero/qlementine",
-                    "commit": "a3b350f3a425f539bd718e2dfb26dea4603df9b1"
+                    "tag": "v1.2.2"
                 }
             ]
         },
@@ -122,7 +150,7 @@
                 {
                     "type": "git",
                     "url": "https://github.com/oclero/qlementine-icons",
-                    "commit": "bc9dd5e6d270321b799e43ae3600acf86125bb4b"
+                    "tag": "v1.8.0"
                 }
             ]
         },

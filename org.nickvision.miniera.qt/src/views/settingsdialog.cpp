@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QListWidget>
 #include <QPushButton>
+#include <QSpinBox>
 #include <QStackedWidget>
 #include <QStyleHints>
 #include <libnick/localization/gettext.h>
@@ -35,12 +36,26 @@ namespace Ui
             QLabel* lblUpdates{ new QLabel(parent) };
             lblUpdates->setText(_("Automatically Check for Updates"));
             chkUpdates = new Switch(parent);
-            QFormLayout* layoutUserInterface{ new QFormLayout(parent) };
+            QFormLayout* layoutUserInterface{ new QFormLayout() };
             layoutUserInterface->addRow(lblTheme, cmbTheme);
             layoutUserInterface->addRow(lblUpdates, chkUpdates);
             QWidget* userInterfacePage{ new QWidget(parent) };
             userInterfacePage->setLayout(layoutUserInterface);
             viewStack->addWidget(userInterfacePage);
+            //Server Page
+            QLabel* lblServerRam{ new QLabel(parent) };
+            lblServerRam->setText(_("Maximum Server RAM (GB)"));
+            spnServerRam = new QSpinBox(parent);
+            spnServerRam->setMinimum(1);
+            QLabel* lblDeleteModAfterUpload{ new QLabel(parent) };
+            lblDeleteModAfterUpload->setText(_("Delete Mod After Upload"));
+            chkDeleteModAfterUpload = new Switch(parent);
+            QFormLayout* layoutServer{ new QFormLayout() };
+            layoutServer->addRow(lblServerRam, spnServerRam);
+            layoutServer->addRow(lblDeleteModAfterUpload, chkDeleteModAfterUpload);
+            QWidget* serverPage{ new QWidget(parent) };
+            serverPage->setLayout(layoutServer);
+            viewStack->addWidget(serverPage);
             //Hosting Page
             QLabel* lblNgrokAuthToken{ new QLabel(parent) };
             lblNgrokAuthToken->setText(_("Ngrok Auth Token"));
@@ -50,7 +65,7 @@ namespace Ui
             btnNgrokAuthToken->setAutoDefault(false);
             btnNgrokAuthToken->setText(_("Retrieve Auth Token"));
             btnNgrokAuthToken->setIcon(QLEMENTINE_ICON(Navigation_Search));
-            QFormLayout* layoutHosting{ new QFormLayout(parent) };
+            QFormLayout* layoutHosting{ new QFormLayout() };
             layoutHosting->addRow(lblNgrokAuthToken, txtNgrokAuthToken);
             layoutHosting->addRow(nullptr, btnNgrokAuthToken);
             QWidget* hostingPage{ new QWidget(parent) };
@@ -62,13 +77,14 @@ namespace Ui
             listNavigation->setEditTriggers(QAbstractItemView::EditTrigger::NoEditTriggers);
             listNavigation->setDropIndicatorShown(false);
             listNavigation->addItem(new QListWidgetItem(QLEMENTINE_ICON(Navigation_UiPanelLeft), _("User Interface"), listNavigation));
+            listNavigation->addItem(new QListWidgetItem(QLEMENTINE_ICON(Hardware_Server), _("Server"), listNavigation));
             listNavigation->addItem(new QListWidgetItem(QLEMENTINE_ICON(Misc_Globe), _("Hosting"), listNavigation));
             QObject::connect(listNavigation, &QListWidget::currentRowChanged, [this]()
             {
                 viewStack->setCurrentIndex(listNavigation->currentRow());
             });
             //Main Layout
-            QHBoxLayout* layout{ new QHBoxLayout(parent) };
+            QHBoxLayout* layout{ new QHBoxLayout() };
             layout->addWidget(listNavigation);
             layout->addWidget(viewStack);
             parent->setLayout(layout);
@@ -78,6 +94,8 @@ namespace Ui
         QStackedWidget* viewStack;
         QComboBox* cmbTheme;
         Switch* chkUpdates;
+        QSpinBox* spnServerRam;
+        Switch* chkDeleteModAfterUpload;
         LineEdit* txtNgrokAuthToken;
         QPushButton* btnNgrokAuthToken;
     };
@@ -99,6 +117,9 @@ namespace Nickvision::Miniera::Qt::Views
         m_ui->setupUi(this);
         m_ui->cmbTheme->setCurrentIndex(static_cast<int>(m_controller->getTheme()));
         m_ui->chkUpdates->setChecked(m_controller->getAutomaticallyCheckForUpdates());
+        m_ui->spnServerRam->setMaximum(static_cast<int>(m_controller->getSystemRamInGB()));
+        m_ui->spnServerRam->setValue(static_cast<int>(m_controller->getMaxServerRamInGB()));
+        m_ui->chkDeleteModAfterUpload->setChecked(m_controller->getDeleteModAfterUpload());
         m_ui->txtNgrokAuthToken->setText(QString::fromStdString(m_controller->getNgrokAuthToken()));
         m_ui->listNavigation->setCurrentRow(0);
         //Signals
@@ -115,6 +136,8 @@ namespace Nickvision::Miniera::Qt::Views
     {
         m_controller->setTheme(static_cast<Shared::Models::Theme>(m_ui->cmbTheme->currentIndex()));
         m_controller->setAutomaticallyCheckForUpdates(m_ui->chkUpdates->isChecked());
+        m_controller->setMaxServerRamInGB(static_cast<unsigned int>(m_ui->spnServerRam->value()));
+        m_controller->setDeleteModAfterUpload(m_ui->chkDeleteModAfterUpload->isChecked());
         m_controller->setNgrokAuthToken(m_ui->txtNgrokAuthToken->text().toStdString());
         m_controller->saveConfiguration();
         event->accept();

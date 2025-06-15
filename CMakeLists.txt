@@ -14,7 +14,7 @@ if (POLICY CMP0141)
     set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-project("org.nickvision.miniera" LANGUAGES C CXX VERSION 2025.2.0 DESCRIPTION "Run Minecraft servers.")
+project("org.nickvision.miniera" LANGUAGES C CXX VERSION 2025.3.0 DESCRIPTION "Run Minecraft servers.")
 set(SHORT_NAME "miniera")
 set(DISPLAY_NAME "Miniera")
 include(GNUInstallDirs)

@@ -14,10 +14,12 @@
 #include <libnick/app/windowgeometry.h>
 #include <libnick/events/event.h>
 #include <libnick/notifications/notificationsenteventargs.h>
-#include <libnick/notifications/shellnotificationsenteventargs.h>
 #include <libnick/taskbar/taskbaritem.h>
 #include <libnick/update/updater.h>
+#include "controllers/newserverdialogcontroller.h"
 #include "controllers/preferencesviewcontroller.h"
+#include "events/serverloadedeventargs.h"
+#include "models/servermanager.h"
 #include "models/startupinformation.h"
 #include "models/theme.h"
 
@@ -45,10 +47,20 @@ namespace Nickvision::Miniera::Shared::Controllers
          */
         Nickvision::Events::Event<Nickvision::Notifications::NotificationSentEventArgs>& notificationSent();
         /**
-         * @brief Gets the event for when a shell notification is sent.
-         * @return The shell notification sent event
+         * @brief Gets the event for when a server's initialization's progress is changed.
+         * @return The server's initialization's progress changed event
          */
-        Nickvision::Events::Event<Nickvision::Notifications::ShellNotificationSentEventArgs>& shellNotificationSent();
+        Nickvision::Events::Event<Events::ServerInitializationProgressChangedEventArgs>& serverInitializationProgressChanged();
+        /**
+         * @brief Gets the event for when a server is loaded.
+         * @return The server loaded event
+         */
+        Nickvision::Events::Event<Events::ServerLoadedEventArgs>& serverLoaded();
+        /**
+         * @brief Gets the event for when a server is deleted.
+         * @return The server deleted event
+         */
+        Nickvision::Events::Event<Nickvision::Events::ParamEventArgs<std::string>>& serverDeleted();
         /**
          * @brief Gets the AppInfo object for the application
          * @return The current AppInfo object
@@ -70,6 +82,11 @@ namespace Nickvision::Miniera::Shared::Controllers
          * @return True if can shut down, else false
          */
         bool canShutdown() const;
+        /**
+         * @brief Gets a NewServerDialogController.
+         * @return The NewServerDialogController
+         */
+        std::shared_ptr<NewServerDialogController> createNewServerDialogController();
         /**
          * @brief Gets a PreferencesViewController.
          * @return The PreferencesViewController
@@ -104,6 +121,21 @@ namespace Nickvision::Miniera::Shared::Controllers
          */
         void windowsUpdate();
 #endif
+        /**
+         * @brief Gets the list of available server names.
+         * @return The list of available server names
+         */
+        std::vector<std::string> getAvailableServerNames();
+        /**
+         * @brief Loads a server.
+         * @param serverName The name of the server to load
+         */
+        void loadServer(const std::string& serverName);
+        /**
+         * @brief Deletes a server.
+         * @param serverName The name of the server to delete
+         */
+        void deleteServer(const std::string& serverName);
 
     private:
         bool m_started;
@@ -112,8 +144,7 @@ namespace Nickvision::Miniera::Shared::Controllers
         Nickvision::App::DataFileManager m_dataFileManager;
         std::shared_ptr<Nickvision::Update::Updater> m_updater;
         Nickvision::Taskbar::TaskbarItem m_taskbar;
-        Nickvision::Events::Event<Nickvision::Notifications::NotificationSentEventArgs> m_notificationSent;
-        Nickvision::Events::Event<Nickvision::Notifications::ShellNotificationSentEventArgs> m_shellNotificationSent;
+        Models::ServerManager m_serverManager;
     };
 }
 

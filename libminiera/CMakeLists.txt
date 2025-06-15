@@ -4,9 +4,21 @@ endif()
 
 add_library(libminiera
     "src/controllers/mainwindowcontroller.cpp"
+    "src/controllers/newserverdialogcontroller.cpp"
     "src/controllers/preferencesviewcontroller.cpp"
+    "src/controllers/serverviewcontroller.cpp"
+    "src/events/serverinitializationprogresschangedeventargs.cpp"
+    "src/events/serverloadedeventargs.cpp"
+    "src/events/serverversionsloadedeventargs.cpp"
+    "src/models/broadcaster.cpp"
     "src/models/configuration.cpp"
-    "src/models/startupinformation.cpp")
+    "src/models/server.cpp"
+    "src/models/serveraddress.cpp"
+    "src/models/servermanager.cpp"
+    "src/models/serverproperties.cpp"
+    "src/models/serverversion.cpp"
+    "src/models/startupinformation.cpp"
+    "src/models/zipfile.cpp")
 target_include_directories(libminiera PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set_target_properties(libminiera PROPERTIES VERSION "${PROJECT_VERSION}" SOVERSION "${PROJECT_VERSION}")
 if(MSVC)
@@ -15,8 +27,15 @@ else()
     target_compile_options(libminiera PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
+if(WIN32)
+    if(USING_VCPKG)
+        find_package(unofficial-wintoast CONFIG REQUIRED)
+        target_link_libraries(libminiera PRIVATE unofficial::wintoast::wintoast)
+    endif()
+endif()
 find_package(libnick CONFIG REQUIRED)
-target_link_libraries(libminiera PUBLIC libnick::libnick)
+find_package(libzip CONFIG REQUIRED)
+target_link_libraries(libminiera PUBLIC libnick::libnick libzip::zip)
 
 add_custom_target(shared_commands ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/__shared.h")
 add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/__shared.h" "${CMAKE_CURRENT_BINARY_DIR}/shared.h" COMMAND "${CMAKE_COMMAND}" -E touch "${CMAKE_CURRENT_BINARY_DIR}/shared.h")

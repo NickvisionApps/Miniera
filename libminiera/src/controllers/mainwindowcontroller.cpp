@@ -1,18 +1,16 @@
 ﻿#include "controllers/mainwindowcontroller.h"
-#include <format>
 #include <sstream>
 #include <thread>
 #include <libnick/filesystem/userdirectories.h>
 #include <libnick/helpers/codehelpers.h>
 #include <libnick/helpers/stringhelpers.h>
 #include <libnick/localization/gettext.h>
+#include <libnick/notifications/appnotification.h>
 #include <libnick/system/environment.h>
 #include "models/configuration.h"
-#ifdef _WIN32
-#include <windows.h>
-#endif
 
 using namespace Nickvision::App;
+using namespace Nickvision::Miniera::Shared::Events;
 using namespace Nickvision::Miniera::Shared::Models;
 using namespace Nickvision::Events;
 using namespace Nickvision::Filesystem;
@@ -27,9 +25,10 @@ namespace Nickvision::Miniera::Shared::Controllers
         : m_started{ false },
         m_args{ args },
         m_appInfo{ "org.nickvision.miniera", "Nickvision Miniera", "Miniera" },
-        m_dataFileManager{ m_appInfo.getName() }
+        m_dataFileManager{ m_appInfo.getName() },
+        m_serverManager{ m_appInfo.getName(), m_dataFileManager.get<Configuration>("config") }
     {
-        m_appInfo.setVersion({ "2025.2.0-next" });
+        m_appInfo.setVersion({ "2025.3.0-alpha2" });
         m_appInfo.setShortName(_("Miniera"));
         m_appInfo.setDescription(_("Run Minecraft servers"));
         m_appInfo.setChangelog("- Initial Release");
@@ -57,12 +56,22 @@ namespace Nickvision::Miniera::Shared::Controllers
 
     Event<NotificationSentEventArgs>& MainWindowController::notificationSent()
     {
-        return m_notificationSent;
+        return AppNotification::sent();
     }
 
-    Event<ShellNotificationSentEventArgs>& MainWindowController::shellNotificationSent()
+    Event<ServerLoadedEventArgs>& MainWindowController::serverLoaded()
     {
-        return m_shellNotificationSent;
+        return m_serverManager.serverLoaded();
+    }
+
+    Event<ParamEventArgs<std::string>>& MainWindowController::serverDeleted()
+    {
+        return m_serverManager.serverDeleted();
+    }
+
+    Event<ServerInitializationProgressChangedEventArgs>& MainWindowController::serverInitializationProgressChanged()
+    {
+        return m_serverManager.serverInitializationProgressChanged();
     }
 
     const AppInfo& MainWindowController::getAppInfo() const
@@ -85,7 +94,16 @@ namespace Nickvision::Miniera::Shared::Controllers
         }
         else
         {
-            builder << Environment::exec(Environment::findDependency("ngrok").string() + " --version") << std::endl;
+            builder << Environment::exec("\"" + Environment::findDependency("ngrok").string() + "\"" + " --version");
+        }
+        //Java
+        if(Environment::findDependency("java").empty())
+        {
+            builder << "Java not found" << std::endl << std::endl;
+        }
+        else
+        {
+            builder << Environment::exec("\"" + Environment::findDependency("java").string() + "\"" + " -version") << std::endl;
         }
         //Extra
         if(!extraInformation.empty())
@@ -100,7 +118,12 @@ namespace Nickvision::Miniera::Shared::Controllers
 
     bool MainWindowController::canShutdown() const
     {
-        return true;
+        return !Server::isServerRunning();
+    }
+
+    std::shared_ptr<NewServerDialogController> MainWindowController::createNewServerDialogController()
+    {
+        return std::make_shared<NewServerDialogController>(m_serverManager);
     }
 
     std::shared_ptr<PreferencesViewController> MainWindowController::createPreferencesViewController()
@@ -157,7 +180,7 @@ namespace Nickvision::Miniera::Shared::Controllers
             {
                 if(latest > m_appInfo.getVersion())
                 {
-                    m_notificationSent.invoke({ _("New update available"), NotificationSeverity::Success, "update" });
+                    AppNotification::send({ _("New update available"), NotificationSeverity::Success, "update" });
                 }
             }
         } };
@@ -171,15 +194,36 @@ namespace Nickvision::Miniera::Shared::Controllers
         {
             return;
         }
-        m_notificationSent.invoke({ _("The update is downloading in the background and will start once it finishes"), NotificationSeverity::Informational });
+        AppNotification::send({ _("The update is downloading in the background and will start once it finishes"), NotificationSeverity::Informational });
         std::thread worker{ [this]()
         {
             if(!m_updater->windowsUpdate(VersionType::Stable))
             {
-                m_notificationSent.invoke({ _("Unable to download and install update"), NotificationSeverity::Error });
+                AppNotification::send({ _("Unable to download and install update"), NotificationSeverity::Error });
             }
         } };
         worker.detach();
     }
 #endif
+
+    std::vector<std::string> MainWindowController::getAvailableServerNames()
+    {
+        return m_serverManager.getAvailableServersNames();
+    }
+
+    void MainWindowController::loadServer(const std::string& serverName)
+    {
+        if(!m_serverManager.loadServer(serverName))
+        {
+            AppNotification::send({ _("Server already loaded"), NotificationSeverity::Warning });
+        }
+    }
+
+    void MainWindowController::deleteServer(const std::string& serverName)
+    {
+        if(!m_serverManager.deleteServer(serverName))
+        {
+            AppNotification::send({ _("Unable to delete the server as it is running"), NotificationSeverity::Error });
+        }
+    }
 }

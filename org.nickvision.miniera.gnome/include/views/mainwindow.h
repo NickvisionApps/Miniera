@@ -41,11 +41,6 @@ namespace Nickvision::Miniera::GNOME::Views
          */
         void onNotificationSent(const Nickvision::Notifications::NotificationSentEventArgs& args);
         /**
-         * @brief Handles when a shell notification is sent to the window.
-         * @param args Nickvision::Notifications::ShellNotificationSentEventArgs
-         */
-        void onShellNotificationSent(const Nickvision::Notifications::ShellNotificationSentEventArgs& args);
-        /**
          * @brief Quits the application. 
          */
         void quit();
